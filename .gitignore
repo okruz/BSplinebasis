@@ -1,0 +1,6 @@
+*.depend
+*.layout
+*~
+**/bin/**
+**/obj/**
+**/test/**
