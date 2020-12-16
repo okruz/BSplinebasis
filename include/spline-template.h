@@ -265,7 +265,7 @@ class myspline {
 
 
       /*
-       * Sums up two splines.
+       * Copy assign of spline with lower or equal order (ordera <= order) to this spline object.
        */
        template<size_t ordera>
        myspline<T, order>& operator=(const myspline<T, ordera> &a) {
