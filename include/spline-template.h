@@ -45,6 +45,9 @@ template<typename T, size_t order1, size_t order2>
 void findOverlappingIntervals(const myspline<T, order1> &m1, const myspline<T, order2> &m2, size_t &startindex1, size_t &startindex2, size_t &nintervals);
 };
 
+/*
+ * Creates an std::array<T, size> with all values set to val.
+ */
 template<typename T, size_t size>
 std::array<T, size> make_array(T val) {
     std::array<T, size> ret;
