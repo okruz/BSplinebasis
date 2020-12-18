@@ -45,8 +45,12 @@ template<typename T, size_t order1, size_t order2>
 void findOverlappingIntervals(const myspline<T, order1> &m1, const myspline<T, order2> &m2, size_t &startindex1, size_t &startindex2, size_t &nintervals);
 };
 
-/*
+/*!
  * Creates an std::array<T, size> with all values set to val.
+ *
+ * @param val Value to initialise the members of the array with.
+ * @tparam T Datatype of the array.
+ * @tparam size Size of the array.
  */
 template<typename T, size_t size>
 std::array<T, size> make_array(T val) {
@@ -69,6 +73,14 @@ std::array<T, std::max(sizea, sizeb)> add(const std::array<T, sizea> &a, const s
     return ret;
 };
 
+/*!
+ * Copies one array into a larger one, filling up the additional members with zeros.
+ * 
+ * @param in Array to be copied.
+ * @tparam T Datatype of the arrays.
+ * @tparam sizein Size of the input array.
+ * @tparam sizeout Size of the output array. Must fulfil sizeout >= sizein.
+ */
 template<typename T, size_t sizein, size_t sizeout>
 std::array<T, sizeout> changearraysize(const std::array<T, sizein> &in) {
     static_assert(sizeout >= sizein, "sizeout must be bigger or equal to sizein.");
@@ -80,6 +92,12 @@ std::array<T, sizeout> changearraysize(const std::array<T, sizein> &in) {
     }
 }
 
+/*!
+ * Removes double entries from the vector list and sorts it.
+ *
+ * @param list The list to be manipulated.
+ * @tparam T Datatype of the list.
+ */
 template<typename T>
 void makeuniquesorted(std::vector<T> &list) {
     std::sort(list.begin(), list.end());
@@ -88,21 +106,25 @@ void makeuniquesorted(std::vector<T> &list) {
 };
 
 //####################################################### Beginning of defintion of myspline class ############################################################################################
-/*
+/*!
  * Spline class representing spline of datatype T and order order.
  * The coefficients of the spline are defined with respect to the center point xm of each interval.
  *
+ * @tparam T Datatype of the spline.
+ * @tparam order Order of the spline.
  */
 template<typename T, size_t order>
 class myspline {
     private:
-        static constexpr size_t ARRAY_SIZE = order+1;                 // Number of coefficients per interval
-        std::vector<T> _intervals;                                    // N + 1 grid points representing the N intervals of the support of this spline
-        std::vector<std::array<T, ARRAY_SIZE>> _coefficients;         // Coefficients of the polynomials on each interval. Every interval is represented by an std::array<T, ARRAY_SIZE>.
+        static constexpr size_t ARRAY_SIZE = order+1;                 /*! Number of coefficients per interval. */
+        std::vector<T> _intervals;                                    /*! The N intervals of the support of this spline, represented by N+1 grid points. */
+        std::vector<std::array<T, ARRAY_SIZE>> _coefficients;         /*! Coefficients of the polynomials on each interval. */
 
 
-        /*
-         * Find interval in which x lies by binary search. Used during the evaluation of the spline.
+        /*!
+         * Finds the interval in which x lies by binary search. Used during the evaluation of the spline.
+         *
+         * @param x Point, whose interval will be searched.
          */
         int findInterval(const T& x) const {
             if(_intervals.size() < 2 || x > _intervals.back() || x < _intervals.front()) return -1; // x is not part of the spline's support
@@ -139,6 +161,9 @@ class myspline {
    public:
        /*
         * Constructor setting the data. Performs sanity checks.
+        *
+        * @param intervals Grid points symbolising the intervals of the spline's support.
+        * @param coefficients Polynomial coefficients of the spline on each interval.
         */
        myspline(std::vector<T> intervals, std::vector<std::array<T, ARRAY_SIZE>> coefficients):  _intervals(std::move(intervals)), _coefficients(std::move(coefficients)) {
             assert((_intervals.size() == 0 && _coefficients.size() == 0) || (_intervals.size() >= 2 && _coefficients.size() + 1 == _intervals.size()));
@@ -153,13 +178,21 @@ class myspline {
        myspline& operator=(const myspline &m) = default;
        myspline& operator=(myspline &&m) = default;
 
-       // getter methods for the internal data.
+       /*!
+        * Returns the vector of the grid points representing the intervals of the spline's support.
+        */
        const std::vector<T>& getIntervals() const noexcept {return _intervals;};
+
+       /*!
+        * Returns the polynomial coefficients of the spline for each interval.
+        */
        const std::vector<std::array<T,ARRAY_SIZE>>& getCoefficients() const noexcept {return _coefficients;};
 
 
-      /*
+      /*!
        * Evaluates the spline at point x.
+       *
+       * @param x Point at which to evaluate the spline. If x is outside of the support of the spline, zero is returned.
        */
        T operator()(const T &x) const {
            int index = findInterval(x);
@@ -177,8 +210,8 @@ class myspline {
        };
 
 
-        /*
-         * Return the beginning of the support of this spline. If the spline is empty, return zero.
+        /*!
+         * Returns the beginning of the support of this spline. If the spline is empty, zero is returned.
          */
         T start() const {
             if (_intervals.size() == 0) {
@@ -187,8 +220,8 @@ class myspline {
             return _intervals.front();
         };
 
-        /*
-         * Return the end of the support of this spline. If the spline is empty, return zero.
+        /*!
+         * Returns the end of the support of this spline. If the spline is empty, zero is returned.
          */
         T end() const {
             if (_intervals.size() == 0) {
@@ -198,8 +231,11 @@ class myspline {
         };
 
 
-      /*
+      /*!
        * Checks whether the supports of the two splines overlaps.
+       *
+       * @param m2 Other spline against which to check.
+       * @tparam order2 Order of spline m2.
        */
        template<size_t order2>
        bool checkOverlap(const myspline<T, order2> &m2) const {
@@ -208,8 +244,8 @@ class myspline {
             return ! isNotOverlapping;
        };
 
-      /*
-       * Checks whether this spline returns zero for all x.
+      /*!
+       * Checks whether this spline returns zero for all x. Can be the case, either if the support contains no intervals (i.e. the vector intervals is empty) or if all coefficients are zero.
        */
        bool isZero() const {
            if(_intervals.size() == 0) return true;
@@ -226,15 +262,19 @@ class myspline {
 
       // ################################ Operator definitions ###############################################
 
-      /*
+      /*!
        * Divides spline by scalar.
+       *
+       * @param d Scalar by which to divide this spline.
        */
        myspline<T, order> operator/(const T& d) const {
            return (*this) * (static_cast<T>(1)/d);
        };
 
-      /*
+      /*!
        * Multiplies spline with scalar.
+       *
+       * @param d Scalar by which to multiply this spline.
        */
        myspline<T, order> operator*(const T& d) const {
             myspline<T, order> ret(*this);
@@ -246,8 +286,10 @@ class myspline {
             return ret;
        };
 
-      /*
-       * Multiplies spline with scalar.
+      /*!
+       * Multiplies spline with scalar in place.
+       *
+       * @param d Scalar by which to multiply the spline.
        */
        myspline<T, order>& operator*=(const T& d) {
             for(auto &cs: _coefficients){
@@ -258,8 +300,10 @@ class myspline {
             return *this;
        };
 
-      /*
-       * Divides spline by scalar.
+      /*!
+       * Divides spline by scalar in place.
+       *
+       * @param d Scalar by which to divide the spline.
        */
        myspline<T, order>& operator/=(const T& d) {
            (*this) *= (static_cast<T>(1)/d);
@@ -267,8 +311,11 @@ class myspline {
        };
 
 
-      /*
-       * Copy assign of spline with lower or equal order (ordera <= order) to this spline object.
+      /*!
+       * Copy assign of spline to this spline object. The operation is only well defined if the order of the spline to be assigned is lower or equal to the order of this spline object.
+       *
+       * @param a Spline to be assigned.
+       * @tparam ordera Order of spline a.
        */
        template<size_t ordera>
        myspline<T, order>& operator=(const myspline<T, ordera> &a) {
@@ -285,8 +332,11 @@ class myspline {
        };
 
 
-      /*
-       * Implements spline-spline multplication.
+      /*!
+       * Spline-spline multiplication. Returns a spline of order order + ordera.
+       *
+       * @param a Spline to be multiplied with this spline.
+       * @tparam ordera Order of spline a.
        */
        template<size_t ordera>
        myspline<T, order+ ordera> operator*(const myspline<T, ordera> &a) const {
@@ -318,8 +368,11 @@ class myspline {
            return myspline<T, NEW_ORDER>(std::move(new_intervals), std::move(new_coefficients));
        };
 
-      /*
-       * Sums up two splines.
+      /*!
+       * Sums up two splines. 
+       *
+       * @param a Spline to be added.
+       * @tparam ordera Order of spline a.
        */
        template<size_t ordera>
        myspline<T, std::max(order, ordera)> operator+(const myspline<T, ordera> &a) const {
@@ -360,8 +413,11 @@ class myspline {
            return myspline<T, NEW_ORDER> (std::move(nintervals), std::move(ncoefficients));
        };
 
-      /*
-       * Sums up two splines.
+      /*!
+       * Sums up two splines in place. The operation is only well defined if the order of the spline to be added is lower or equal to the order of this spline object.
+       *
+       * @param a Spline to be added.
+       * @tparam ordera Order of spline a.
        */
        template<size_t ordera>
        myspline<T, order>& operator+=(const myspline<T, ordera> &a) {
@@ -395,8 +451,11 @@ class myspline {
            return *this;
        };
 
-      /*
-       * Subtracts two splines.
+      /*!
+       * Subtracts up two splines in place. The operation is only well defined if the order of the spline to be subtracted is lower or equal to the order of this spline object.
+       *
+       * @param a Spline to be subtracted.
+       * @tparam ordera Order of spline a.
        */
        template<size_t ordera>
        myspline<T, order>& operator-=(const myspline<T, ordera> &a) {
@@ -405,8 +464,11 @@ class myspline {
        }
 
 
-      /*
-       * Subtracts two splines.
+      /*!
+       * Subtracts up two splines. 
+       *
+       * @param a Spline to be subtracted.
+       * @tparam ordera Order of spline a.
        */
        template<size_t ordera>
        myspline<T, std::max(order, ordera)> operator-(const myspline<T, ordera> &a) const {
@@ -415,9 +477,12 @@ class myspline {
 
       // ################################### Spline transformations ###########################################################
 
-      /* 
+      /*!
        * Returns a spline corresponding to this spline on the subdomain [a,b] \in [x0 ,x1], being zero everywhere else.
-       * a is the smallest gridpoint >= x0 and b the largest grid point <= x1
+       * a is the smallest gridpoint >= x0 and b the largest grid point <= x1.
+       *
+       * @param x0 Beginning of the requested support.
+       * @param x1 End of the requested support.
        */
        myspline<T, order> restrictSupport(const T& x0, const T& x1) const {
            std::vector<std::array<T, ARRAY_SIZE>> ncoeffs;
@@ -433,7 +498,7 @@ class myspline {
        };
 
 
-      /*
+      /*!
        * Returns a spline g(x) = x f(x), where f(x) is this spline.
        */
        myspline<T, order + 1> timesx() const {
@@ -451,7 +516,7 @@ class myspline {
            return myspline<T, order + 1>(_intervals, std::move(newcoeffs));
        };
  
-      /*
+      /*!
        * Returns a spline g(x) = f(-x), where f(x) is this spline.
        *
        * Use with care: if the grid is not symmetric around x=0, the
@@ -481,17 +546,22 @@ class myspline {
        };
 
 
-      /*
-       * Calculates the order of the nth derivative of a spline of order orderin.
+      /*!
+       * Calculates the order of the nth derivative of a spline of order orderin. Defined for convenience.
+       *
+       * @param orderin Order of the spline before applying the derivative.
+       * @param n Order of the derivative to be applied.
        */
       static constexpr size_t orderdx(size_t orderin, size_t n){
           if (n > orderin) return 0;
           else return orderin -n;
       }
 
-      /*
+      /*!
        * Returns a spline g(x) = \frac{\partial^n}{\partial x^n} f(x), where f(x) is this spline.
        * Assumes the spline is n-1 times continously differentiable.
+       *
+       * @tparam n Order of the derivative.
        */
        template<size_t n=1>
        myspline<T, orderdx(order, n)> dx() const {
@@ -515,15 +585,15 @@ class myspline {
            }
        };
 
-       /*
-        * Convenience method for the second derivative.
+       /*!
+        * Calculates the second derivative.
         */
        myspline<T, orderdx(order, 2)> dx2() const {
            return this->template dx<2>();
        };
 
-       /*
-        * Convenience method for the third derivative.
+       /*!
+        * Calculates the third derivative.
         */
        myspline<T, orderdx(order, 3)> dx3() const {
            return this->template dx<3>();
@@ -532,17 +602,26 @@ class myspline {
 }; // class myspline
 //####################################################### End of defintion of myspline class ############################################################################################
 
-/*
+/*!
  * Commutation of spline scalar multiplication operator.
-*/
+ *
+ * @param d Scalar to be multiplied.
+ * @param b Spline to be multiplied.
+ * @tparam T Datatype of spline and scalar.
+ * @tparam order Order of the spline.
+ */
 template<typename T, size_t order>
 inline myspline<T, order> operator*(const T& d, const myspline<T, order> &b) {
     return b * d;
 };
 
 
-/*
+/*!
  * Efficient integer power for arbitrary type.
+ *
+ * @param a Basis.
+ * @param n Integer exponent.
+ * @tparam T Datatype.
  */
 template<typename T>
 T pow(T a, size_t n) {
@@ -565,12 +644,21 @@ T pow(T a, size_t n) {
  */
 namespace internal {
 
-/*
+/*!
  * Find the overlapping intervals of splines m1 and m2. startindex1 is set to the index of the start of the first overlapping interval in
  * _intervals of m1 and startindex2 to the start of the first overlapping interval in _intervals of m2. nintervals is set to the number
  * of intervals on which m1 and m2 overlap.
  *
  * If there is no overlap startindex1, startindex2 and nintervals are all set to 0.
+ *
+ * @param m1 First spline.
+ * @param m2 Second spline.
+ * @param startindex1 Return reference for the index of the first overlapping interval in the intervals vector of spline m1.
+ * @param startindex2 Return reference for the index of the first overlapping interval in the intervals vector of spline m2.
+ * @param nintervals Return reference for the number of overlapping intervals.
+ * @tparam T Datatype of both splines.
+ * @tparam order1 Order of spline m1.
+ * @tparam order2 Order of spline m2.
  */
 template<typename T, size_t order1, size_t order2>
 void findOverlappingIntervals(const myspline<T, order1> &m1, const myspline<T, order2> &m2, size_t &startindex1, size_t &startindex2, size_t &nintervals) {
