@@ -59,8 +59,14 @@ std::array<T, size> make_array(T val) {
     return ret;
 }
 
-/*
+/*!
  * Adds two vectors, taking into account that one vector might be longer than the other one.
+ *
+ * @param a First array to be added.
+ * @param b Second array to be added.
+ * @tparam T Datatype of both arrays.
+ * @tparam sizea Size of the first array.
+ * @tparam sizeb Size of the second array.
  */
 template<typename T, size_t sizea, size_t sizeb>
 std::array<T, std::max(sizea, sizeb)> add(const std::array<T, sizea> &a, const std::array<T, sizeb> &b) {
