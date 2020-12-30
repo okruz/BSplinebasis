@@ -688,8 +688,18 @@ void findOverlappingIntervals(const myspline<T, order1> &m1, const myspline<T, o
 };
 
 
-/*
+/*!
  * Performs an integral over splines m1 and m2 on one interval. The type of the integral is defined by the integration function f.
+ *
+ * @param f Function defining the type of integral
+ * @param coeffsa First spline's coefficients on the interval of interest.
+ * @param coeffsb Second spline's coefficients on the interval of interest.
+ * @param x0 Beginning of the interval.
+ * @param x1 End of the interval.
+ * @tparam T Datatype of both splines.
+ * @tparam F Type of Function object f.
+ * @tparam sizea Number of coefficients per interval for the first spline.
+ * @tparam sizeb Number of coefficients per interval for the second spline.
  */
 template<typename T, typename F, size_t sizea, size_t sizeb>
 T integrateInterval_analytically(F f, const std::array<T, sizea> &coeffsa, const std::array<T, sizeb> &coeffsb, const T& x0, const T& x1) {
@@ -705,8 +715,15 @@ T integrateInterval_analytically(F f, const std::array<T, sizea> &coeffsa, const
 }; 
 
 
-/*
+/*!
  * Performs an integral over the common support of splines m1 and m2. The type of the integral is defined by the integration function f.
+ *
+ * @param f Function defining the type of the integral.
+ * @param m1 First spline.
+ * @param m2 Second spline.
+ * @tparam T Datatype of both splines.
+ * @tparam order1 Order of the first spline.
+ * @tparam order2 Order of the second spline.
  */
 template<typename T, typename F, size_t order1, size_t order2>
 T helper_analytic_integration(F f, const myspline<T, order1> &m1, const myspline<T, order2> &m2){
@@ -728,9 +745,12 @@ T helper_analytic_integration(F f, const myspline<T, order1> &m1, const myspline
 
 }; // end namespace internal
 
-/*
- * returns the integral \int\limits_{-\infty}^{\infty} dx m(x)
- * calculated analytically
+/*!
+ * Returns the integral \int\limits_{-\infty}^{\infty} dx m(x). Calculated analytically.
+ * 
+ * @param m Spline m(x) to be integrated.
+ * @tparam T Datatype of the spline m.
+ * @tparam order Order of the spline m.
  */
 template<typename T, size_t order>
 T integrate(const myspline<T, order> &m) {
@@ -750,9 +770,14 @@ T integrate(const myspline<T, order> &m) {
     return retval;
 };
 
-/*
- * returns the integral \int\limits_{-\infty}^{\infty} dx m1(x) m2(x)
- * calculated analytically
+/*!
+ * Returns the integral \int\limits_{-\infty}^{\infty} dx m1(x) m2(x). Calculated analytically.
+ * 
+ * @param m1 First spline.
+ * @param m2 Second spline.
+ * @tparam T Datatype of both splines.
+ * @tparam order1 Order of the first spline m1.
+ * @tparam order2 Order of the second spline m2.
  */
 template<typename T, size_t order1, size_t order2>
 T overlap(const myspline<T, order1> &m1, const myspline<T, order2> &m2) {
@@ -764,9 +789,14 @@ T overlap(const myspline<T, order1> &m1, const myspline<T, order2> &m2) {
 };
 
 
-/*
- * returns the integral \int\limits_{-\infty}^{\infty} dx m1(x) x m2(x)
- * calculated analytically
+/*!
+ * Returns the integral \int\limits_{-\infty}^{\infty} dx m1(x) x m2(x). Calculated analytically.
+ * 
+ * @param m1 First spline.
+ * @param m2 Second spline.
+ * @tparam T Datatype of both splines.
+ * @tparam order1 Order of the first spline m1.
+ * @tparam order2 Order of the second spline m2.
  */
 template<typename T, size_t order1, size_t order2>
 T integrate_x(const myspline<T, order1> &m1, const myspline<T, order2> &m2) {
@@ -778,9 +808,14 @@ T integrate_x(const myspline<T, order1> &m1, const myspline<T, order2> &m2) {
 };
 
 
-/*
- * returns the integral \int\limits_{-\infty}^{\infty} dx m1(x) x^2 m2(x)
- * calculated analytically
+/*!
+ * Returns the integral \int\limits_{-\infty}^{\infty} dx m1(x) x^2 m2(x). Calculated analytically.
+ * 
+ * @param m1 First spline.
+ * @param m2 Second spline.
+ * @tparam T Datatype of both splines.
+ * @tparam order1 Order of the first spline m1.
+ * @tparam order2 Order of the second spline m2.
  */
 template<typename T, size_t order1, size_t order2>
 T integrate_x2(const myspline<T, order1> &m1, const myspline<T, order2> &m2) {
@@ -792,9 +827,14 @@ T integrate_x2(const myspline<T, order1> &m1, const myspline<T, order2> &m2) {
 };
 
 
-/*
- * returns the integral \int\limits_{-\infty}^{\infty} dx m1(x) \frac{\partial}{\partial x} m2(x)
- * calculated analytically, assumes m2(x) is continous
+/*!
+ * Returns the integral \int\limits_{-\infty}^{\infty} dx m1(x) \frac{\partial}{\partial x} m2(x). Calculated analytically. Assumes m2(x) is continous.
+ * 
+ * @param m1 First spline.
+ * @param m2 Second spline.
+ * @tparam T Datatype of both splines.
+ * @tparam order1 Order of the first spline m1.
+ * @tparam order2 Order of the second spline m2.
  */
 template<typename T, size_t order1, size_t order2>
 T integrate_dx(const myspline<T, order1> &m1, const myspline<T, order2> &m2) {
@@ -806,9 +846,14 @@ T integrate_dx(const myspline<T, order1> &m1, const myspline<T, order2> &m2) {
 };
 
 
-/*
- * returns the integral \int\limits_{-\infty}^{\infty} dx x m1(x) \frac{\partial}{\partial x} m2(x)
- * calculated analytically, assumes m2(x) is continous
+/*!
+ * Returns the integral \int\limits_{-\infty}^{\infty} dx x m1(x) \frac{\partial}{\partial x} m2(x). Calculated analytically. Assumes m2(x) is continous.
+ * 
+ * @param m1 First spline.
+ * @param m2 Second spline.
+ * @tparam T Datatype of both splines.
+ * @tparam order1 Order of the first spline m1.
+ * @tparam order2 Order of the second spline m2.
  */
 template<typename T, size_t order1, size_t order2>
 T integrate_x_dx(const myspline<T, order1> &m1, const myspline<T, order2> &m2) {
@@ -821,9 +866,14 @@ T integrate_x_dx(const myspline<T, order1> &m1, const myspline<T, order2> &m2) {
 };
 
 
-/*
- * returns the integral \int\limits_{-\infty}^{\infty} dx m1(x) \frac{\partial^2}{\partial x^2} m2(x)
- * calculated analytically, assumes m2(x) is at least once continously differentiable
+/*!
+ * Returns the integral \int\limits_{-\infty}^{\infty} dx m1(x) \frac{\partial^2}{\partial x^2} m2(x). Calculated analytically. Assumes m2(x) is at least once continously differentiable.
+
+ * @param m1 First spline.
+ * @param m2 Second spline.
+ * @tparam T Datatype of both splines.
+ * @tparam order1 Order of the first spline m1.
+ * @tparam order2 Order of the second spline m2.
  */
 template<typename T, size_t order1, size_t order2>
 T integrate_dx2(const myspline<T, order1> &m1, const myspline<T, order2> &m2) {
@@ -834,9 +884,14 @@ T integrate_dx2(const myspline<T, order1> &m1, const myspline<T, order2> &m2) {
     return internal::helper_analytic_integration(f, m1, m2);
 }
 
-/*
- * returns the integral \int\limits_{-\infty}^{\infty} dx m1(x) x \frac{\partial^2}{\partial x^2} m2(x)
- * calculated analytically, assumes m2(x) is at least once continously differentiable
+/*!
+ * Returns the integral \int\limits_{-\infty}^{\infty} dx m1(x) x \frac{\partial^2}{\partial x^2} m2(x). Calculated analytically. Assumes m2(x) is at least once continously differentiable.
+ *
+ * @param m1 First spline.
+ * @param m2 Second spline.
+ * @tparam T Datatype of both splines.
+ * @tparam order1 Order of the first spline m1.
+ * @tparam order2 Order of the second spline m2.
  */
 template<typename T, size_t order1, size_t order2>
 T integrate_x_dx2(const myspline<T, order1> &m1, const myspline<T, order2> &m2) {
@@ -849,9 +904,14 @@ T integrate_x_dx2(const myspline<T, order1> &m1, const myspline<T, order2> &m2) 
 };
 
 
-/*
- * returns the integral \int\limits_{-\infty}^{\infty} dx m1(x) x^2 \frac{\partial^2}{\partial x^2} m2(x)
- * calculated analytically, assumes m2(x) is at least once continously differentiable
+/*!
+ * Returns the integral \int\limits_{-\infty}^{\infty} dx m1(x) x^2 \frac{\partial^2}{\partial x^2} m2(x). Calculated analytically. Assumes m2(x) is at least once continously differentiable.
+ *
+ * @param m1 First spline.
+ * @param m2 Second spline.
+ * @tparam T Datatype of both splines.
+ * @tparam order1 Order of the first spline m1.
+ * @tparam order2 Order of the second spline m2.
  */
 template<typename T, size_t order1, size_t order2>
 T integrate_x2_dx2(const myspline<T, order1> &m1, const myspline<T, order2> &m2) {
@@ -864,8 +924,13 @@ T integrate_x2_dx2(const myspline<T, order1> &m1, const myspline<T, order2> &m2)
 };
 
 
-/*
+/*!
  * Generates a Bspline of order k-1 at knot i relative to the grid given by knots.
+ *
+ * @param knots Grido on which to generate the BSplines.
+ * @param i Index of the knot at which to generate the BSpline.
+ * @tparam T Datatype of the spline.
+ * @tparam k Number of the coefficients per interval for the spline (i.e. order of the spline plus one).
  */
 template<typename T, size_t k>
 myspline<T, k-1> generateBspline(const std::vector<T> &knots, size_t i){
@@ -902,9 +967,13 @@ myspline<T, k-1> generateBspline(const std::vector<T> &knots, size_t i){
 };
 
 
-/*
- * Converts a spline of datatype TI to datatype TO.
- * There must be a conversion between the datatypes such that static_cast<TO>(TI) works.
+/*!
+ * Converts a spline of datatype TI to datatype TO. There must be a conversion between the datatypes such that static_cast<TO>(TI) works.
+ *
+ * @param si Input spline.
+ * @tparam TO Datatype of the output spline.
+ * @tparam TI Datatype of the input spline.
+ * @tparam order Order of both the input and output spline.
  */
 template<typename TO, typename TI, size_t order>
 myspline<TO, order> convert(const myspline<TI, order> &si) {
