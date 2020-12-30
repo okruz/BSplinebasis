@@ -35,6 +35,10 @@
  * ########################################################################
  */
 
+
+/*!
+ * Namespace for this library.
+ */
 namespace myspline {
 
 template<typename T, size_t order>
@@ -649,7 +653,7 @@ T pow(T a, size_t n) {
 
 
 
-/*
+/*!
  * The methods in the internal namespace are not supposed to be called from outside this header file.
  */
 namespace internal {
@@ -750,7 +754,7 @@ T helper_analytic_integration(F f, const myspline<T, order1> &m1, const myspline
 }; // end namespace internal
 
 /*!
- * Returns the integral \int\limits_{-\infty}^{\infty} dx m(x). Calculated analytically.
+ * Returns the integral \\int\\limits_{-\\infty}^{\\infty} dx m(x). Calculated analytically.
  * 
  * @param m Spline m(x) to be integrated.
  * @tparam T Datatype of the spline m.
@@ -775,7 +779,7 @@ T integrate(const myspline<T, order> &m) {
 };
 
 /*!
- * Returns the integral \int\limits_{-\infty}^{\infty} dx m1(x) m2(x). Calculated analytically.
+ * Returns the integral \\int\\limits_{-\\infty}^{\\infty} dx m1(x) m2(x). Calculated analytically.
  * 
  * @param m1 First spline.
  * @param m2 Second spline.
@@ -794,7 +798,7 @@ T overlap(const myspline<T, order1> &m1, const myspline<T, order2> &m2) {
 
 
 /*!
- * Returns the integral \int\limits_{-\infty}^{\infty} dx m1(x) x m2(x). Calculated analytically.
+ * Returns the integral \\int\\limits_{-\\infty}^{\\infty} dx m1(x) x m2(x). Calculated analytically.
  * 
  * @param m1 First spline.
  * @param m2 Second spline.
@@ -813,7 +817,7 @@ T integrate_x(const myspline<T, order1> &m1, const myspline<T, order2> &m2) {
 
 
 /*!
- * Returns the integral \int\limits_{-\infty}^{\infty} dx m1(x) x^2 m2(x). Calculated analytically.
+ * Returns the integral \\int\\limits_{-\\infty}^{\\infty} dx m1(x) x^2 m2(x). Calculated analytically.
  * 
  * @param m1 First spline.
  * @param m2 Second spline.
@@ -832,7 +836,7 @@ T integrate_x2(const myspline<T, order1> &m1, const myspline<T, order2> &m2) {
 
 
 /*!
- * Returns the integral \int\limits_{-\infty}^{\infty} dx m1(x) \frac{\partial}{\partial x} m2(x). Calculated analytically. Assumes m2(x) is continous.
+ * Returns the integral \\int\\limits_{-\\infty}^{\\infty} dx m1(x) \frac{\partial}{\partial x} m2(x). Calculated analytically. Assumes m2(x) is continous.
  * 
  * @param m1 First spline.
  * @param m2 Second spline.
@@ -851,7 +855,7 @@ T integrate_dx(const myspline<T, order1> &m1, const myspline<T, order2> &m2) {
 
 
 /*!
- * Returns the integral \int\limits_{-\infty}^{\infty} dx x m1(x) \frac{\partial}{\partial x} m2(x). Calculated analytically. Assumes m2(x) is continous.
+ * Returns the integral \\int\\limits_{-\\infty}^{\\infty} dx x m1(x) \frac{\partial}{\partial x} m2(x). Calculated analytically. Assumes m2(x) is continous.
  * 
  * @param m1 First spline.
  * @param m2 Second spline.
@@ -871,7 +875,7 @@ T integrate_x_dx(const myspline<T, order1> &m1, const myspline<T, order2> &m2) {
 
 
 /*!
- * Returns the integral \int\limits_{-\infty}^{\infty} dx m1(x) \frac{\partial^2}{\partial x^2} m2(x). Calculated analytically. Assumes m2(x) is at least once continously differentiable.
+ * Returns the integral \\int\\limits_{-\\infty}^{\\infty} dx m1(x) \frac{\partial^2}{\partial x^2} m2(x). Calculated analytically. Assumes m2(x) is at least once continously differentiable.
 
  * @param m1 First spline.
  * @param m2 Second spline.
@@ -889,7 +893,7 @@ T integrate_dx2(const myspline<T, order1> &m1, const myspline<T, order2> &m2) {
 }
 
 /*!
- * Returns the integral \int\limits_{-\infty}^{\infty} dx m1(x) x \frac{\partial^2}{\partial x^2} m2(x). Calculated analytically. Assumes m2(x) is at least once continously differentiable.
+ * Returns the integral \\int\\limits_{-\\infty}^{\\infty} dx m1(x) x \frac{\partial^2}{\partial x^2} m2(x). Calculated analytically. Assumes m2(x) is at least once continously differentiable.
  *
  * @param m1 First spline.
  * @param m2 Second spline.
@@ -909,7 +913,7 @@ T integrate_x_dx2(const myspline<T, order1> &m1, const myspline<T, order2> &m2) 
 
 
 /*!
- * Returns the integral \int\limits_{-\infty}^{\infty} dx m1(x) x^2 \frac{\partial^2}{\partial x^2} m2(x). Calculated analytically. Assumes m2(x) is at least once continously differentiable.
+ * Returns the integral \\int\\limits_{-\\infty}^{\\infty} dx m1(x) x^2 \frac{\partial^2}{\partial x^2} m2(x). Calculated analytically. Assumes m2(x) is at least once continously differentiable.
  *
  * @param m1 First spline.
  * @param m2 Second spline.
