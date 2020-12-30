@@ -143,7 +143,7 @@ class myspline {
             return starti;
         };
 
-        /*
+        /*!
          * Check whether the grid points are steadily increasing. This is an implicit assumption and is checked via an assert() when the data of the spline changes.
          */
         bool steadilyIncreasingIntervals() const {
@@ -154,8 +154,11 @@ class myspline {
        };
 
 
-       /*
+       /*!
         * Resets the data of the spline and performs sanity checks.
+        *
+        * @param intervals The grid points representing the intervals on which the spline is defined.
+        * @param coefficients Polynomial coefficients on each of the intervals.
         */
        void setData(std::vector<T> intervals, std::vector<std::array<T, ARRAY_SIZE>> coefficients) {
            _intervals = std::move(intervals);
@@ -165,7 +168,7 @@ class myspline {
        };
 
    public:
-       /*
+       /*!
         * Constructor setting the data. Performs sanity checks.
         *
         * @param intervals Grid points symbolising the intervals of the spline's support.
