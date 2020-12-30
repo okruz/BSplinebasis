@@ -328,7 +328,8 @@ class myspline {
        */
        template<size_t ordera>
        myspline<T, order>& operator=(const myspline<T, ordera> &a) {
-           static_assert(ordera <= order, "The operators += and -= are only defined if the order of the rhs spline is lower or equal to that of the lhs spline.");
+           // The case ordera == order should be handled by the default assign operator which is automatically generated.
+           static_assert(ordera < order, "The operators += and -= are only defined if the order of the rhs spline is lower or equal to that of the lhs spline.");
         
            std::vector<std::array<T, ARRAY_SIZE>> ncoefficients(a.getCoefficients().size(),  make_array<T,ARRAY_SIZE>(static_cast<T>(0)));//
            for (size_t i = 0; i  < a.getCoefficients().size(); i++) {
