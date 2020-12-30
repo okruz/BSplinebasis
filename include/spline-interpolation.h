@@ -36,8 +36,11 @@ template <typename T>
 using boundary = struct BOUNDARY<T>;
 
 
-/*
+/*!
  * Generates the default boundary conditions by setting as many derivatives to zero as needed, starting from the first derivative.
+ *
+ * @tparam T Datatype of the spline.
+ * @tparam order Polynomial order of the spline.
  */
 template<typename T, size_t order>
 std::array<boundary<T>, order-1> defaultBoundaries() {
@@ -50,8 +53,11 @@ std::array<boundary<T>, order-1> defaultBoundaries() {
      return ret;
 }
 
-/*
+/*!
  * Computes exponent! / (exponent - deriv)!.
+ *
+ * @param exponent Exponent of the monomial.
+ * @param deriv Order of the derivative.
  */
 constexpr size_t faculty_ratio(size_t exponent, size_t deriv) {
     size_t ret = exponent;
@@ -59,9 +65,14 @@ constexpr size_t faculty_ratio(size_t exponent, size_t deriv) {
     return ret;
 }
 
-/*
- * Interpolates the data given by x and y with a spline of order order. order-1 additional conditions are needed for a well defined problem.
- * These can be supplied by fixing derivatives on the first and last node.
+/*!
+ * Interpolates the data given by x and y with a spline of order order. order-1 additional conditions are needed for a well defined problem. These can be supplied by fixing derivatives on the first and last node.
+ * 
+ * @param x Data on the abscissa.
+ * @param y Data on the ordinate.
+ * @param boundaries Boundary conditions.
+ * @tparam T Datatype of the spline and data.
+ * @tparam order Order of the spline.
  */
 template<typename T, size_t order>
 myspline<T, order> interpolate(const std::vector<T> &x, const std::vector<T> &y, 
