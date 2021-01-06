@@ -398,7 +398,7 @@ class myspline {
            makeuniquesorted(nintervals);
         
            std::vector<std::array<T, NEW_ARRAY_SIZE>> ncoefficients;
-           ncoefficients.reserve(nintervals.size());
+           ncoefficients.reserve((nintervals.size() == 0) ? 0 : nintervals.size() - 1);
            for (size_t i = 0; i + 1 < nintervals.size(); i++) {
                const size_t posthis = std::distance(_intervals.begin(), std::find(_intervals.begin(), _intervals.end(), nintervals[i]));
                const size_t posa = std::distance(a.getIntervals().begin(), std::find(a.getIntervals().begin(), a.getIntervals().end(), nintervals[i]));
@@ -407,17 +407,9 @@ class myspline {
                const bool aexists = (posa < a.getCoefficients().size());
 
                if (thisexists && ! aexists) {
-                   if constexpr(NEW_ARRAY_SIZE == order + 1) {
-                       ncoefficients.push_back(_coefficients[posthis]);
-                   } else {
-                       ncoefficients.push_back(changearraysize<T ,order +1, NEW_ARRAY_SIZE>(_coefficients[posthis]));
-                   }
+                   ncoefficients.push_back(changearraysize<T ,order +1, NEW_ARRAY_SIZE>(_coefficients[posthis]));
                } else if (aexists && ! thisexists) {
-                   if constexpr(NEW_ARRAY_SIZE == ordera + 1) {
-                       ncoefficients.push_back(a.getCoefficients()[posa]);
-                   } else {
-                       ncoefficients.push_back(changearraysize<T, ordera + 1, NEW_ARRAY_SIZE>(a.getCoefficients()[posa]));
-                   }
+                   ncoefficients.push_back(changearraysize<T, ordera + 1, NEW_ARRAY_SIZE>(a.getCoefficients()[posa]));
                } else if (thisexists && aexists){
                    ncoefficients.push_back(add<T, ordera + 1, order + 1>(a.getCoefficients()[posa], _coefficients[posthis]));
                } else {
@@ -442,7 +434,7 @@ class myspline {
            makeuniquesorted(nintervals);
         
            std::vector<std::array<T, ARRAY_SIZE>> ncoefficients;//
-           ncoefficients.reserve(nintervals.size());
+           ncoefficients.reserve((nintervals.size() == 0) ? 0 : nintervals.size() - 1);
            for (size_t i = 0; i + 1 < nintervals.size(); i++) {
                const size_t posthis = std::distance(_intervals.begin(), std::find(_intervals.begin(), _intervals.end(), nintervals[i]));
                const size_t posa = std::distance(a.getIntervals().begin(), std::find(a.getIntervals().begin(), a.getIntervals().end(), nintervals[i]));
@@ -492,12 +484,14 @@ class myspline {
       // ################################### Spline transformations ###########################################################
 
       /*!
-       * Returns a spline corresponding to this spline on the subdomain [a,b] \in [x0 ,x1], being zero everywhere else.
+       * Returns a spline corresponding to this spline on the subdomain [a,b] \\in [x0 ,x1], being zero everywhere else.
        * a is the smallest gridpoint >= x0 and b the largest grid point <= x1.
        *
        * @param x0 Beginning of the requested support.
        * @param x1 End of the requested support.
+       * @deprecated This method may be removed in the future.
        */
+       [[deprecated]]
        myspline<T, order> restrictSupport(const T& x0, const T& x1) const {
            std::vector<std::array<T, ARRAY_SIZE>> ncoeffs;
            std::vector<T> nintervals;
@@ -572,7 +566,7 @@ class myspline {
       }
 
       /*!
-       * Returns a spline g(x) = \frac{\partial^n}{\partial x^n} f(x), where f(x) is this spline.
+       * Returns a spline g(x) = \\frac{\\partial^n}{\\partial x^n} f(x), where f(x) is this spline.
        * Assumes the spline is n-1 times continously differentiable.
        *
        * @tparam n Order of the derivative.
