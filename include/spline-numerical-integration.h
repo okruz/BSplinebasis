@@ -28,6 +28,10 @@
 namespace myspline {
 using namespace boost::math::quadrature;
 
+/*
+ * Normally, for every evaluation of a spline, a binary search for the correct interval is necessary.
+ * This method is defined in order to integrate every interval separately during the 1D integration, omitting the necessity for the binary search.
+ */
 template<typename T, size_t ARRAY_SIZE>
 T evaluateInterval(const T& x, const std::array<T, ARRAY_SIZE> &coeffs, const T& xm) {
     T result = static_cast<T>(0), xpot = static_cast<T>(1);
@@ -39,9 +43,18 @@ T evaluateInterval(const T& x, const std::array<T, ARRAY_SIZE> &coeffs, const T&
     return result;
 };
 
-/*
- * order denotes the order of the Gauss-Legendre integration. The integration routine should evaluate the integrand roughly
- * (order-1)/2 times per interval.
+/*!
+ * Calculates the 1D integral \\int\\limits_{-\\infty}^{\\infty} dx m1(x) f(x) m2(x).
+ * Calcualted numerically with each interval of the common support of the two splines being integrated separately using a Gauss-Legendre scheme of order ordergl.
+ * Uses the boost Gauss-Legendre fixed point integration scheme.
+ * 
+ * @param f Function f(x) to be multiplied to the integrand.
+ * @param m1 First spline m1(x).
+ * @param m2 Second spline m2(x).
+ * @tparam T Datatype of the calculation.
+ * @tparam order1 Order of the spline m1(x).
+ * @tparam order2 Order of the spline m2(x).
+ * @tparam ordergl Order of the Gauss-Legendre integration scheme provided by the boost library.
  */
 template<typename T, size_t order1, size_t order2, size_t ordergl>
 T integrate(const std::function<T(const T&)> &f, const myspline<T, order1> &m1, const myspline<T, order2> &m2) {
@@ -65,11 +78,25 @@ T integrate(const std::function<T(const T&)> &f, const myspline<T, order1> &m1, 
 };
 
 
-/*
- * Calculates the integral \int\limits_{-\infty}^{\infty} dx \int\limits_{-\infty}^{\infty} dy m1x(x) m1y(y) f(x, y) m2x(x) m2y(y)
- * calculated numerically with ~(order-1)/2 evaluations per dimension, distributed over the support of the splines.
+/*!
+ * Calculates the integral \\int\\limits_{-\\infty}^{\\infty} dx \\int\\limits_{-\\infty}^{\\infty} dy m1x(x) m1y(y) f(x, y) m2x(x) m2y(y).
+ * Calculated numerically with ~(ordergl-1)/2 evaluations per dimension, distributed over the support of the splines.
  * Uses the boost Gauss-Legendre fixed point integration scheme.
+ * 
+ * @param f Function f(x, y) to be multiplied to the integrand.
+ * @param m1x First spline m1(x) for the x coordinate.
+ * @param m2x Second spline m2(x) for the x coordinate.
+ * @param m1y First spline m1(y) for the y coordinate.
+ * @param m2y Second spline m2(y) for the y coordinate.
+ * @tparam T Datatype of the calculation.
+ * @tparam order1x Order of the spline m1(x).
+ * @tparam order2x Order of the spline m2(x).
+ * @tparam order1y Order of the spline m1(y).
+ * @tparam order2y Order of the spline m2(y).
+ * @tparam ordergl Order of the (1D) Gauss-Legendre integration scheme provided by the boost library.
+ * @deprecated This method may be removed in the future.
  */
+[[deprecated]]
 template<typename T, size_t order1x, size_t order2x, size_t order1y, size_t order2y, size_t ordergl>
 T integrate2d(const std::function<T(const T&, const T&)> &f, const myspline<T, order1x> &m1x, const myspline<T, order2x> &m2x, const myspline<T, order1y> &m1y, const myspline<T, order2y> &m2y) {
     const T ax = std::max(m1x.start(), m2x.start());
@@ -87,12 +114,29 @@ T integrate2d(const std::function<T(const T&, const T&)> &f, const myspline<T, o
     return gauss<T, ordergl>::integrate(xintegration, ax, bx);
 };
 
-/*
- * Calculates the integral \int\limits_{-\infty}^{\infty} dx \int\limits_{-\infty}^{\infty} dy \int\limits_{-\infty}^{\infty} dz m1x(x) m1y(y) m1z(z) f(x, y, z) m2x(x) m2y(y) m2z(z)
- * calculated numerically with ~(order-1)/2 evaluations per dimension, distributed over the support of the splines.
+/*!
+ * Calculates the integral \\int\\limits_{-\\infty}^{\\infty} dx \\int\\limits_{-\\infty}^{\\infty} dy \\int\\limits_{-\\infty}^{\\infty} dz m1x(x) m1y(y) m1z(z) f(x, y, z) m2x(x) m2y(y) m2z(z).
+ * Calculated numerically with ~(ordergl-1)/2 evaluations per dimension, distributed over the support of the splines.
  * Uses the boost Gauss-Legendre fixed point integration scheme.
+ * 
+ * @param f Function f(x, y, z) to be multiplied to the integrand.
+ * @param m1x First spline m1(x) for the x coordinate.
+ * @param m2x Second spline m2(x) for the x coordinate.
+ * @param m1y First spline m1(y) for the y coordinate.
+ * @param m2y Second spline m2(y) for the y coordinate.
+ * @param m1z First spline m1(z) for the z coordinate.
+ * @param m2z Second spline m2(x) for the z coordinate.
+ * @tparam T Datatype of the calculation.
+ * @tparam order1x Order of the spline m1(x).
+ * @tparam order2x Order of the spline m2(x).
+ * @tparam order1y Order of the spline m1(y).
+ * @tparam order2y Order of the spline m2(y).
+ * @tparam order1z Order of the spline m1(z).
+ * @tparam order2z Order of the spline m2(z).
+ * @tparam ordergl Order of the (1D) Gauss-Legendre integration scheme provided by the boost library.
+ * @deprecated This method may be removed in the future.
  */
-
+[[deprecated]]
 template<typename T, size_t order1x, size_t order2x, size_t order1y, size_t order2y, size_t order1z, size_t order2z, size_t ordergl>
 T integrate3d(const std::function<T(const T&, const T&, const T&)> &f, const myspline<T, order1x> &m1x, const myspline<T, order2x> &m2x, const myspline<T, order1y> &m1y, const myspline<T, order2y> &m2y , const myspline<T, order1z> &m1z, const myspline<T, order2z> &m2z) {
     T ax = std::max(m1x.start(), m2x.start());
