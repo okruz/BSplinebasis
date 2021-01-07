@@ -96,8 +96,8 @@ T integrate(const std::function<T(const T&)> &f, const myspline<T, order1> &m1, 
  * @tparam ordergl Order of the (1D) Gauss-Legendre integration scheme provided by the boost library.
  * @deprecated This method may be removed in the future.
  */
-[[deprecated]]
 template<typename T, size_t order1x, size_t order2x, size_t order1y, size_t order2y, size_t ordergl>
+[[deprecated]]
 T integrate2d(const std::function<T(const T&, const T&)> &f, const myspline<T, order1x> &m1x, const myspline<T, order2x> &m2x, const myspline<T, order1y> &m1y, const myspline<T, order2y> &m2y) {
     const T ax = std::max(m1x.start(), m2x.start());
     const T bx = std::min(m1x.end(), m2x.end());
@@ -136,8 +136,8 @@ T integrate2d(const std::function<T(const T&, const T&)> &f, const myspline<T, o
  * @tparam ordergl Order of the (1D) Gauss-Legendre integration scheme provided by the boost library.
  * @deprecated This method may be removed in the future.
  */
-[[deprecated]]
 template<typename T, size_t order1x, size_t order2x, size_t order1y, size_t order2y, size_t order1z, size_t order2z, size_t ordergl>
+[[deprecated]]
 T integrate3d(const std::function<T(const T&, const T&, const T&)> &f, const myspline<T, order1x> &m1x, const myspline<T, order2x> &m2x, const myspline<T, order1y> &m1y, const myspline<T, order2y> &m2y , const myspline<T, order1z> &m1z, const myspline<T, order2z> &m2z) {
     T ax = std::max(m1x.start(), m2x.start());
     T bx = std::min(m1x.end(), m2x.end());

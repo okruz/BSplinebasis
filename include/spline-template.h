@@ -978,8 +978,10 @@ myspline<T, k-1> generateBspline(const std::vector<T> &knots, size_t i){
  * @tparam TO Datatype of the output spline.
  * @tparam TI Datatype of the input spline.
  * @tparam order Order of both the input and output spline.
+ * @deprecated This method may be removed in the future.
  */
-template<typename TO, typename TI, size_t order>
+template<typename TO, typename TI, size_t order> 
+[[deprecated]]
 myspline<TO, order> convert(const myspline<TI, order> &si) {
     const auto& intervI = si.getIntervals();
     std::vector<TO> intervO;
