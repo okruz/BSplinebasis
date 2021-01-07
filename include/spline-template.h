@@ -398,7 +398,8 @@ class myspline {
            makeuniquesorted(nintervals);
         
            std::vector<std::array<T, NEW_ARRAY_SIZE>> ncoefficients;
-           ncoefficients.reserve((nintervals.size() == 0) ? 0 : nintervals.size() - 1);
+           if (nintervals.size() > 1) ncoefficients.reserve(nintervals.size() - 1);
+
            for (size_t i = 0; i + 1 < nintervals.size(); i++) {
                const size_t posthis = std::distance(_intervals.begin(), std::find(_intervals.begin(), _intervals.end(), nintervals[i]));
                const size_t posa = std::distance(a.getIntervals().begin(), std::find(a.getIntervals().begin(), a.getIntervals().end(), nintervals[i]));
@@ -433,8 +434,9 @@ class myspline {
            nintervals.insert(nintervals.end(), _intervals.begin(), _intervals.end());
            makeuniquesorted(nintervals);
         
-           std::vector<std::array<T, ARRAY_SIZE>> ncoefficients;//
-           ncoefficients.reserve((nintervals.size() == 0) ? 0 : nintervals.size() - 1);
+           std::vector<std::array<T, ARRAY_SIZE>> ncoefficients;
+           if (nintervals.size() > 1) ncoefficients.reserve(nintervals.size() - 1);
+
            for (size_t i = 0; i + 1 < nintervals.size(); i++) {
                const size_t posthis = std::distance(_intervals.begin(), std::find(_intervals.begin(), _intervals.end(), nintervals[i]));
                const size_t posa = std::distance(a.getIntervals().begin(), std::find(a.getIntervals().begin(), a.getIntervals().end(), nintervals[i]));
