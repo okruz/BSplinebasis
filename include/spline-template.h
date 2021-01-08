@@ -37,7 +37,7 @@
 
 
 /*!
- * Namespace for this library.
+ * Main namespace for this library.
  */
 namespace myspline {
 
