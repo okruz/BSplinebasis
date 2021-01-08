@@ -6,10 +6,10 @@
 #include <array>
 
 /*
- * template<typename T>
+ * template<typename T, size_t order>
  * class myspline::myspline
  * 
- * Represents a spline of dataytype T. The datatype has to fulfill the following requirements:
+ * Represents a spline of dataytype T and order order. The datatype has to fulfill the following requirements:
  *   - comparisons <, <=, >, >=, == and != have to be implemented.
  *   - arithmetic operators + - * /  += -= *= /= have to be implemented
  *   - A pathway must exist, such that integer values of type T can be constructed via static_cast<T>(int) (e. g. via a constructor taking an int).
@@ -59,7 +59,7 @@ void findOverlappingIntervals(const myspline<T, order1> &m1, const myspline<T, o
 template<typename T, size_t size>
 std::array<T, size> make_array(T val) {
     std::array<T, size> ret;
-    for (size_t i = 0; i < size; i++) ret[i] = val;
+    ret.fill(val);
     return ret;
 }
 
