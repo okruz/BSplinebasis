@@ -24,7 +24,7 @@ template<typename T, size_t order>
 void testIntegration(T tol) {
    using spline = myspline::myspline<T, order>;
    using spline0 = myspline::myspline<T, 0>;
-   const std::vector<T> grid{-3.0l, -2.5l, -1.5l, -1.0l, 0.0l, 0.5l, 1.5l, 2.5l, 3.5l, 4.0l};
+   const std::vector<T> grid{-7.0l,-6.85l,  -6.55l, -6.3l, -6.0l, -5.75l, -5.53l, -5.2l, -4.75l, -4.5l, -3.0l, -2.5l, -1.5l, -1.0l, 0.0l, 0.5l, 1.5l, 2.5l, 3.5l, 4.0l, 4.35l, 4.55l, 4.95l, 5.4l, 5.7l, 6.1l, 6.35l, 6.5l, 6.85l, 7.0l};
    const std::vector<spline> splines = getSplines<T, order>(grid);
    const spline0 one = getOne(grid);
    for (const auto &s1:splines) {
@@ -56,25 +56,28 @@ void testIntegration(T tol) {
 
 BOOST_AUTO_TEST_CASE (TestIntegration)
 {
-    testIntegration<double, 2>(3.0e-15);
-    testIntegration<double, 3>(1.0e-15);
-    testIntegration<double, 4>(1.0e-15);
-    testIntegration<double, 5>(1.0e-15);
-    testIntegration<double, 6>(1.0e-15);
-    testIntegration<double, 7>(1.0e-15);
-    testIntegration<double, 8>(1.0e-15);
-    testIntegration<double, 9>(1.0e-15);
-    testIntegration<double, 10>(1.0e-15);
+    constexpr double TOL = 6.0e-14;
+    testIntegration<double, 2>(TOL);
+    testIntegration<double, 3>(TOL);
+    testIntegration<double, 4>(TOL);
+    testIntegration<double, 5>(TOL);
+    testIntegration<double, 6>(TOL);
+    testIntegration<double, 7>(TOL);
+    testIntegration<double, 8>(TOL);
+    testIntegration<double, 9>(TOL);
+    testIntegration<double, 10>(TOL);
 
-    testIntegration<long double, 2>(1.0e-18l);
-    testIntegration<long double, 3>(1.0e-18l);
-    testIntegration<long double, 4>(1.0e-18l);
-    testIntegration<long double, 5>(1.0e-18l);
-    testIntegration<long double, 6>(1.0e-18l);
-    testIntegration<long double, 7>(1.0e-18l);
-    testIntegration<long double, 8>(1.0e-18l);
-    testIntegration<long double, 9>(1.0e-18l);
-    testIntegration<long double, 10>(1.0e-18l);
+
+    constexpr long double TOLL = 5.0e-17l;
+    testIntegration<long double, 2>(TOLL);
+    testIntegration<long double, 3>(TOLL);
+    testIntegration<long double, 4>(TOLL);
+    testIntegration<long double, 5>(TOLL);
+    testIntegration<long double, 6>(TOLL);
+    testIntegration<long double, 7>(TOLL);
+    testIntegration<long double, 8>(TOLL);
+    testIntegration<long double, 9>(TOLL);
+    testIntegration<long double, 10>(TOLL);
 }
 
 template<typename T, size_t order>
@@ -84,7 +87,7 @@ void testArithmetic(T tol) {
    using spline6 = myspline::myspline<T, 2*order>;
    using spline0 = myspline::myspline<T, 0>;
    using spline1 = myspline::myspline<T, order-2>;
-   const std::vector<T> grid{-3.0l, -2.5l, -1.5l, -1.0l, 0.0l, 0.5l, 1.5l, 2.5l, 3.5l, 4.0l};
+   const std::vector<T> grid{-7.0l,-6.85l,  -6.55l, -6.3l, -6.0l, -5.75l, -5.53l, -5.2l, -4.75l, -4.5l, -3.0l, -2.5l, -1.5l, -1.0l, 0.0l, 0.5l, 1.5l, 2.5l, 3.5l, 4.0l, 4.35l, 4.55l, 4.95l, 5.4l, 5.7l, 6.1l, 6.35l, 6.5l, 6.85l, 7.0l};
    const std::vector<spline> splines = getSplines<T, order>(grid);
    const spline0 one = getOne(grid);
    for (const auto &s: splines) {
@@ -129,24 +132,25 @@ void testArithmetic(T tol) {
 
 BOOST_AUTO_TEST_CASE (TestArithmetic)
 {
-    testArithmetic<double, 2>(1.0e-15);
-    testArithmetic<double, 3>(1.0e-15);
-    testArithmetic<double, 4>(1.0e-15);
-    testArithmetic<double, 5>(1.0e-15);
-    testArithmetic<double, 6>(1.0e-15);
-    testArithmetic<double, 7>(1.0e-15);
-    testArithmetic<double, 8>(1.0e-15);
-    testArithmetic<double, 9>(1.0e-15);
-    testArithmetic<double, 10>(1.0e-15);
+    constexpr double TOL = 1.0e-15;
+    testArithmetic<double, 2>(TOL);
+    testArithmetic<double, 3>(TOL);
+    testArithmetic<double, 4>(TOL);
+    testArithmetic<double, 5>(TOL);
+    testArithmetic<double, 6>(TOL);
+    testArithmetic<double, 7>(TOL);
+    testArithmetic<double, 8>(TOL);
+    testArithmetic<double, 9>(TOL);
+    testArithmetic<double, 10>(TOL);
 
-
-    testArithmetic<long double, 2>(1.0e-18l);
-    testArithmetic<long double, 3>(1.0e-18l);
-    testArithmetic<long double, 4>(1.0e-18l);
-    testArithmetic<long double, 5>(1.0e-18l);
-    testArithmetic<long double, 6>(1.0e-18l);
-    testArithmetic<long double, 7>(1.0e-18l);
-    testArithmetic<long double, 8>(1.0e-18l);
-    testArithmetic<long double, 9>(1.0e-18l);
-    testArithmetic<long double, 10>(1.0e-18l);
+    constexpr long double TOLL = 1.0e-18l;
+    testArithmetic<long double, 2>(TOLL);
+    testArithmetic<long double, 3>(TOLL);
+    testArithmetic<long double, 4>(TOLL);
+    testArithmetic<long double, 5>(TOLL);
+    testArithmetic<long double, 6>(TOLL);
+    testArithmetic<long double, 7>(TOLL);
+    testArithmetic<long double, 8>(TOLL);
+    testArithmetic<long double, 9>(TOLL);
+    testArithmetic<long double, 10>(TOLL);
 }
