@@ -4,10 +4,10 @@
 #include <spline-template.h>
 
 
-template<typename T>
-std::vector<myspline::myspline<T, 3>> getSplines(const std::vector<T> &grid) {
-   std::vector<myspline::myspline<T, 3>> splines;
-   for(size_t i = 0; i + 4 < grid.size(); i++) splines.push_back(myspline::generateBspline<T, 4>(grid, i));
+template<typename T, size_t order>
+std::vector<myspline::myspline<T, order>> getSplines(const std::vector<T> &grid) {
+   std::vector<myspline::myspline<T, order>> splines;
+   for(size_t i = 0; i + order + 1 < grid.size(); i++) splines.push_back(myspline::generateBspline<T, order + 1>(grid, i));
    return splines;
 }
 
@@ -20,12 +20,12 @@ myspline::myspline<T,0 > getOne(const std::vector<T> &grid) {
 
 
 
-template<typename T>
+template<typename T, size_t order>
 void testIntegration(T tol) {
-   using spline = myspline::myspline<T, 3>;
+   using spline = myspline::myspline<T, order>;
    using spline0 = myspline::myspline<T, 0>;
    const std::vector<T> grid{-3.0l, -2.5l, -1.5l, -1.0l, 0.0l, 0.5l, 1.5l, 2.5l, 3.5l, 4.0l};
-   const std::vector<spline> splines = getSplines(grid);
+   const std::vector<spline> splines = getSplines<T, order>(grid);
    const spline0 one = getOne(grid);
    for (const auto &s1:splines) {
        for (const auto &s2: splines) {
@@ -56,18 +56,36 @@ void testIntegration(T tol) {
 
 BOOST_AUTO_TEST_CASE (TestIntegration)
 {
-    testIntegration<double>(1.0e-15);
-    testIntegration<long double>(1.0e-18l);
+    testIntegration<double, 2>(3.0e-15);
+    testIntegration<double, 3>(1.0e-15);
+    testIntegration<double, 4>(1.0e-15);
+    testIntegration<double, 5>(1.0e-15);
+    testIntegration<double, 6>(1.0e-15);
+    testIntegration<double, 7>(1.0e-15);
+    testIntegration<double, 8>(1.0e-15);
+    testIntegration<double, 9>(1.0e-15);
+    testIntegration<double, 10>(1.0e-15);
+
+    testIntegration<long double, 2>(1.0e-18l);
+    testIntegration<long double, 3>(1.0e-18l);
+    testIntegration<long double, 4>(1.0e-18l);
+    testIntegration<long double, 5>(1.0e-18l);
+    testIntegration<long double, 6>(1.0e-18l);
+    testIntegration<long double, 7>(1.0e-18l);
+    testIntegration<long double, 8>(1.0e-18l);
+    testIntegration<long double, 9>(1.0e-18l);
+    testIntegration<long double, 10>(1.0e-18l);
 }
 
-template<typename T>
+template<typename T, size_t order>
 void testArithmetic(T tol) {
-   using spline = myspline::myspline<T, 3>;
-   using spline6 = myspline::myspline<T, 6>;
+   static_assert(order >= 2, "For this test, order must be at least 2");
+   using spline = myspline::myspline<T, order>;
+   using spline6 = myspline::myspline<T, 2*order>;
    using spline0 = myspline::myspline<T, 0>;
-   using spline1 = myspline::myspline<T, 1>;
+   using spline1 = myspline::myspline<T, order-2>;
    const std::vector<T> grid{-3.0l, -2.5l, -1.5l, -1.0l, 0.0l, 0.5l, 1.5l, 2.5l, 3.5l, 4.0l};
-   const std::vector<spline> splines = getSplines(grid);
+   const std::vector<spline> splines = getSplines<T, order>(grid);
    const spline0 one = getOne(grid);
    for (const auto &s: splines) {
        spline s2 = s * static_cast<T>(2);
@@ -111,6 +129,24 @@ void testArithmetic(T tol) {
 
 BOOST_AUTO_TEST_CASE (TestArithmetic)
 {
-    testArithmetic<double>(1.0e-15);
-    testArithmetic<long double>(1.0e-18l);
+    testArithmetic<double, 2>(1.0e-15);
+    testArithmetic<double, 3>(1.0e-15);
+    testArithmetic<double, 4>(1.0e-15);
+    testArithmetic<double, 5>(1.0e-15);
+    testArithmetic<double, 6>(1.0e-15);
+    testArithmetic<double, 7>(1.0e-15);
+    testArithmetic<double, 8>(1.0e-15);
+    testArithmetic<double, 9>(1.0e-15);
+    testArithmetic<double, 10>(1.0e-15);
+
+
+    testArithmetic<long double, 2>(1.0e-18l);
+    testArithmetic<long double, 3>(1.0e-18l);
+    testArithmetic<long double, 4>(1.0e-18l);
+    testArithmetic<long double, 5>(1.0e-18l);
+    testArithmetic<long double, 6>(1.0e-18l);
+    testArithmetic<long double, 7>(1.0e-18l);
+    testArithmetic<long double, 8>(1.0e-18l);
+    testArithmetic<long double, 9>(1.0e-18l);
+    testArithmetic<long double, 10>(1.0e-18l);
 }
