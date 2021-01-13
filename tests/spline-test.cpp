@@ -34,18 +34,18 @@ void testIntegration(T tol) {
            BOOST_CHECK_SMALL(myspline::overlap<T>(s1, s2)- myspline::overlap<T>(one, s1*s2), tol);
            BOOST_CHECK_SMALL(myspline::overlap<T>(s1, s2.timesx())- myspline::integrate_x<T>(s1, s2), tol);
            BOOST_CHECK_SMALL(myspline::overlap<T>(s1.timesx(), s2)- myspline::integrate_x<T>(s1, s2), tol);
-           BOOST_CHECK_SMALL(myspline::overlap<T>(s1, s2.timesx().timesx())- myspline::integrate_x2<T>(s1, s2), tol);
-           BOOST_CHECK_SMALL(myspline::overlap<T>(s1.timesx(), s2.timesx())- myspline::integrate_x2<T>(s1, s2), tol);
-           BOOST_CHECK_SMALL(myspline::overlap<T>(s1.timesx().timesx(), s2)- myspline::integrate_x2<T>(s1, s2), tol);
+           BOOST_CHECK_SMALL(myspline::overlap<T>(s1, s2.timesx().timesx())- myspline::integrate_x2<T>(s1, s2), static_cast<T>(5) * tol);
+           BOOST_CHECK_SMALL(myspline::overlap<T>(s1.timesx(), s2.timesx())- myspline::integrate_x2<T>(s1, s2), static_cast<T>(5) * tol);
+           BOOST_CHECK_SMALL(myspline::overlap<T>(s1.timesx().timesx(), s2)- myspline::integrate_x2<T>(s1, s2), static_cast<T>(5) * tol);
            BOOST_CHECK_SMALL(myspline::overlap<T>(s1, s2.dx())- myspline::integrate_dx<T>(s1, s2), tol);
            BOOST_CHECK_SMALL(myspline::overlap<T>(s1.timesx(), s2.dx())- myspline::integrate_x_dx<T>(s1, s2), tol);
            BOOST_CHECK_SMALL(myspline::overlap<T>(s1, s2.dx().dx())- myspline::integrate_dx2<T>(s1, s2), tol);
            BOOST_CHECK_SMALL(myspline::overlap<T>(s1, s2dx2)- myspline::integrate_dx2<T>(s1, s2), tol);
-           BOOST_CHECK_SMALL(myspline::overlap<T>(s1.timesx(), s2.dx().dx())- myspline::integrate_x_dx2<T>(s1, s2), tol);
-           BOOST_CHECK_SMALL(myspline::overlap<T>(s1, s2.dx().dx().timesx())- myspline::integrate_x_dx2<T>(s1, s2), tol);
-           BOOST_CHECK_SMALL(myspline::overlap<T>(s1.timesx().timesx(), s2.dx().dx())- myspline::integrate_x2_dx2<T>(s1, s2), tol);
-           BOOST_CHECK_SMALL(myspline::overlap<T>(s1, s2.dx().dx().timesx().timesx())- myspline::integrate_x2_dx2<T>(s1, s2), tol);
-           BOOST_CHECK_SMALL(myspline::overlap<T>(s1, s2dx2.timesx().timesx())- myspline::integrate_x2_dx2<T>(s1, s2), tol);
+           BOOST_CHECK_SMALL(myspline::overlap<T>(s1.timesx(), s2.dx().dx())- myspline::integrate_x_dx2<T>(s1, s2), static_cast<T>(11) * tol);
+           BOOST_CHECK_SMALL(myspline::overlap<T>(s1, s2.dx().dx().timesx())- myspline::integrate_x_dx2<T>(s1, s2), static_cast<T>(8) * tol);
+           BOOST_CHECK_SMALL(myspline::overlap<T>(s1.timesx().timesx(), s2.dx().dx())- myspline::integrate_x2_dx2<T>(s1, s2), static_cast<T>(60) * tol);
+           BOOST_CHECK_SMALL(myspline::overlap<T>(s1, s2.dx().dx().timesx().timesx())- myspline::integrate_x2_dx2<T>(s1, s2), static_cast<T>(60) * tol);
+           BOOST_CHECK_SMALL(myspline::overlap<T>(s1, s2dx2.timesx().timesx())- myspline::integrate_x2_dx2<T>(s1, s2), static_cast<T>(60) * tol);
        }
        spline s1_inv_inv = s1.invert().invert();
        BOOST_CHECK_SMALL(myspline::overlap<T>(s1 - s1_inv_inv, s1 - s1_inv_inv), tol);
@@ -56,7 +56,7 @@ void testIntegration(T tol) {
 
 BOOST_AUTO_TEST_CASE (TestIntegration)
 {
-    constexpr double TOL = 6.0e-14;
+    constexpr double TOL = 1.0e-15;
     testIntegration<double, 2>(TOL);
     testIntegration<double, 3>(TOL);
     testIntegration<double, 4>(TOL);
@@ -68,7 +68,7 @@ BOOST_AUTO_TEST_CASE (TestIntegration)
     testIntegration<double, 10>(TOL);
 
 
-    constexpr long double TOLL = 5.0e-17l;
+    constexpr long double TOLL = 1.0e-18l;
     testIntegration<long double, 2>(TOLL);
     testIntegration<long double, 3>(TOLL);
     testIntegration<long double, 4>(TOLL);
