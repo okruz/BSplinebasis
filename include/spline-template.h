@@ -360,7 +360,7 @@ class myspline {
            internal::findOverlappingIntervals(*this, a, startindex1, startindex2, nintervals);
            if (nintervals == 0) return myspline<T, NEW_ORDER>(); // No overlap
 
-           std::vector<std::array<T,NEW_ARRAY_SIZE>> new_coefficients(nintervals);
+           std::vector<std::array<T,NEW_ARRAY_SIZE>> new_coefficients(nintervals, make_array<T,NEW_ARRAY_SIZE>(static_cast<T>(0)));
            std::vector<T> new_intervals(nintervals+1);
 
            new_intervals[0]= _intervals[startindex1];

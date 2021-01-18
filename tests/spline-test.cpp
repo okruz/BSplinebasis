@@ -110,7 +110,7 @@ void testArithmetic(T tol) {
        spline1 sdx22 = s.dx2();
        spline sdx0 = s.template dx<0>();
 
-       for(T x = -3.0L; x <= 4.0L; x+= 0.01L) {
+       for(T x = s.start(); x <= s.end(); x+= 0.01L) {
            BOOST_CHECK_SMALL(sprod(x) - s(x) * s(x), tol); // Tests * operator
            BOOST_CHECK_SMALL(s2(x) - static_cast<T>(2) * s(x), tol); // Tests * operator
            BOOST_CHECK_SMALL(s22(x) - static_cast<T>(2) * s(x), tol); // Tests *= operator
