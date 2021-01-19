@@ -75,12 +75,15 @@ std::array<T, size> make_array(T val) {
 template<typename T, size_t sizea, size_t sizeb>
 std::array<T, std::max(sizea, sizeb)> add(const std::array<T, sizea> &a, const std::array<T, sizeb> &b) {
     static constexpr size_t NEW_ARRAY_SIZE = std::max(sizea, sizeb);
-    std::array<T, NEW_ARRAY_SIZE> ret = make_array<T, NEW_ARRAY_SIZE> (static_cast<T>(0));
-    for(size_t i = 0; i < NEW_ARRAY_SIZE; i++) {
-        if (i < sizea) ret[i] += a[i];
-        if (i < sizeb) ret[i] += b[i];
+    if constexpr (sizeb > sizea){
+        return add(b, a);
+    } else {
+        std::array<T, NEW_ARRAY_SIZE> ret = a;
+        for(size_t i = 0; i < sizeb; i++) {
+            ret[i] += b[i];
+        }
+        return ret;
     }
-    return ret;
 };
 
 /*!
