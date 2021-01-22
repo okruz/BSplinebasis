@@ -585,12 +585,10 @@ class myspline {
                for (size_t ii = 0; ii < _coefficients.size(); ii++) {
                    auto &nc = ncoeffs[ii];
                    const auto &c = _coefficients[ii];
-                   if (c.size() > n) {
-                       for (size_t i = n; i < c.size(); i++) {
-                           size_t faculty = 1;
-                           for(size_t j = 0; j < n; j++) faculty *= i-j;
-                           nc[i-n] = faculty * c[i];
-                       }
+                   for (size_t i = n; i < c.size(); i++) {
+                       size_t faculty = 1;
+                       for(size_t j = 0; j < n; j++) faculty *= i-j;
+                       nc[i-n] = faculty * c[i];
                    }
                }
                return myspline<T, NEW_ORDER>(_intervals, std::move(ncoeffs));
