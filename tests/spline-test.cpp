@@ -47,11 +47,17 @@ void testIntegration(T tol) {
            BOOST_CHECK_SMALL(myspline::overlap<T>(s1, s2.dx().dx().timesx().timesx())- myspline::integrate_x2_dx2<T>(s1, s2), static_cast<T>(60) * tol);
            BOOST_CHECK_SMALL(myspline::overlap<T>(s1, s2dx2.timesx().timesx())- myspline::integrate_x2_dx2<T>(s1, s2), static_cast<T>(60) * tol);
        }
+
        spline s1_inv_inv = s1.invert().invert();
        BOOST_CHECK_SMALL(myspline::overlap<T>(s1 - s1_inv_inv, s1 - s1_inv_inv), tol);
+
+       auto s1_d_order = s1.template dx<order>();
+       BOOST_TEST(!s1_d_order.isZero());
+
        auto s1_d_orderp1 = s1.template dx<order + 1>();
        BOOST_CHECK_SMALL(myspline::integrate<T>(s1_d_orderp1), tol);
        BOOST_TEST(s1_d_orderp1.isZero());
+
        auto s1_d_orderp2 = s1.template dx<order + 2>();
        BOOST_CHECK_SMALL(myspline::integrate<T>(s1_d_orderp2), tol);
        BOOST_TEST(s1_d_orderp2.isZero());
