@@ -1,7 +1,7 @@
 #define BOOST_TEST_MODULE SplineTest
 #include <boost/test/included/unit_test.hpp>
 #include <boost/test/tools/floating_point_comparison.hpp>
-#include <spline-template.h>
+#include <spline-analytical-integration.h>
 
 
 template<typename T, size_t order>

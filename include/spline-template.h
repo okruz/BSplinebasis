@@ -15,7 +15,9 @@
  *   - A pathway must exist, such that integer values of type T can be constructed via static_cast<T>(int) (e. g. via a constructor taking an int).
  * BSplines can be generated via the method generateBspline(...).
  * 
- * All methods accessing two splines assume that these splines are defined on the same grid. This may also cause problems when splines are constructed by adding up
+ * All methods accessing two splines assume that these splines are defined on the same grid (i.e. that
+ * both splines have the same interval boundaries within the intersection of their respective supports).
+ * This may also cause problems when splines are constructed by adding up
  * multiple splines. To be safe, make sure that the supports of two splines being added overlap at least in one grid point.
  *
  *
@@ -487,28 +489,6 @@ class myspline {
 
       // ################################### Spline transformations ###########################################################
 
-      /*!
-       * Returns a spline corresponding to this spline on the subdomain [a,b] \\in [x0 ,x1], being zero everywhere else.
-       * a is the smallest gridpoint >= x0 and b the largest grid point <= x1.
-       *
-       * @param x0 Beginning of the requested support.
-       * @param x1 End of the requested support.
-       * @deprecated This method may be removed in the future.
-       */
-       [[deprecated]]
-       myspline<T, order> restrictSupport(const T& x0, const T& x1) const {
-           std::vector<std::array<T, ARRAY_SIZE>> ncoeffs;
-           std::vector<T> nintervals;
-           for (size_t i = 0; i + 1 < _intervals.size(); i++) {
-               if(_intervals[i] >= x0 && _intervals[i+1] <= x1) {
-                   nintervals.push_back(_intervals[i]);
-                   if(i+2 >= _intervals.size() || _intervals[i+2] > x1) nintervals.push_back(_intervals[i+1]);
-                   ncoeffs.push_back(_coefficients[i]);
-               }
-           }
-           return myspline<T,order>(std::move(nintervals), std::move(ncoeffs));
-       };
-
 
       /*!
        * Returns a spline g(x) = x f(x), where f(x) is this spline.
@@ -692,241 +672,7 @@ void findOverlappingIntervals(const myspline<T, order1> &m1, const myspline<T, o
 };
 
 
-/*!
- * Performs an integral over splines m1 and m2 on one interval. The type of the integral is defined by the integration function f.
- *
- * @param f Function defining the type of integral
- * @param coeffsa First spline's coefficients on the interval of interest.
- * @param coeffsb Second spline's coefficients on the interval of interest.
- * @param x0 Beginning of the interval.
- * @param x1 End of the interval.
- * @tparam T Datatype of both splines.
- * @tparam F Type of Function object f.
- * @tparam sizea Number of coefficients per interval for the first spline.
- * @tparam sizeb Number of coefficients per interval for the second spline.
- */
-template<typename T, typename F, size_t sizea, size_t sizeb>
-T integrateInterval_analytically(F f, const std::array<T, sizea> &coeffsa, const std::array<T, sizeb> &coeffsb, const T& x0, const T& x1) {
-    T result = static_cast<T>(0);;
-    const T dxhalf = (x1-x0)/static_cast<T>(2);
-    const T xm = (x1 + x0) / static_cast<T>(2);
-    for (size_t i = 0; i < sizea; i++) {
-        for(size_t j =0;j < sizeb; j++) {
-            result += f(i, j,coeffsa[i], coeffsb[j], dxhalf, xm);
-        }
-    }
-    return result;
-}; 
-
-
-/*!
- * Performs an integral over the common support of splines m1 and m2. The type of the integral is defined by the integration function f.
- *
- * @param f Function defining the type of the integral.
- * @param m1 First spline.
- * @param m2 Second spline.
- * @tparam T Datatype of both splines.
- * @tparam order1 Order of the first spline.
- * @tparam order2 Order of the second spline.
- */
-template<typename T, typename F, size_t order1, size_t order2>
-T helper_analytic_integration(F f, const myspline<T, order1> &m1, const myspline<T, order2> &m2){
-    size_t startindex1, startindex2, nintervals;
-    findOverlappingIntervals(m1, m2, startindex1, startindex2, nintervals);
-
-    if(nintervals == 0) return static_cast<T>(0); // no overlap
-
-    T result = static_cast<T>(0);
-
-    for (size_t interv = 0; interv < nintervals; interv++) {
-        result += integrateInterval_analytically<T, F, order1+1, order2 + 1>(f, m1.getCoefficients()[startindex1 + interv],
-            m2.getCoefficients()[startindex2+interv],
-            m1.getIntervals()[startindex1+interv],
-            m1.getIntervals()[startindex1+interv+1]);
-    }
-    return result;   
-};
-
-}; // end namespace internal
-
-/*!
- * Returns the integral \\int\\limits_{-\\infty}^{\\infty} dx m(x). Calculated analytically.
- * 
- * @param m Spline m(x) to be integrated.
- * @tparam T Datatype of the spline m.
- * @tparam order Order of the spline m.
- */
-template<typename T, size_t order>
-T integrate(const myspline<T, order> &m) {
-    T retval = static_cast<T>(0);
-    const auto &ints = m.getIntervals();
-    for(size_t i = 0; i +1 < ints.size(); i++) {
-        const T &start = ints[i];
-        const T &end = ints[i+1];
-        T pot = (end-start)/static_cast<T>(2); // power of dxhalf, initialised to dxhalf^1
-        const T dxhalf_squared = pot * pot;
-        const auto &coeffs = m.getCoefficients()[i];
-        for(size_t index = 0; index < order + 1; index += 2) {
-            retval += static_cast<T>(2) * coeffs[index] * pot / static_cast<T>(index + 1);
-            pot *= dxhalf_squared;
-        }
-    }
-    return retval;
-};
-
-/*!
- * Returns the integral \\int\\limits_{-\\infty}^{\\infty} dx m1(x) m2(x). Calculated analytically.
- * 
- * @param m1 First spline.
- * @param m2 Second spline.
- * @tparam T Datatype of both splines.
- * @tparam order1 Order of the first spline m1.
- * @tparam order2 Order of the second spline m2.
- */
-template<typename T, size_t order1, size_t order2>
-T overlap(const myspline<T, order1> &m1, const myspline<T, order2> &m2) {
-    static constexpr auto f = [](size_t i, size_t j, const T& coeffa, const T& coeffb, const T& dxhalf, [[maybe_unused]] const T& xm) {
-        if ((i + j +1) % 2 == 0) return static_cast<T>(0);
-        return static_cast<T>(2) * coeffa * coeffb * pow<T>(dxhalf, i + j + 1) / static_cast<T>(i+j+1);
-    };
-    return internal::helper_analytic_integration(f, m1, m2);
-};
-
-
-/*!
- * Returns the integral \\int\\limits_{-\\infty}^{\\infty} dx m1(x) x m2(x). Calculated analytically.
- * 
- * @param m1 First spline.
- * @param m2 Second spline.
- * @tparam T Datatype of both splines.
- * @tparam order1 Order of the first spline m1.
- * @tparam order2 Order of the second spline m2.
- */
-template<typename T, size_t order1, size_t order2>
-T integrate_x(const myspline<T, order1> &m1, const myspline<T, order2> &m2) {
-    static constexpr auto f = [](size_t i, size_t j, const T& coeffa, const T& coeffb, const T& dxhalf, const T& xm) {
-        if ((i + j + 1) % 2 == 1) return static_cast<T>(2) * coeffa * coeffb * xm * pow<T>(dxhalf, i +j + 1)/static_cast<T>(i + j +1);
-        else return static_cast<T>(2) * coeffa * coeffb * pow<T>(dxhalf, i + j + 2)/static_cast<T>(i+j+2);
-    };
-    return internal::helper_analytic_integration(f, m1, m2);
-};
-
-
-/*!
- * Returns the integral \\int\\limits_{-\\infty}^{\\infty} dx m1(x) x^2 m2(x). Calculated analytically.
- * 
- * @param m1 First spline.
- * @param m2 Second spline.
- * @tparam T Datatype of both splines.
- * @tparam order1 Order of the first spline m1.
- * @tparam order2 Order of the second spline m2.
- */
-template<typename T, size_t order1, size_t order2>
-T integrate_x2(const myspline<T, order1> &m1, const myspline<T, order2> &m2) {
-    static constexpr auto f = [](size_t i, size_t j,const T& coeffa, const T& coeffb, const T& dxhalf, const T& xm) {
-        if ((i + j + 2) % 2  == 1) return static_cast<T>(4)*coeffa * coeffb * xm * pow<T>(dxhalf, i + j + 2)/static_cast<T>(i+j+2);
-        else return static_cast<T>(2) * coeffa * coeffb * pow<T>(dxhalf,i+j+1) * (pow<T>(dxhalf, 2)/static_cast<T>(i+j+3) + pow<T>(xm,2)/static_cast<T>(i+j+1));
-    };
-    return internal::helper_analytic_integration(f, m1, m2);
-};
-
-
-/*!
- * Returns the integral \\int\\limits_{-\\infty}^{\\infty} dx m1(x) \frac{\partial}{\partial x} m2(x). Calculated analytically. Assumes m2(x) is continous.
- * 
- * @param m1 First spline.
- * @param m2 Second spline.
- * @tparam T Datatype of both splines.
- * @tparam order1 Order of the first spline m1.
- * @tparam order2 Order of the second spline m2.
- */
-template<typename T, size_t order1, size_t order2>
-T integrate_dx(const myspline<T, order1> &m1, const myspline<T, order2> &m2) {
-    static constexpr auto f = [](size_t i, size_t j, const T& coeffa, const T& coeffb, const T& dxhalf, [[maybe_unused]] const T& xm) {
-        if (j == 0 || (i+j) % 2 == 0) return static_cast<T>(0);
-        else return static_cast<T>(2* j) * coeffa * coeffb * pow<T>(dxhalf, i+j) / static_cast<T>(i+j);
-    };
-    return internal::helper_analytic_integration(f, m1, m2);
-};
-
-
-/*!
- * Returns the integral \\int\\limits_{-\\infty}^{\\infty} dx x m1(x) \frac{\partial}{\partial x} m2(x). Calculated analytically. Assumes m2(x) is continous.
- * 
- * @param m1 First spline.
- * @param m2 Second spline.
- * @tparam T Datatype of both splines.
- * @tparam order1 Order of the first spline m1.
- * @tparam order2 Order of the second spline m2.
- */
-template<typename T, size_t order1, size_t order2>
-T integrate_x_dx(const myspline<T, order1> &m1, const myspline<T, order2> &m2) {
-    static constexpr auto f = [](size_t i, size_t j, const T& coeffa, const T& coeffb, const T& dxhalf, const T& xm) {
-        if (j == 0) return static_cast<T>(0);
-        else if ((i+j) % 2 == 0) return static_cast<T>(2 * j ) * coeffa * coeffb  * pow<T>(dxhalf, i+j+1) / static_cast<T>(i+j+1);
-        else return static_cast<T>(2 * j) * xm * coeffa * coeffb  * pow<T>(dxhalf, i+j) / static_cast<T>(i+j);
-    };
-    return internal::helper_analytic_integration(f, m1, m2);
-};
-
-
-/*!
- * Returns the integral \\int\\limits_{-\\infty}^{\\infty} dx m1(x) \frac{\partial^2}{\partial x^2} m2(x). Calculated analytically. Assumes m2(x) is at least once continously differentiable.
-
- * @param m1 First spline.
- * @param m2 Second spline.
- * @tparam T Datatype of both splines.
- * @tparam order1 Order of the first spline m1.
- * @tparam order2 Order of the second spline m2.
- */
-template<typename T, size_t order1, size_t order2>
-T integrate_dx2(const myspline<T, order1> &m1, const myspline<T, order2> &m2) {
-    static constexpr auto f = [](size_t i, size_t j, const T& coeffa, const T& coeffb, const T& dxhalf, [[maybe_unused]] const T& xm) {
-        if (j < 2 || (i + j) % 2 == 1) return static_cast<T>(0);
-        return static_cast<T>(2 * j * (j-1)) * coeffa * coeffb * pow<T>(dxhalf, i+j-1) / static_cast<T>(i+j-1);
-    };
-    return internal::helper_analytic_integration(f, m1, m2);
-}
-
-/*!
- * Returns the integral \\int\\limits_{-\\infty}^{\\infty} dx m1(x) x \frac{\partial^2}{\partial x^2} m2(x). Calculated analytically. Assumes m2(x) is at least once continously differentiable.
- *
- * @param m1 First spline.
- * @param m2 Second spline.
- * @tparam T Datatype of both splines.
- * @tparam order1 Order of the first spline m1.
- * @tparam order2 Order of the second spline m2.
- */
-template<typename T, size_t order1, size_t order2>
-T integrate_x_dx2(const myspline<T, order1> &m1, const myspline<T, order2> &m2) {
-    static constexpr auto f = [](size_t i, size_t j, const T& coeffa, const T& coeffb, const T& dxhalf, const T& xm) {
-        if (j < 2) return static_cast<T>(0);
-        else if ((i+j) % 2 == 1) return static_cast<T>(2 * j * (j-1)) * coeffa * coeffb * pow<T>(dxhalf, i + j) / static_cast<T>(i+j);
-        else return static_cast<T>(2 * j * (j-1)) * coeffa * coeffb * xm *  pow<T>(dxhalf, i + j -1)/static_cast<T>(i + j -1);
-    };
-    return internal::helper_analytic_integration(f, m1, m2);
-};
-
-
-/*!
- * Returns the integral \\int\\limits_{-\\infty}^{\\infty} dx m1(x) x^2 \frac{\partial^2}{\partial x^2} m2(x). Calculated analytically. Assumes m2(x) is at least once continously differentiable.
- *
- * @param m1 First spline.
- * @param m2 Second spline.
- * @tparam T Datatype of both splines.
- * @tparam order1 Order of the first spline m1.
- * @tparam order2 Order of the second spline m2.
- */
-template<typename T, size_t order1, size_t order2>
-T integrate_x2_dx2(const myspline<T, order1> &m1, const myspline<T, order2> &m2) {
-    static constexpr auto f = [](size_t i, size_t j, const T& coeffa, const T& coeffb, const T& dxhalf, const T& xm) {
-        if (j < 2) return static_cast<T>(0);
-        else if ((i+j) % 2 == 1) return static_cast<T>(4 * j * (j-1)) * xm * coeffa * coeffb * pow<T>(dxhalf, i + j) / static_cast<T>(i+j);
-        else return static_cast<T>(2 * j * (j-1)) * coeffa * coeffb * pow<T>(dxhalf, i + j - 1) * (dxhalf * dxhalf /static_cast<T>(i + j +1) + xm * xm /static_cast<T>(i + j -1));
-    };
-    return internal::helper_analytic_integration(f, m1, m2);
-};
-
+}; // end namespace myspline::internal
 
 /*!
  * Generates a Bspline of order k-1 at knot i relative to the grid given by knots.
@@ -969,36 +715,6 @@ myspline<T, k-1> generateBspline(const std::vector<T> &knots, size_t i){
         return ret;
     }
 };
-
-
-/*!
- * Converts a spline of datatype TI to datatype TO. There must be a conversion between the datatypes such that static_cast<TO>(TI) works.
- *
- * @param si Input spline.
- * @tparam TO Datatype of the output spline.
- * @tparam TI Datatype of the input spline.
- * @tparam order Order of both the input and output spline.
- * @deprecated This method may be removed in the future.
- */
-template<typename TO, typename TI, size_t order> 
-[[deprecated]]
-myspline<TO, order> convert(const myspline<TI, order> &si) {
-    const auto& intervI = si.getIntervals();
-    std::vector<TO> intervO;
-    intervO.reserve(intervI.size());
-    for (const auto &iI: intervI) {
-        intervO.push_back(static_cast<TO>(iI));
-    }
-
-    const auto& coeffsI = si.getCoefficients();
-    std::vector<std::array<TO, order +1>> coeffsO(coeffsI.size());
-    for (size_t i = 0; i < coeffsI.size(); i++) {
-        auto &clO = coeffsO[i];
-        const auto &clI = coeffsI[i];
-        for (size_t j = 0; j < order +1 ; j++) clO[j] = static_cast<TO>(clI[j]);
-    }
-    return myspline<TO, order>(std::move(intervO), std::move(coeffsO));
-}
 
 };
 #endif // MYSPLINE_H
