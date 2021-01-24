@@ -49,7 +49,6 @@ class myspline ;
 namespace internal {
 template<typename T, size_t order1, size_t order2>
 void findOverlappingIntervals(const myspline<T, order1> &m1, const myspline<T, order2> &m2, size_t &startindex1, size_t &startindex2, size_t &nintervals);
-};
 
 /*!
  * Creates an std::array<T, size> with all values set to val.
@@ -119,7 +118,7 @@ void makeuniquesorted(std::vector<T> &list) {
     auto ip = std::unique(list.begin(), list.end());
     list = std::vector<T>(list.begin(), ip);
 };
-
+}; // end namespace internal
 //####################################################### Beginning of defintion of myspline class ############################################################################################
 /*!
  * Spline class representing spline of datatype T and order order.
@@ -340,7 +339,7 @@ class myspline {
            // The case ordera == order should be handled by the default assignment operator which is automatically generated.
            static_assert(ordera < order, "The assignment operator is only defined if the order of the rhs spline is lower or equal to that of the lhs spline.");
         
-           std::vector<std::array<T, ARRAY_SIZE>> ncoefficients(a.getCoefficients().size(),  make_array<T,ARRAY_SIZE>(static_cast<T>(0)));//
+           std::vector<std::array<T, ARRAY_SIZE>> ncoefficients(a.getCoefficients().size(),  internal::make_array<T,ARRAY_SIZE>(static_cast<T>(0)));//
            for (size_t i = 0; i  < a.getCoefficients().size(); i++) {
                const auto &coeffsi = a.getCoefficients()[i];
                auto &ncoeffsi = ncoefficients[i];
@@ -365,7 +364,7 @@ class myspline {
            internal::findOverlappingIntervals(*this, a, startindex1, startindex2, nintervals);
            if (nintervals == 0) return myspline<T, NEW_ORDER>(); // No overlap
 
-           std::vector<std::array<T,NEW_ARRAY_SIZE>> new_coefficients(nintervals, make_array<T,NEW_ARRAY_SIZE>(static_cast<T>(0)));
+           std::vector<std::array<T,NEW_ARRAY_SIZE>> new_coefficients(nintervals, internal::make_array<T,NEW_ARRAY_SIZE>(static_cast<T>(0)));
            std::vector<T> new_intervals(nintervals+1);
 
            new_intervals[0]= _intervals[startindex1];
@@ -399,7 +398,7 @@ class myspline {
            std::vector<T> nintervals; nintervals.reserve(a.getIntervals().size() + _intervals.size());
            nintervals.insert(nintervals.end(), a.getIntervals().begin(), a.getIntervals().end());
            nintervals.insert(nintervals.end(), _intervals.begin(), _intervals.end());
-           makeuniquesorted(nintervals);
+           internal::makeuniquesorted(nintervals);
         
            std::vector<std::array<T, NEW_ARRAY_SIZE>> ncoefficients;
            if (nintervals.size() > 1) ncoefficients.reserve(nintervals.size() - 1);
@@ -412,13 +411,13 @@ class myspline {
                const bool aexists = (posa < a.getCoefficients().size());
 
                if (thisexists && ! aexists) {
-                   ncoefficients.push_back(changearraysize<T ,order +1, NEW_ARRAY_SIZE>(_coefficients[posthis]));
+                   ncoefficients.push_back(internal::changearraysize<T ,order +1, NEW_ARRAY_SIZE>(_coefficients[posthis]));
                } else if (aexists && ! thisexists) {
-                   ncoefficients.push_back(changearraysize<T, ordera + 1, NEW_ARRAY_SIZE>(a.getCoefficients()[posa]));
+                   ncoefficients.push_back(internal::changearraysize<T, ordera + 1, NEW_ARRAY_SIZE>(a.getCoefficients()[posa]));
                } else if (thisexists && aexists){
-                   ncoefficients.push_back(add<T, ordera + 1, order + 1>(a.getCoefficients()[posa], _coefficients[posthis]));
+                   ncoefficients.push_back(internal::add<T, ordera + 1, order + 1>(a.getCoefficients()[posa], _coefficients[posthis]));
                } else {
-                   ncoefficients.push_back(make_array<T, NEW_ARRAY_SIZE>(static_cast<T>(0)));
+                   ncoefficients.push_back(internal::make_array<T, NEW_ARRAY_SIZE>(static_cast<T>(0)));
                }
            }
            return myspline<T, NEW_ORDER> (std::move(nintervals), std::move(ncoefficients));
@@ -436,7 +435,7 @@ class myspline {
            std::vector<T> nintervals; nintervals.reserve(a.getIntervals().size() + _intervals.size());
            nintervals.insert(nintervals.end(), a.getIntervals().begin(), a.getIntervals().end());
            nintervals.insert(nintervals.end(), _intervals.begin(), _intervals.end());
-           makeuniquesorted(nintervals);
+           internal::makeuniquesorted(nintervals);
         
            std::vector<std::array<T, ARRAY_SIZE>> ncoefficients;
            if (nintervals.size() > 1) ncoefficients.reserve(nintervals.size() - 1);
@@ -451,11 +450,11 @@ class myspline {
                if (thisexists && ! aexists) {
                    ncoefficients.push_back(_coefficients[posthis]);
                } else if (aexists && ! thisexists) {
-                   ncoefficients.push_back(changearraysize<T, ordera + 1, ARRAY_SIZE>(a.getCoefficients()[posa]));
+                   ncoefficients.push_back(internal::changearraysize<T, ordera + 1, ARRAY_SIZE>(a.getCoefficients()[posa]));
                } else if (thisexists && aexists){
-                   ncoefficients.push_back(add<T, ordera + 1, ARRAY_SIZE>(a.getCoefficients()[posa], _coefficients[posthis]));
+                   ncoefficients.push_back(internal::add<T, ordera + 1, ARRAY_SIZE>(a.getCoefficients()[posa], _coefficients[posthis]));
                } else {
-                   ncoefficients.push_back(make_array<T, ARRAY_SIZE>(static_cast<T>(0)));
+                   ncoefficients.push_back(internal::make_array<T, ARRAY_SIZE>(static_cast<T>(0)));
                }
            }
            
@@ -494,7 +493,7 @@ class myspline {
        * Returns a spline g(x) = x f(x), where f(x) is this spline.
        */
        myspline<T, order + 1> timesx() const {
-           std::vector<std::array<T, ARRAY_SIZE + 1>> newcoeffs(_coefficients.size(), make_array<T, ARRAY_SIZE + 1>(static_cast<T>(0)));
+           std::vector<std::array<T, ARRAY_SIZE + 1>> newcoeffs(_coefficients.size(), internal::make_array<T, ARRAY_SIZE + 1>(static_cast<T>(0)));
            for (size_t i = 0; i+1 < _intervals.size(); i++) {
                const T xm = (_intervals[i+1] + _intervals[i])/static_cast<T>(2);
                const std::array<T, ARRAY_SIZE> &coeffs_old = _coefficients[i];
@@ -525,7 +524,7 @@ class myspline {
                 nintervals.push_back(-_intervals[i]);
            }
 
-           std::vector<std::array<T, ARRAY_SIZE>> ncoeffs(_coefficients.size(), make_array<T, ARRAY_SIZE>(static_cast<T>(0)));
+           std::vector<std::array<T, ARRAY_SIZE>> ncoeffs(_coefficients.size(), internal::make_array<T, ARRAY_SIZE>(static_cast<T>(0)));
            for (int i = int(_coefficients.size())-1; i >= 0; i--) {
                auto &newcoeffs = ncoeffs[int(_coefficients.size())-1 -i];
                const auto &oldcoeffs = _coefficients[i];
@@ -561,7 +560,7 @@ class myspline {
            else {
                static constexpr size_t  NEW_ORDER = orderdx(order, n);
                static constexpr size_t NEW_ARRAY_SIZE = NEW_ORDER + 1;
-               std::vector<std::array<T, NEW_ARRAY_SIZE>> ncoeffs(_coefficients.size(), make_array<T, NEW_ARRAY_SIZE>(static_cast<T>(0)));
+               std::vector<std::array<T, NEW_ARRAY_SIZE>> ncoeffs(_coefficients.size(), internal::make_array<T, NEW_ARRAY_SIZE>(static_cast<T>(0)));
                for (size_t ii = 0; ii < _coefficients.size(); ii++) {
                    auto &nc = ncoeffs[ii];
                    const auto &c = _coefficients[ii];
@@ -604,29 +603,6 @@ template<typename T, size_t order>
 inline myspline<T, order> operator*(const T& d, const myspline<T, order> &b) {
     return b * d;
 };
-
-
-/*!
- * Efficient integer power for arbitrary type.
- *
- * @param a Basis.
- * @param n Integer exponent.
- * @tparam T Datatype.
- */
-template<typename T>
-T pow(T a, size_t n) {
-    size_t nc = 1;
-    T ret = static_cast<T>(1);
-    while (nc <= n) {
-        if ((nc & n) == nc) {
-            ret *= a;
-        }
-        nc *= 2;
-        a *= a;
-    }
-    return ret;
-};
-
 
 
 /*!

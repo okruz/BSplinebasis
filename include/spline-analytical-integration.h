@@ -29,6 +29,28 @@
 namespace myspline {
 namespace internal {
 /*!
+ * Efficient integer power for arbitrary type.
+ *
+ * @param a Basis.
+ * @param n Integer exponent.
+ * @tparam T Datatype.
+ */
+template<typename T>
+T pow(T a, size_t n) {
+    size_t nc = 1;
+    T ret = static_cast<T>(1);
+    while (nc <= n) {
+        if ((nc & n) == nc) {
+            ret *= a;
+        }
+        nc *= 2;
+        a *= a;
+    }
+    return ret;
+};
+
+
+/*!
  * Performs an integral over splines m1 and m2 on one interval. The type of the integral is defined by the integration function f.
  *
  * @param f Function defining the type of integral
@@ -123,7 +145,7 @@ template<typename T, size_t order1, size_t order2>
 T overlap(const myspline<T, order1> &m1, const myspline<T, order2> &m2) {
     static constexpr auto f = [](size_t i, size_t j, const T& coeffa, const T& coeffb, const T& dxhalf, [[maybe_unused]] const T& xm) {
         if ((i + j +1) % 2 == 0) return static_cast<T>(0);
-        return static_cast<T>(2) * coeffa * coeffb * pow<T>(dxhalf, i + j + 1) / static_cast<T>(i+j+1);
+        return static_cast<T>(2) * coeffa * coeffb * internal::pow<T>(dxhalf, i + j + 1) / static_cast<T>(i+j+1);
     };
     return internal::helper_analytic_integration(f, m1, m2);
 };
@@ -141,8 +163,8 @@ T overlap(const myspline<T, order1> &m1, const myspline<T, order2> &m2) {
 template<typename T, size_t order1, size_t order2>
 T integrate_x(const myspline<T, order1> &m1, const myspline<T, order2> &m2) {
     static constexpr auto f = [](size_t i, size_t j, const T& coeffa, const T& coeffb, const T& dxhalf, const T& xm) {
-        if ((i + j + 1) % 2 == 1) return static_cast<T>(2) * coeffa * coeffb * xm * pow<T>(dxhalf, i +j + 1)/static_cast<T>(i + j +1);
-        else return static_cast<T>(2) * coeffa * coeffb * pow<T>(dxhalf, i + j + 2)/static_cast<T>(i+j+2);
+        if ((i + j + 1) % 2 == 1) return static_cast<T>(2) * coeffa * coeffb * xm * internal::pow<T>(dxhalf, i +j + 1)/static_cast<T>(i + j +1);
+        else return static_cast<T>(2) * coeffa * coeffb * internal::pow<T>(dxhalf, i + j + 2)/static_cast<T>(i+j+2);
     };
     return internal::helper_analytic_integration(f, m1, m2);
 };
@@ -160,8 +182,8 @@ T integrate_x(const myspline<T, order1> &m1, const myspline<T, order2> &m2) {
 template<typename T, size_t order1, size_t order2>
 T integrate_x2(const myspline<T, order1> &m1, const myspline<T, order2> &m2) {
     static constexpr auto f = [](size_t i, size_t j,const T& coeffa, const T& coeffb, const T& dxhalf, const T& xm) {
-        if ((i + j + 2) % 2  == 1) return static_cast<T>(4)*coeffa * coeffb * xm * pow<T>(dxhalf, i + j + 2)/static_cast<T>(i+j+2);
-        else return static_cast<T>(2) * coeffa * coeffb * pow<T>(dxhalf,i+j+1) * (pow<T>(dxhalf, 2)/static_cast<T>(i+j+3) + pow<T>(xm,2)/static_cast<T>(i+j+1));
+        if ((i + j + 2) % 2  == 1) return static_cast<T>(4)*coeffa * coeffb * xm * internal::pow<T>(dxhalf, i + j + 2)/static_cast<T>(i+j+2);
+        else return static_cast<T>(2) * coeffa * coeffb * internal::pow<T>(dxhalf,i+j+1) * (internal::pow<T>(dxhalf, 2)/static_cast<T>(i+j+3) + internal::pow<T>(xm,2)/static_cast<T>(i+j+1));
     };
     return internal::helper_analytic_integration(f, m1, m2);
 };
@@ -180,7 +202,7 @@ template<typename T, size_t order1, size_t order2>
 T integrate_dx(const myspline<T, order1> &m1, const myspline<T, order2> &m2) {
     static constexpr auto f = [](size_t i, size_t j, const T& coeffa, const T& coeffb, const T& dxhalf, [[maybe_unused]] const T& xm) {
         if (j == 0 || (i+j) % 2 == 0) return static_cast<T>(0);
-        else return static_cast<T>(2* j) * coeffa * coeffb * pow<T>(dxhalf, i+j) / static_cast<T>(i+j);
+        else return static_cast<T>(2* j) * coeffa * coeffb * internal::pow<T>(dxhalf, i+j) / static_cast<T>(i+j);
     };
     return internal::helper_analytic_integration(f, m1, m2);
 };
@@ -199,8 +221,8 @@ template<typename T, size_t order1, size_t order2>
 T integrate_x_dx(const myspline<T, order1> &m1, const myspline<T, order2> &m2) {
     static constexpr auto f = [](size_t i, size_t j, const T& coeffa, const T& coeffb, const T& dxhalf, const T& xm) {
         if (j == 0) return static_cast<T>(0);
-        else if ((i+j) % 2 == 0) return static_cast<T>(2 * j ) * coeffa * coeffb  * pow<T>(dxhalf, i+j+1) / static_cast<T>(i+j+1);
-        else return static_cast<T>(2 * j) * xm * coeffa * coeffb  * pow<T>(dxhalf, i+j) / static_cast<T>(i+j);
+        else if ((i+j) % 2 == 0) return static_cast<T>(2 * j ) * coeffa * coeffb  * internal::pow<T>(dxhalf, i+j+1) / static_cast<T>(i+j+1);
+        else return static_cast<T>(2 * j) * xm * coeffa * coeffb  * internal::pow<T>(dxhalf, i+j) / static_cast<T>(i+j);
     };
     return internal::helper_analytic_integration(f, m1, m2);
 };
@@ -219,7 +241,7 @@ template<typename T, size_t order1, size_t order2>
 T integrate_dx2(const myspline<T, order1> &m1, const myspline<T, order2> &m2) {
     static constexpr auto f = [](size_t i, size_t j, const T& coeffa, const T& coeffb, const T& dxhalf, [[maybe_unused]] const T& xm) {
         if (j < 2 || (i + j) % 2 == 1) return static_cast<T>(0);
-        return static_cast<T>(2 * j * (j-1)) * coeffa * coeffb * pow<T>(dxhalf, i+j-1) / static_cast<T>(i+j-1);
+        return static_cast<T>(2 * j * (j-1)) * coeffa * coeffb * internal::pow<T>(dxhalf, i+j-1) / static_cast<T>(i+j-1);
     };
     return internal::helper_analytic_integration(f, m1, m2);
 }
@@ -237,8 +259,8 @@ template<typename T, size_t order1, size_t order2>
 T integrate_x_dx2(const myspline<T, order1> &m1, const myspline<T, order2> &m2) {
     static constexpr auto f = [](size_t i, size_t j, const T& coeffa, const T& coeffb, const T& dxhalf, const T& xm) {
         if (j < 2) return static_cast<T>(0);
-        else if ((i+j) % 2 == 1) return static_cast<T>(2 * j * (j-1)) * coeffa * coeffb * pow<T>(dxhalf, i + j) / static_cast<T>(i+j);
-        else return static_cast<T>(2 * j * (j-1)) * coeffa * coeffb * xm *  pow<T>(dxhalf, i + j -1)/static_cast<T>(i + j -1);
+        else if ((i+j) % 2 == 1) return static_cast<T>(2 * j * (j-1)) * coeffa * coeffb * internal::pow<T>(dxhalf, i + j) / static_cast<T>(i+j);
+        else return static_cast<T>(2 * j * (j-1)) * coeffa * coeffb * xm *  internal::pow<T>(dxhalf, i + j -1)/static_cast<T>(i + j -1);
     };
     return internal::helper_analytic_integration(f, m1, m2);
 };
@@ -257,8 +279,8 @@ template<typename T, size_t order1, size_t order2>
 T integrate_x2_dx2(const myspline<T, order1> &m1, const myspline<T, order2> &m2) {
     static constexpr auto f = [](size_t i, size_t j, const T& coeffa, const T& coeffb, const T& dxhalf, const T& xm) {
         if (j < 2) return static_cast<T>(0);
-        else if ((i+j) % 2 == 1) return static_cast<T>(4 * j * (j-1)) * xm * coeffa * coeffb * pow<T>(dxhalf, i + j) / static_cast<T>(i+j);
-        else return static_cast<T>(2 * j * (j-1)) * coeffa * coeffb * pow<T>(dxhalf, i + j - 1) * (dxhalf * dxhalf /static_cast<T>(i + j +1) + xm * xm /static_cast<T>(i + j -1));
+        else if ((i+j) % 2 == 1) return static_cast<T>(4 * j * (j-1)) * xm * coeffa * coeffb * internal::pow<T>(dxhalf, i + j) / static_cast<T>(i+j);
+        else return static_cast<T>(2 * j * (j-1)) * coeffa * coeffb * internal::pow<T>(dxhalf, i + j - 1) * (dxhalf * dxhalf /static_cast<T>(i + j +1) + xm * xm /static_cast<T>(i + j -1));
     };
     return internal::helper_analytic_integration(f, m1, m2);
 };

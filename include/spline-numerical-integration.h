@@ -28,6 +28,7 @@
 namespace myspline {
 using namespace boost::math::quadrature;
 
+namespace internal {
 /*
  * Normally, for every evaluation of a spline, a binary search for the correct interval is necessary.
  * This method is defined in order to integrate every interval separately during the 1D integration, omitting the necessity for the binary search.
@@ -42,6 +43,8 @@ T evaluateInterval(const T& x, const std::array<T, ARRAY_SIZE> &coeffs, const T&
     }
     return result;
 };
+}; //end namespace internal
+
 
 /*!
  * Calculates the 1D integral \\int\\limits_{-\\infty}^{\\infty} dx m1(x) f(x) m2(x).
@@ -70,7 +73,7 @@ T integrate(const std::function<T(const T&)> &f, const myspline<T, order1> &m1, 
         const auto &c1 = m1.getCoefficients().at(startindex1 + interv);
         const auto &c2 = m2.getCoefficients().at(startindex2 + interv);
         const auto fwrap = [&c1, &c2, &xm, &f](const T &x) {
-            return f(x) * evaluateInterval(x, c1, xm) * evaluateInterval(x, c2, xm);
+            return f(x) * internal::evaluateInterval(x, c1, xm) * internal::evaluateInterval(x, c2, xm);
         };
         result += gauss<T, ordergl>::integrate(fwrap, xstart, xend);
     }
