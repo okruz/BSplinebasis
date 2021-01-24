@@ -36,6 +36,7 @@ template <typename T>
 using boundary = struct BOUNDARY<T>;
 
 
+namespace internal {
 /*!
  * Generates the default boundary conditions by setting as many derivatives to zero as needed, starting from the first derivative.
  *
@@ -64,6 +65,7 @@ constexpr size_t faculty_ratio(size_t exponent, size_t deriv) {
     for (size_t j = 1; j < deriv; j++) ret *= exponent -j;
     return ret;
 }
+}; // end namespace internal
 
 /*!
  * Interpolates the data given by x and y with a spline of order order. order-1 additional conditions are needed for a well defined problem. These can be supplied by fixing derivatives on the first and last node.
@@ -76,7 +78,7 @@ constexpr size_t faculty_ratio(size_t exponent, size_t deriv) {
  */
 template<typename T, size_t order>
 myspline<T, order> interpolate(const std::vector<T> &x, const std::vector<T> &y, 
-                             const std::array<boundary<T>, order-1> boundaries = defaultBoundaries<T,order>()) {
+                             const std::array<boundary<T>, order-1> boundaries = internal::defaultBoundaries<T,order>()) {
     static_assert(order >= 1, "Order may not be zero.");
     assert(x.size() >= 2 && x.size() == y.size());
     using DeMat = Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic>;
@@ -102,7 +104,7 @@ myspline<T, order> interpolate(const std::vector<T> &x, const std::vector<T> &y,
             if (bo.node == Node::FIRST) {
                 T pot = static_cast<T>(1);
                 for (size_t i = bo.derivative; i <= order; i++) {
-                    m(rc, i) = static_cast<T>(faculty_ratio(i, bo.derivative)) * pot;
+                    m(rc, i) = static_cast<T>(internal::faculty_ratio(i, bo.derivative)) * pot;
                     pot *= dx1;
                 }
                 b(rc) =bo.value;
@@ -139,8 +141,8 @@ myspline<T, order> interpolate(const std::vector<T> &x, const std::vector<T> &y,
             T pot1 = static_cast<T>(1);
             T pot2 = static_cast<T>(1);
             for (size_t i = deriv; i <= order; i++) {
-                m(rc, NUM_COEFFS * (c-1) + i) = static_cast<T>(faculty_ratio(i, deriv)) * pot1;
-                m(rc, NUM_COEFFS * c + i) = -static_cast<T>(faculty_ratio(i, deriv)) * pot2;
+                m(rc, NUM_COEFFS * (c-1) + i) = static_cast<T>(internal::faculty_ratio(i, deriv)) * pot1;
+                m(rc, NUM_COEFFS * c + i) = -static_cast<T>(internal::faculty_ratio(i, deriv)) * pot2;
                 pot1 *= dx1;
                 pot2 *= dx2;
             }
@@ -163,7 +165,7 @@ myspline<T, order> interpolate(const std::vector<T> &x, const std::vector<T> &y,
             if (bo.node == Node::LAST) {
                 T pot = static_cast<T>(1);
                 for (size_t i = bo.derivative; i <= order; i++) {
-                    m(rc, NUM_COEFFS * (x.size() -2) + i) = static_cast<T>(faculty_ratio(i, bo.derivative)) * pot;
+                    m(rc, NUM_COEFFS * (x.size() -2) + i) = static_cast<T>(internal::faculty_ratio(i, bo.derivative)) * pot;
                     pot *= dx2;
                 }
                 b(rc) = bo.value;
