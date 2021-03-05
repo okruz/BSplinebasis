@@ -91,21 +91,23 @@ myspline<T, order> interpolate(const std::vector<T> &x, const std::vector<T> &y,
     size_t rc = 0; // row counter
     {
         const T dx1 = (x[0] - x[1])/static_cast<T>(2);
-        T pot = static_cast<T>(1);
-        for (size_t i = 0; i <= order; i++) {
-            m(rc, i) = pot;
-            pot *= dx1;
+        {
+            T power_of_dx1 = static_cast<T>(1);
+            for (size_t i = 0; i <= order; i++) {
+                m(rc, i) = power_of_dx1;
+                power_of_dx1 *= dx1;
+            }
+            b(rc) = y.front();
+            rc++;
         }
-        b(rc) = y.front();
-        rc++;
-    
+
         for (const auto &bo: boundaries) {
             assert(bo.derivative <= order);
             if (bo.node == Node::FIRST) {
-                T pot = static_cast<T>(1);
+                T power_of_dx1 = static_cast<T>(1); 
                 for (size_t i = bo.derivative; i <= order; i++) {
-                    m(rc, i) = static_cast<T>(internal::faculty_ratio(i, bo.derivative)) * pot;
-                    pot *= dx1;
+                    m(rc, i) = static_cast<T>(internal::faculty_ratio(i, bo.derivative)) * power_of_dx1;
+                    power_of_dx1 *= dx1;
                 }
                 b(rc) =bo.value;
                 rc++;
@@ -118,33 +120,33 @@ myspline<T, order> interpolate(const std::vector<T> &x, const std::vector<T> &y,
         const T dx2 = (x[c] - x[c+1])/static_cast<T>(2);
 
         {
-            T pot = static_cast<T>(1);
+            T power_of_dx1 = static_cast<T>(1); 
             for (size_t i = 0; i <= order; i++) {
-                  m(rc, NUM_COEFFS * (c-1) + i) = pot;
-                  pot *= dx1;
+                  m(rc, NUM_COEFFS * (c-1) + i) = power_of_dx1;
+                  power_of_dx1 *= dx1;
             }
             b(rc) = y[c];
             rc++;
         }
 
         {
-            T pot = static_cast<T>(1);
+            T power_of_dx2 = static_cast<T>(1); 
             for (size_t i = 0; i <= order; i++) {
-                m(rc, NUM_COEFFS * c + i) = pot;
-                pot *= dx2;
+                m(rc, NUM_COEFFS * c + i) = power_of_dx2;
+                power_of_dx2 *= dx2;
             }
             b(rc) = y[c];
             rc++;
         }
 
         for(size_t deriv = 1; deriv < order; deriv++) {
-            T pot1 = static_cast<T>(1);
-            T pot2 = static_cast<T>(1);
+            T power_of_dx1 = static_cast<T>(1);
+            T power_of_dx2 = static_cast<T>(1);
             for (size_t i = deriv; i <= order; i++) {
-                m(rc, NUM_COEFFS * (c-1) + i) = static_cast<T>(internal::faculty_ratio(i, deriv)) * pot1;
-                m(rc, NUM_COEFFS * c + i) = -static_cast<T>(internal::faculty_ratio(i, deriv)) * pot2;
-                pot1 *= dx1;
-                pot2 *= dx2;
+                m(rc, NUM_COEFFS * (c-1) + i) = static_cast<T>(internal::faculty_ratio(i, deriv)) * power_of_dx1;
+                m(rc, NUM_COEFFS * c + i) = -static_cast<T>(internal::faculty_ratio(i, deriv)) * power_of_dx2;
+                power_of_dx1 *= dx1;
+                power_of_dx2 *= dx2;
             }
             rc++;
         }
@@ -152,21 +154,22 @@ myspline<T, order> interpolate(const std::vector<T> &x, const std::vector<T> &y,
 
     {
         const T dx2 =  (x.back() - x[x.size()-2])/static_cast<T>(2);
-        T pot = static_cast<T>(1);
-        for (size_t i = 0; i <= order; i++) {
-            m(rc, NUM_COEFFS * (x.size()-2) + i) = pot;
-            pot *= dx2;
+        {
+            T power_of_dx2 = static_cast<T>(1);
+            for (size_t i = 0; i <= order; i++) {
+                m(rc, NUM_COEFFS * (x.size()-2) + i) = power_of_dx2;
+                power_of_dx2 *= dx2;
+            }
+            b(rc) = y.back();
+            rc++;
         }
-        b(rc) = y.back();
-        rc++;
-
 
         for (const auto &bo: boundaries) {
             if (bo.node == Node::LAST) {
-                T pot = static_cast<T>(1);
+                T power_of_dx2 = static_cast<T>(1);
                 for (size_t i = bo.derivative; i <= order; i++) {
-                    m(rc, NUM_COEFFS * (x.size() -2) + i) = static_cast<T>(internal::faculty_ratio(i, bo.derivative)) * pot;
-                    pot *= dx2;
+                    m(rc, NUM_COEFFS * (x.size() -2) + i) = static_cast<T>(internal::faculty_ratio(i, bo.derivative)) * power_of_dx2;
+                    power_of_dx2 *= dx2;
                 }
                 b(rc) = bo.value;
                 rc++;
