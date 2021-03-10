@@ -60,9 +60,10 @@ std::array<boundary<T>, order-1> defaultBoundaries() {
  * @param exponent Exponent of the monomial.
  * @param deriv Order of the derivative.
  */
-constexpr size_t faculty_ratio(size_t exponent, size_t deriv) {
-    size_t ret = exponent;
-    for (size_t j = 1; j < deriv; j++) ret *= exponent -j;
+template<typename T>
+T faculty_ratio(size_t exponent, size_t deriv) {
+    T ret = static_cast<T>(exponent);
+    for (size_t j = 1; j < deriv; j++) ret *= static_cast<T>(exponent -j);
     return ret;
 }
 }; // end namespace internal
@@ -106,7 +107,7 @@ myspline<T, order> interpolate(const std::vector<T> &x, const std::vector<T> &y,
             if (bo.node == Node::FIRST) {
                 T power_of_dx1 = static_cast<T>(1); 
                 for (size_t i = bo.derivative; i <= order; i++) {
-                    m(rc, i) = static_cast<T>(internal::faculty_ratio(i, bo.derivative)) * power_of_dx1;
+                    m(rc, i) = static_cast<T>(internal::faculty_ratio<T>(i, bo.derivative)) * power_of_dx1;
                     power_of_dx1 *= dx1;
                 }
                 b(rc) =bo.value;
@@ -143,8 +144,8 @@ myspline<T, order> interpolate(const std::vector<T> &x, const std::vector<T> &y,
             T power_of_dx1 = static_cast<T>(1);
             T power_of_dx2 = static_cast<T>(1);
             for (size_t i = deriv; i <= order; i++) {
-                m(rc, NUM_COEFFS * (c-1) + i) = static_cast<T>(internal::faculty_ratio(i, deriv)) * power_of_dx1;
-                m(rc, NUM_COEFFS * c + i) = -static_cast<T>(internal::faculty_ratio(i, deriv)) * power_of_dx2;
+                m(rc, NUM_COEFFS * (c-1) + i) = static_cast<T>(internal::faculty_ratio<T>(i, deriv)) * power_of_dx1;
+                m(rc, NUM_COEFFS * c + i) = -static_cast<T>(internal::faculty_ratio<T>(i, deriv)) * power_of_dx2;
                 power_of_dx1 *= dx1;
                 power_of_dx2 *= dx2;
             }
@@ -168,7 +169,7 @@ myspline<T, order> interpolate(const std::vector<T> &x, const std::vector<T> &y,
             if (bo.node == Node::LAST) {
                 T power_of_dx2 = static_cast<T>(1);
                 for (size_t i = bo.derivative; i <= order; i++) {
-                    m(rc, NUM_COEFFS * (x.size() -2) + i) = static_cast<T>(internal::faculty_ratio(i, bo.derivative)) * power_of_dx2;
+                    m(rc, NUM_COEFFS * (x.size() -2) + i) = static_cast<T>(internal::faculty_ratio<T>(i, bo.derivative)) * power_of_dx2;
                     power_of_dx2 *= dx2;
                 }
                 b(rc) = bo.value;
