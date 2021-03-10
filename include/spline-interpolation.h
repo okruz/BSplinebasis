@@ -62,6 +62,7 @@ std::array<boundary<T>, order-1> defaultBoundaries() {
  */
 template<typename T>
 T faculty_ratio(size_t exponent, size_t deriv) {
+    assert(deriv <= exponent);
     T ret = static_cast<T>(exponent);
     for (size_t j = 1; j < deriv; j++) ret *= static_cast<T>(exponent -j);
     return ret;
