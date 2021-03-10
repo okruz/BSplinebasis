@@ -108,7 +108,7 @@ myspline<T, order> interpolate(const std::vector<T> &x, const std::vector<T> &y,
             if (bo.node == Node::FIRST) {
                 T power_of_dx1 = static_cast<T>(1); 
                 for (size_t i = bo.derivative; i <= order; i++) {
-                    m(rc, i) = static_cast<T>(internal::faculty_ratio<T>(i, bo.derivative)) * power_of_dx1;
+                    m(rc, i) = internal::faculty_ratio<T>(i, bo.derivative) * power_of_dx1;
                     power_of_dx1 *= dx1;
                 }
                 b(rc) =bo.value;
@@ -145,8 +145,8 @@ myspline<T, order> interpolate(const std::vector<T> &x, const std::vector<T> &y,
             T power_of_dx1 = static_cast<T>(1);
             T power_of_dx2 = static_cast<T>(1);
             for (size_t i = deriv; i <= order; i++) {
-                m(rc, NUM_COEFFS * (c-1) + i) = static_cast<T>(internal::faculty_ratio<T>(i, deriv)) * power_of_dx1;
-                m(rc, NUM_COEFFS * c + i) = -static_cast<T>(internal::faculty_ratio<T>(i, deriv)) * power_of_dx2;
+                m(rc, NUM_COEFFS * (c-1) + i) = internal::faculty_ratio<T>(i, deriv) * power_of_dx1;
+                m(rc, NUM_COEFFS * c + i) = -internal::faculty_ratio<T>(i, deriv) * power_of_dx2;
                 power_of_dx1 *= dx1;
                 power_of_dx2 *= dx2;
             }
@@ -170,7 +170,7 @@ myspline<T, order> interpolate(const std::vector<T> &x, const std::vector<T> &y,
             if (bo.node == Node::LAST) {
                 T power_of_dx2 = static_cast<T>(1);
                 for (size_t i = bo.derivative; i <= order; i++) {
-                    m(rc, NUM_COEFFS * (x.size() -2) + i) = static_cast<T>(internal::faculty_ratio<T>(i, bo.derivative)) * power_of_dx2;
+                    m(rc, NUM_COEFFS * (x.size() -2) + i) = internal::faculty_ratio<T>(i, bo.derivative) * power_of_dx2;
                     power_of_dx2 *= dx2;
                 }
                 b(rc) = bo.value;
