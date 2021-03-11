@@ -280,7 +280,7 @@ class myspline {
       // ################################ Operator definitions ###############################################
 
       /*!
-       * Divides spline by scalar.
+       * Scalar-division operator. Divides this spline by the scalar d.
        *
        * @param d Scalar by which to divide this spline.
        */
@@ -289,7 +289,7 @@ class myspline {
        };
 
       /*!
-       * Multiplies spline with scalar.
+       * Scalar-multiplication operator. Multiplies this spline with the scalar d.
        *
        * @param d Scalar by which to multiply this spline.
        */
@@ -304,9 +304,9 @@ class myspline {
        };
 
       /*!
-       * Multiplies spline with scalar in place.
+       * In-place scalar-multiplication operator. Multiplies this spline with the scalar d in-place.
        *
-       * @param d Scalar by which to multiply the spline.
+       * @param d Scalar by which to multiply this spline.
        */
        myspline<T, order>& operator*=(const T& d) {
             for(auto &cs: _coefficients){
@@ -318,9 +318,9 @@ class myspline {
        };
 
       /*!
-       * Divides spline by scalar in place.
+       * In-place scalar-division operator. Divides this spline by the scalar d in-place.
        *
-       * @param d Scalar by which to divide the spline.
+       * @param d Scalar by which to divide this spline.
        */
        myspline<T, order>& operator/=(const T& d) {
            (*this) *= (static_cast<T>(1)/d);
@@ -329,7 +329,16 @@ class myspline {
 
 
       /*!
-       * Copy assign of spline to this spline object. The operation is only well defined if the order of the spline to be assigned is lower or equal to the order of this spline object.
+       * Unary minus operator.
+       */
+       myspline<T, order> operator-() const {
+            return (*this) * static_cast<T>(-1);
+       };
+
+
+
+      /*!
+       * Copy assign of spline to this spline object. The operation is only well defined if the order of the spline to be assigned is lower than or equal to the order of this spline object.
        *
        * @param a Spline to be assigned.
        * @tparam ordera Order of spline a.
@@ -337,9 +346,9 @@ class myspline {
        template<size_t ordera>
        myspline<T, order>& operator=(const myspline<T, ordera> &a) {
            // The case ordera == order should be handled by the default assignment operator which is automatically generated.
-           static_assert(ordera < order, "The assignment operator is only defined if the order of the rhs spline is lower or equal to that of the lhs spline.");
+           static_assert(ordera < order, "The assignment operator is only defined if the order of the rhs spline is lower than or equal to that of the lhs spline.");
         
-           std::vector<std::array<T, ARRAY_SIZE>> ncoefficients(a.getCoefficients().size(),  internal::make_array<T,ARRAY_SIZE>(static_cast<T>(0)));//
+           std::vector<std::array<T, ARRAY_SIZE>> ncoefficients(a.getCoefficients().size(),  internal::make_array<T,ARRAY_SIZE>(static_cast<T>(0)));
            for (size_t i = 0; i  < a.getCoefficients().size(); i++) {
                const auto &coeffsi = a.getCoefficients()[i];
                auto &ncoeffsi = ncoefficients[i];
@@ -351,7 +360,7 @@ class myspline {
 
 
       /*!
-       * Spline-spline multiplication. Returns a spline of order order + ordera.
+       * Spline-spline multiplication operator. Returns a spline of order order + ordera.
        *
        * @param a Spline to be multiplied with this spline.
        * @tparam ordera Order of spline a.
@@ -386,7 +395,7 @@ class myspline {
        };
 
       /*!
-       * Sums up two splines. 
+       * Addition operator. Adds spline a to this spline. 
        *
        * @param a Spline to be added.
        * @tparam ordera Order of spline a.
@@ -424,14 +433,14 @@ class myspline {
        };
 
       /*!
-       * Sums up two splines in place. The operation is only well defined if the order of the spline to be added is lower or equal to the order of this spline object.
+       * In-place addition operator. Adds spline a to this spline. The operation is only well defined if the order of spline a is lower than or equal to the order of this spline object.
        *
        * @param a Spline to be added.
        * @tparam ordera Order of spline a.
        */
        template<size_t ordera>
        myspline<T, order>& operator+=(const myspline<T, ordera> &a) {
-           static_assert(ordera <= order, "The operators += and -= are only defined if the order of the rhs spline is lower or equal to that of the lhs spline.");
+           static_assert(ordera <= order, "The operators += and -= are only defined if the order of the rhs spline is lower than or equal to that of the lhs spline.");
            std::vector<T> nintervals; nintervals.reserve(a.getIntervals().size() + _intervals.size());
            nintervals.insert(nintervals.end(), a.getIntervals().begin(), a.getIntervals().end());
            nintervals.insert(nintervals.end(), _intervals.begin(), _intervals.end());
@@ -463,7 +472,7 @@ class myspline {
        };
 
       /*!
-       * Subtracts up two splines in place. The operation is only well defined if the order of the spline to be subtracted is lower or equal to the order of this spline object.
+       * Binary in-place subtraction operator. Subtracts spline a from this spline. The operation is only well defined if the order of the spline to be subtracted is lower than or equal to the order of this spline object.
        *
        * @param a Spline to be subtracted.
        * @tparam ordera Order of spline a.
@@ -476,7 +485,7 @@ class myspline {
 
 
       /*!
-       * Subtracts up two splines. 
+       * Binary subtraction operator. Subtracts spline a from this spline. 
        *
        * @param a Spline to be subtracted.
        * @tparam ordera Order of spline a.
@@ -499,53 +508,23 @@ class myspline {
                const std::array<T, ARRAY_SIZE> &coeffs_old = _coefficients[i];
                auto &coeffsi = newcoeffs[i];
                for(size_t j = 0; j <= coeffs_old.size(); j++) {
-                   T& newcoeff = coeffsi[j];
-                   if (j > 0) newcoeff += coeffs_old[j-1];
-                   if (j < coeffs_old.size()) newcoeff += xm * coeffs_old[j];;
+                   if (j > 0) coeffsi[j] += coeffs_old[j-1];
+                   if (j < coeffs_old.size()) coeffsi[j] += xm * coeffs_old[j];;
                }
            }
            return myspline<T, order + 1>(_intervals, std::move(newcoeffs));
        };
- 
-      /*!
-       * Returns a spline g(x) = f(-x), where f(x) is this spline.
-       *
-       * Use with care: if the grid is not symmetric around x=0, the
-       * resulting spline will be defined on a different grid. Applying any
-       * method (or operator) to two splines defined on different grids will
-       * probably not give the expected result.
-       */
-       myspline<T, order> invert() const {
-           if (isZero()) return (*this);
-           assert(_intervals.size() >= 1);
-           std::vector<T> nintervals;
-           nintervals.reserve(_intervals.size());
-           for (int i = int(_intervals.size())-1; i >= 0; i--) {
-                nintervals.push_back(-_intervals[i]);
-           }
-
-           std::vector<std::array<T, ARRAY_SIZE>> ncoeffs(_coefficients.size(), internal::make_array<T, ARRAY_SIZE>(static_cast<T>(0)));
-           for (int i = int(_coefficients.size())-1; i >= 0; i--) {
-               auto &newcoeffs = ncoeffs[int(_coefficients.size())-1 -i];
-               const auto &oldcoeffs = _coefficients[i];
-               for (size_t j = 0; j < oldcoeffs.size(); j++) {
-                   const T sign = (j % 2 == 0) ? static_cast<T>(1): static_cast<T>(-1);
-                   newcoeffs[j] = sign * oldcoeffs[j];
-               }
-           }
-           return myspline<T, order>(std::move(nintervals), std::move(ncoeffs));
-       };
 
 
       /*!
-       * Calculates the order of the nth derivative of a spline of order orderin. Defined for convenience.
+       * Calculates the order of a spline representing a derivative of another spline. Defined for convenience.
        *
-       * @param orderin Order of the spline before applying the derivative.
-       * @param n Order of the derivative to be applied.
+       * @param spline_order Order of the spline before applying the derivative.
+       * @param derivative_order Order of the derivative to be applied.
        */
-      static constexpr size_t orderdx(size_t orderin, size_t n){
-          if (n > orderin) return 0;
-          else return orderin -n;
+      static constexpr size_t orderdx(size_t spline_order, size_t derivative_order){
+          if (derivative_order > spline_order) return 0;
+          else return spline_order -derivative_order;
       }
 
       /*!

@@ -48,9 +48,6 @@ void testIntegration(T tol) {
            BOOST_CHECK_SMALL(myspline::overlap<T>(s1, s2dx2.timesx().timesx())- myspline::integrate_x2_dx2<T>(s1, s2), static_cast<T>(60) * tol);
        }
 
-       spline s1_inv_inv = s1.invert().invert();
-       BOOST_CHECK_SMALL(myspline::overlap<T>(s1 - s1_inv_inv, s1 - s1_inv_inv), tol);
-
        auto s1_d_order = s1.template dx<order>();
        BOOST_TEST(!s1_d_order.isZero());
 
@@ -104,6 +101,7 @@ void testArithmetic(T tol) {
    const spline0 one = getOne(grid);
    for (const auto &s: splines) {
        spline s2 = s * static_cast<T>(2);
+       spline sm = -s;
        spline6 sprod = s * s;
        spline s22 = s;
        s22 *= static_cast<T>(2);
@@ -117,13 +115,13 @@ void testArithmetic(T tol) {
        spline s3half2 = s2;
        s3half2 -= shalf;
        spline splusone = s + one;
-       spline sinverted = s.invert();
        spline1 sdx2 = s.dx().dx();
        spline1 sdx22 = s.dx2();
        spline sdx0 = s.template dx<0>();
 
        for(T x = s.start(); x <= s.end(); x+= 0.01L) {
            BOOST_CHECK_SMALL(sprod(x) - s(x) * s(x), tol); // Tests * operator
+           BOOST_CHECK_SMALL(sm(x) + s(x), tol); // Tests unary - operator
            BOOST_CHECK_SMALL(s2(x) - static_cast<T>(2) * s(x), tol); // Tests * operator
            BOOST_CHECK_SMALL(s22(x) - static_cast<T>(2) * s(x), tol); // Tests *= operator
            BOOST_CHECK_SMALL(shalf(x) - s(x)/static_cast<T>(2), tol); // Tests / operator
@@ -133,7 +131,6 @@ void testArithmetic(T tol) {
            BOOST_CHECK_SMALL(s3half(x) - static_cast<T>(3)*s(x)/static_cast<T>(2), tol); // Tests - operator
            BOOST_CHECK_SMALL(s3half2(x) - static_cast<T>(3)*s(x)/static_cast<T>(2), tol); // Tests -= operator
            BOOST_CHECK_SMALL(splusone(x) - s(x) - static_cast<T>(1), tol); // Tests + operator
-           BOOST_CHECK_SMALL(sinverted(x) - s(-x), tol); // Tests invert method
            BOOST_CHECK_SMALL(sdx2(x) - sdx22(x), tol); // Tests dx method
            BOOST_CHECK_SMALL(s(x) - sdx0(x), tol); // Tests dx method
          
