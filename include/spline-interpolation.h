@@ -72,7 +72,7 @@ T faculty_ratio(size_t exponent, size_t deriv) {
 /*!
  * Interpolates the data given by x and y with a spline of order order. order-1 additional conditions are needed for a well defined problem. These can be supplied by fixing derivatives on the first and last node.
  * 
- * @param x Data on the abscissa.
+ * @param x Data on the abscissa. The grid points must be in (steadily) increasing order.
  * @param y Data on the ordinate.
  * @param boundaries Boundary conditions.
  * @tparam T Datatype of the spline and data.
@@ -83,6 +83,7 @@ myspline<T, order> interpolate(const std::vector<T> &x, const std::vector<T> &y,
                              const std::array<boundary<T>, order-1> boundaries = internal::defaultBoundaries<T,order>()) {
     static_assert(order >= 1, "Order may not be zero.");
     assert(x.size() >= 2 && x.size() == y.size());
+    assert(internal::isSteadilyIncreasing(x));
     using DeMat = Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic>;
     using DeVec = Eigen::Matrix<T, Eigen::Dynamic, 1>;
     constexpr size_t NUM_COEFFS = order +1;    
