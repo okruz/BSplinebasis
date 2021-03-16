@@ -125,7 +125,7 @@ class support {
          * @param index Index of the element.
          */
         const T& operator[](size_t index) const {
-            return grid->[_startIndex + index];
+            return (*_grid)[_startIndex + index];
         };
 
         /*!
@@ -135,7 +135,7 @@ class support {
          */
         const T& at(size_t index) const {
             assert(_startIndex + index < _endIndex);
-            return grid->at(_startIndex + index);
+            return _grid->at(_startIndex + index);
         };
 
         /*!
@@ -143,7 +143,7 @@ class support {
          */
         const T& front() const {
             assert(!empty());
-            return _grid->[_startIndex];
+            return (*_grid)[_startIndex];
         };
 
         /*!
@@ -151,7 +151,7 @@ class support {
          */
         const T& back() const {
             assert(!empty());
-            return _grid->[_endIndex -1];
+            return (*_grid)[_endIndex -1];
         };
 
 
@@ -163,10 +163,18 @@ class support {
         bool hasSameGrid(const support &s) const {
             if (_grid == s._grid) return true;
             else if (_grid->size() != s._grid->size()) return false;
-            for (size_t i = 0; i < _grid->size(); i++) if (_grid->[i] != s._grid->[i]) return false;
+            for (size_t i = 0; i < _grid->size(); i++) if ((*_grid)[i] != (*(s._grid))[i]) return false;
             return true;
         };
 
+        /*!
+         * Compares two supports for equality. For two supports two be equal, they have to be defined on the same grid, must represent the same subset of the number line.
+         *
+         * @param s Support to compare against.
+         */
+        bool operator==(const support &s) const {
+            return hasSameGrid(s) && ((_startIndex == s._startIndex && _endIndex == s._endIndex) || (empty() && s.empty()));
+        };
 
        /*!
         * Calculates the union of this support with the support s. This is not strictly the set-theoretical union (if the two supports do not overlap),
@@ -174,7 +182,7 @@ class support {
         * 
         * @param s The support to calculate the union with.
         */
-       support calculateUnion(const support &s) const {
+       support calcUnion(const support &s) const {
            assert(hasSameGrid(s));
            bool thisContainsIntervals = containsIntervals();
            bool sContainsIntervals = s.containsIntervals();
@@ -191,12 +199,12 @@ class support {
         *
         * @param s The support to calculate the intersection with.
         */ 
-       support calculateIntersection(const support &s) const {
+       support calcIntersection(const support &s) const {
            assert(hasSameGrid(s));
            size_t newStartIndex = std::max(_startIndex, s._startIndex);
            size_t newEndIndex = std::min(_endIndex, s._endIndex);
            if (newStartIndex >= newEndIndex) return support(_grid); // no overlap, return empty support
-           else return support(_grid, newStartIndex, _newEndIndex);
+           else return support(_grid, newStartIndex, newEndIndex);
        };           
 
 }; // end class support
