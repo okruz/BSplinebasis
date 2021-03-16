@@ -82,7 +82,7 @@ class support {
         };
 
         /*!
-         * Checks whether the support contains any intervals. The number of intervals is the number of grid points minus one (size() - 1).
+         * Checks whether the support contains any intervals. Returns true if the support is empty or point-like. The number of intervals is the number of grid points minus one (size() - 1).
          */
          bool containsIntervals() const {
              return (size() > 1);
@@ -184,11 +184,11 @@ class support {
         */
        support calcUnion(const support &s) const {
            assert(hasSameGrid(s));
-           bool thisContainsIntervals = containsIntervals();
-           bool sContainsIntervals = s.containsIntervals();
-           if (!thisContainsIntervals && !sContainsIntervals) return support(_grid); // Both supports contain no intervals, return empty support
-           else if (!thisContainsIntervals && sContainsIntervals) return s;
-           else if (thisContainsIntervals && !sContainsIntervals) return *this;
+           const bool thisEmpty = empty();
+           const bool sEmpty = s.empty();
+           if (thisEmpty && sEmpty) return support(_grid); // Both supports are empty, return empty support
+           else if (thisEmpty && !sEmpty) return s;
+           else if (!thisEmpty && sEmpty) return *this;
            size_t newStartIndex = std::min(_startIndex, s._startIndex);
            size_t newEndIndex = std::max(_endIndex, s._endIndex);
            return support(_grid, newStartIndex, newEndIndex);
