@@ -27,10 +27,20 @@
 #include <array>
 namespace myspline {
 
+/*!
+ * Represents either the first or last node of the interpolation grid. Used to define boundary conditions.
+ */
 enum class Node {FIRST, LAST};
 
+/*!
+ * Represents a boundary condition, i.e. one fixed derivative on either the first or last node of the interpolation grid.
+ */
 template <typename T>
-struct BOUNDARY { Node node = Node::FIRST; size_t derivative = 1; T value = static_cast<T>(0); };
+struct BOUNDARY { 
+    Node node = Node::FIRST;        /*! Node to apply the boundary condition to. */ 
+    size_t derivative = 1;          /*! Order of the derivative to fix. */
+    T value = static_cast<T>(0);    /*! Value of the derivative. */
+};
 
 template <typename T>
 using boundary = struct BOUNDARY<T>;

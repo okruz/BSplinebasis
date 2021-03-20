@@ -183,7 +183,7 @@ template<typename T, size_t order1, size_t order2>
 T integrate_x2(const myspline<T, order1> &m1, const myspline<T, order2> &m2) {
     static constexpr auto f = [](size_t i, size_t j,const T& coeffa, const T& coeffb, const T& dxhalf, const T& xm) {
         if ((i + j + 2) % 2  == 1) return static_cast<T>(4)*coeffa * coeffb * xm * internal::pow<T>(dxhalf, i + j + 2)/static_cast<T>(i+j+2);
-        else return static_cast<T>(2) * coeffa * coeffb * internal::pow<T>(dxhalf,i+j+1) * (internal::pow<T>(dxhalf, 2)/static_cast<T>(i+j+3) + internal::pow<T>(xm,2)/static_cast<T>(i+j+1));
+        else return static_cast<T>(2) * coeffa * coeffb * internal::pow<T>(dxhalf,i+j+1) * (dxhalf*dxhalf/static_cast<T>(i+j+3) + xm*xm/ static_cast<T>(i+j+1));
     };
     return internal::helper_analytic_integration(f, m1, m2);
 };
