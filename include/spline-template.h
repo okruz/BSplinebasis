@@ -154,6 +154,7 @@ class myspline {
          * Finds the interval in which x lies by binary search. Used during the evaluation of the spline.
          *
          * @param x Point, whose interval will be searched.
+         * @return The index corresponding to the beginning of the interval which contains x or -1 if x is not part of the spline's support.
          */
         int findInterval(const T& x) const {
             if(_intervals.size() < 2 || x > _intervals.back() || x < _intervals.front()) return -1; // x is not part of the spline's support
@@ -254,7 +255,7 @@ class myspline {
 
 
       /*!
-       * Checks whether the supports of the two splines overlaps.
+       * Checks whether the supports of the two splines overlap.
        *
        * @param m2 Other spline against which to check.
        * @tparam order2 Order of spline m2.

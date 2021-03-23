@@ -37,13 +37,15 @@ namespace internal {
  */
 template<typename T>
 T pow(T a, size_t n) {
-    size_t nc = 1;
+    size_t power_of_2 = 1;
     T ret = static_cast<T>(1);
-    while (nc <= n) {
-        if ((nc & n) == nc) {
+    while (power_of_2 <= n) {
+        // If the bit corresponding to power_of_2 is set in n,
+        // Multiply return value by a = a0^power_of_2 (a0 being the input a)
+        if ((power_of_2 & n) == power_of_2) {
             ret *= a;
         }
-        nc *= 2;
+        power_of_2 *= 2;
         a *= a;
     }
     return ret;
