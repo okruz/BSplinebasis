@@ -36,15 +36,11 @@ enum class Node {FIRST, LAST};
  * Represents a boundary condition, i.e. one fixed derivative on either the first or last node of the interpolation grid.
  */
 template <typename T>
-struct BOUNDARY { 
+struct boundary { 
     Node node = Node::FIRST;        /*! Node to apply the boundary condition to. */ 
     size_t derivative = 1;          /*! Order of the derivative to fix. */
     T value = static_cast<T>(0);    /*! Value of the derivative. */
 };
-
-template <typename T>
-using boundary = struct BOUNDARY<T>;
-
 
 namespace internal {
 /*!
@@ -100,18 +96,17 @@ myspline<T, order> interpolate(const std::vector<T> &x, const std::vector<T> &y,
 
     DeMat m = DeMat::Zero(NUM_COEFFS*(x.size()-1), NUM_COEFFS*(x.size()-1));
     DeVec b = DeVec::Zero(NUM_COEFFS*(x.size()-1));
-    //node 0
-    size_t rc = 0; // row counter
+    size_t row_counter = 0;
     {
         const T dx1 = (x[0] - x[1])/static_cast<T>(2);
         {
             T power_of_dx1 = static_cast<T>(1);
             for (size_t i = 0; i <= order; i++) {
-                m(rc, i) = power_of_dx1;
+                m(row_counter, i) = power_of_dx1;
                 power_of_dx1 *= dx1;
             }
-            b(rc) = y.front();
-            rc++;
+            b(row_counter) = y.front();
+            row_counter++;
         }
 
         for (const auto &bo: boundaries) {
@@ -119,11 +114,11 @@ myspline<T, order> interpolate(const std::vector<T> &x, const std::vector<T> &y,
             if (bo.node == Node::FIRST) {
                 T power_of_dx1 = static_cast<T>(1); 
                 for (size_t i = bo.derivative; i <= order; i++) {
-                    m(rc, i) = internal::faculty_ratio<T>(i, bo.derivative) * power_of_dx1;
+                    m(row_counter, i) = internal::faculty_ratio<T>(i, bo.derivative) * power_of_dx1;
                     power_of_dx1 *= dx1;
                 }
-                b(rc) =bo.value;
-                rc++;
+                b(row_counter) =bo.value;
+                row_counter++;
             }
         }
     }
@@ -135,33 +130,33 @@ myspline<T, order> interpolate(const std::vector<T> &x, const std::vector<T> &y,
         {
             T power_of_dx1 = static_cast<T>(1); 
             for (size_t i = 0; i <= order; i++) {
-                  m(rc, NUM_COEFFS * (c-1) + i) = power_of_dx1;
+                  m(row_counter, NUM_COEFFS * (c-1) + i) = power_of_dx1;
                   power_of_dx1 *= dx1;
             }
-            b(rc) = y[c];
-            rc++;
+            b(row_counter) = y[c];
+            row_counter++;
         }
 
         {
             T power_of_dx2 = static_cast<T>(1); 
             for (size_t i = 0; i <= order; i++) {
-                m(rc, NUM_COEFFS * c + i) = power_of_dx2;
+                m(row_counter, NUM_COEFFS * c + i) = power_of_dx2;
                 power_of_dx2 *= dx2;
             }
-            b(rc) = y[c];
-            rc++;
+            b(row_counter) = y[c];
+            row_counter++;
         }
 
         for(size_t deriv = 1; deriv < order; deriv++) {
             T power_of_dx1 = static_cast<T>(1);
             T power_of_dx2 = static_cast<T>(1);
             for (size_t i = deriv; i <= order; i++) {
-                m(rc, NUM_COEFFS * (c-1) + i) = internal::faculty_ratio<T>(i, deriv) * power_of_dx1;
-                m(rc, NUM_COEFFS * c + i) = -internal::faculty_ratio<T>(i, deriv) * power_of_dx2;
+                m(row_counter, NUM_COEFFS * (c-1) + i) = internal::faculty_ratio<T>(i, deriv) * power_of_dx1;
+                m(row_counter, NUM_COEFFS * c + i) = -internal::faculty_ratio<T>(i, deriv) * power_of_dx2;
                 power_of_dx1 *= dx1;
                 power_of_dx2 *= dx2;
             }
-            rc++;
+            row_counter++;
         }
     }
 
@@ -170,28 +165,28 @@ myspline<T, order> interpolate(const std::vector<T> &x, const std::vector<T> &y,
         {
             T power_of_dx2 = static_cast<T>(1);
             for (size_t i = 0; i <= order; i++) {
-                m(rc, NUM_COEFFS * (x.size()-2) + i) = power_of_dx2;
+                m(row_counter, NUM_COEFFS * (x.size()-2) + i) = power_of_dx2;
                 power_of_dx2 *= dx2;
             }
-            b(rc) = y.back();
-            rc++;
+            b(row_counter) = y.back();
+            row_counter++;
         }
 
         for (const auto &bo: boundaries) {
             if (bo.node == Node::LAST) {
                 T power_of_dx2 = static_cast<T>(1);
                 for (size_t i = bo.derivative; i <= order; i++) {
-                    m(rc, NUM_COEFFS * (x.size() -2) + i) = internal::faculty_ratio<T>(i, bo.derivative) * power_of_dx2;
+                    m(row_counter, NUM_COEFFS * (x.size() -2) + i) = internal::faculty_ratio<T>(i, bo.derivative) * power_of_dx2;
                     power_of_dx2 *= dx2;
                 }
-                b(rc) = bo.value;
-                rc++;
+                b(row_counter) = bo.value;
+                row_counter++;
             }
         }
 
     }
 
-    assert(rc == NUM_COEFFS * (x.size() -1));
+    assert(row_counter == NUM_COEFFS * (x.size() -1));
 
     DeVec result = m.colPivHouseholderQr().solve(b);
     std::vector<std::array<T, NUM_COEFFS>> coeffs((x.size() -1));
