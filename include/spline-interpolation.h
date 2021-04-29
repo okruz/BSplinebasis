@@ -1,8 +1,10 @@
 /*
  * This file contains additional numerical interpolation routines for the
- * splines defined in spline-template.h. The numerical routines are based on the
- * linear algebra library Eigen and are relegated to this files to
- * minimise the dependencies of spline-template.h. 
+ * splines defined in spline-template.h. The linear algebra routines can
+ * be supplied via the implementation of a Solver class (a subclass of internal::ISolver<T>.
+ * Implementations based on armadillo and eigen are provided and can be used by defining
+ * MYSPLINE_INTERPOLATION_USE_ARMADILLO or
+ * MYSPLINE_INTERPOLATION_USE_EIGEN , respectively.
  *
  * ########################################################################
  *  This program is free software: you can redistribute it and/or modify
@@ -23,8 +25,16 @@
 #ifndef SPLINE_INTERPOLATION_H
 #define SPLINE_INTERPOLATION_H
 #include <spline-template.h>
-#include <Eigen/Dense>
 #include <array>
+
+#ifdef MYSPLINE_INTERPOLATION_USE_EIGEN
+  #include <Eigen/Dense>
+#endif
+
+#ifdef MYSPLINE_INTERPOLATION_USE_ARMADILLO
+  #include <armadillo>
+#endif
+
 namespace myspline {
 
 /*!
@@ -43,6 +53,59 @@ struct boundary {
 };
 
 namespace internal {
+/*!
+ * Interface for a solver of linear equation system (LES) used to decouple the interpolation code from the linear algebra frameworks.
+ * The LES is defined by M.x = b, where M and b have to be supplied and x is calculated during the execution of the method solve().
+ * All elements of M and b must be zero if not explicitly set.
+ *
+ * @tparam T Datatype of the linear system of equations to be solved.
+ */
+template<typename T>
+class ISolver {
+   public:
+      /*!
+       * Default constructor.
+       */
+      ISolver() = default;
+      
+      /*!
+       * A constructor taking the problem size must be supplied by all subclasses.
+       *
+       * @param problemsize Dimension of the problem (i.e. number of coefficients).
+       */
+      ISolver(size_t problemsize) {};
+      virtual ~ISolver() = default;
+      
+      /*!
+       * Retrieve a reference to an element of the matrix M.
+       *
+       * @param i Row index.
+       * @param j Column index.
+       */
+      virtual T& M(size_t i, size_t j) = 0;
+
+      /*!
+       * Retrieve a reference to an element of the vector b.
+       *
+       * @param i Row index.
+       */
+      virtual T& b(size_t i) = 0;
+
+      /*!
+       * Solve the LES and set the vector x accordingly.
+       */
+      virtual void solve() = 0;
+
+      /*!
+       * Retrieve a reference to an element of the vector x.
+       *
+       * @param i Row index.
+       */
+      virtual T& x(size_t i) = 0;
+};
+
+
+
 /*!
  * Generates the default boundary conditions by setting as many derivatives to zero as needed, starting from the first derivative.
  *
@@ -83,29 +146,32 @@ T faculty_ratio(size_t exponent, size_t deriv) {
  * @param boundaries Boundary conditions.
  * @tparam T Datatype of the spline and data.
  * @tparam order Order of the spline.
+ * @tparam Solver Class Wrapping the linear algebra routines.
  */
-template<typename T, size_t order>
+template<typename T, size_t order, class Solver>
 myspline<T, order> interpolate(const std::vector<T> &x, const std::vector<T> &y, 
                              const std::array<boundary<T>, order-1> boundaries = internal::defaultBoundaries<T,order>()) {
     static_assert(order >= 1, "Order may not be zero.");
+    static_assert(std::is_base_of<internal::ISolver<T>, Solver>::value, "Solver must be a subclass of internal::ISolver<T>.");
+
     assert(x.size() >= 2 && x.size() == y.size());
     assert(internal::isSteadilyIncreasing(x));
-    using DeMat = Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic>;
-    using DeVec = Eigen::Matrix<T, Eigen::Dynamic, 1>;
+
+
     constexpr size_t NUM_COEFFS = order +1;    
 
-    DeMat m = DeMat::Zero(NUM_COEFFS*(x.size()-1), NUM_COEFFS*(x.size()-1));
-    DeVec b = DeVec::Zero(NUM_COEFFS*(x.size()-1));
+    Solver s(NUM_COEFFS*(x.size()-1));
+
     size_t row_counter = 0;
     {
         const T dx1 = (x[0] - x[1])/static_cast<T>(2);
         {
             T power_of_dx1 = static_cast<T>(1);
             for (size_t i = 0; i <= order; i++) {
-                m(row_counter, i) = power_of_dx1;
+                s.M(row_counter, i) = power_of_dx1;
                 power_of_dx1 *= dx1;
             }
-            b(row_counter) = y.front();
+            s.b(row_counter) = y.front();
             row_counter++;
         }
 
@@ -114,10 +180,10 @@ myspline<T, order> interpolate(const std::vector<T> &x, const std::vector<T> &y,
             if (bo.node == Node::FIRST) {
                 T power_of_dx1 = static_cast<T>(1); 
                 for (size_t i = bo.derivative; i <= order; i++) {
-                    m(row_counter, i) = internal::faculty_ratio<T>(i, bo.derivative) * power_of_dx1;
+                    s.M(row_counter, i) = internal::faculty_ratio<T>(i, bo.derivative) * power_of_dx1;
                     power_of_dx1 *= dx1;
                 }
-                b(row_counter) =bo.value;
+                s.b(row_counter) =bo.value;
                 row_counter++;
             }
         }
@@ -130,20 +196,20 @@ myspline<T, order> interpolate(const std::vector<T> &x, const std::vector<T> &y,
         {
             T power_of_dx1 = static_cast<T>(1); 
             for (size_t i = 0; i <= order; i++) {
-                  m(row_counter, NUM_COEFFS * (c-1) + i) = power_of_dx1;
+                  s.M(row_counter, NUM_COEFFS * (c-1) + i) = power_of_dx1;
                   power_of_dx1 *= dx1;
             }
-            b(row_counter) = y[c];
+            s.b(row_counter) = y[c];
             row_counter++;
         }
 
         {
             T power_of_dx2 = static_cast<T>(1); 
             for (size_t i = 0; i <= order; i++) {
-                m(row_counter, NUM_COEFFS * c + i) = power_of_dx2;
+                s.M(row_counter, NUM_COEFFS * c + i) = power_of_dx2;
                 power_of_dx2 *= dx2;
             }
-            b(row_counter) = y[c];
+            s.b(row_counter) = y[c];
             row_counter++;
         }
 
@@ -151,8 +217,8 @@ myspline<T, order> interpolate(const std::vector<T> &x, const std::vector<T> &y,
             T power_of_dx1 = static_cast<T>(1);
             T power_of_dx2 = static_cast<T>(1);
             for (size_t i = deriv; i <= order; i++) {
-                m(row_counter, NUM_COEFFS * (c-1) + i) = internal::faculty_ratio<T>(i, deriv) * power_of_dx1;
-                m(row_counter, NUM_COEFFS * c + i) = -internal::faculty_ratio<T>(i, deriv) * power_of_dx2;
+                s.M(row_counter, NUM_COEFFS * (c-1) + i) = internal::faculty_ratio<T>(i, deriv) * power_of_dx1;
+                s.M(row_counter, NUM_COEFFS * c + i) = -internal::faculty_ratio<T>(i, deriv) * power_of_dx2;
                 power_of_dx1 *= dx1;
                 power_of_dx2 *= dx2;
             }
@@ -165,10 +231,10 @@ myspline<T, order> interpolate(const std::vector<T> &x, const std::vector<T> &y,
         {
             T power_of_dx2 = static_cast<T>(1);
             for (size_t i = 0; i <= order; i++) {
-                m(row_counter, NUM_COEFFS * (x.size()-2) + i) = power_of_dx2;
+                s.M(row_counter, NUM_COEFFS * (x.size()-2) + i) = power_of_dx2;
                 power_of_dx2 *= dx2;
             }
-            b(row_counter) = y.back();
+            s.b(row_counter) = y.back();
             row_counter++;
         }
 
@@ -176,10 +242,10 @@ myspline<T, order> interpolate(const std::vector<T> &x, const std::vector<T> &y,
             if (bo.node == Node::LAST) {
                 T power_of_dx2 = static_cast<T>(1);
                 for (size_t i = bo.derivative; i <= order; i++) {
-                    m(row_counter, NUM_COEFFS * (x.size() -2) + i) = internal::faculty_ratio<T>(i, bo.derivative) * power_of_dx2;
+                    s.M(row_counter, NUM_COEFFS * (x.size() -2) + i) = internal::faculty_ratio<T>(i, bo.derivative) * power_of_dx2;
                     power_of_dx2 *= dx2;
                 }
-                b(row_counter) = bo.value;
+                s.b(row_counter) = bo.value;
                 row_counter++;
             }
         }
@@ -187,14 +253,82 @@ myspline<T, order> interpolate(const std::vector<T> &x, const std::vector<T> &y,
     }
 
     assert(row_counter == NUM_COEFFS * (x.size() -1));
+    s.solve();
 
-    DeVec result = m.colPivHouseholderQr().solve(b);
     std::vector<std::array<T, NUM_COEFFS>> coeffs((x.size() -1));
     for (size_t i = 0 ; i +1 < x.size(); i++) {
         std::array<T, NUM_COEFFS> &coeffsi = coeffs[i];
-        for(size_t j = 0; j < NUM_COEFFS; j++) coeffsi[j] = result(NUM_COEFFS * i + j);
+        for(size_t j = 0; j < NUM_COEFFS; j++) coeffsi[j] = s.x(NUM_COEFFS * i + j);
     }
     return myspline<T, order>(x, std::move(coeffs));
 }
-};
+
+
+#ifdef MYSPLINE_INTERPOLATION_USE_ARMADILLO
+
+/*!
+ * Wrapper method around iterpolate() using armadillo for the linear algebra routines. Supports only double precision.
+ * 
+ * @param x Data on the abscissa. The grid points must be in (steadily) increasing order.
+ * @param y Data on the ordinate.
+ * @param boundaries Boundary conditions.
+ * @tparam order Order of the spline.
+ */
+template<size_t order>
+myspline<double, order> interpolate_armadillo(const std::vector<double> &x, const std::vector<double> &y, 
+                             const std::array<boundary<double>, order-1> boundaries = internal::defaultBoundaries<double,order>()) {
+
+    class ArmadilloSolver : public internal::ISolver<double> {
+        private:
+            arma::mat _M;
+            arma::vec _b, _x;
+        public:
+            ArmadilloSolver(size_t problemsize) : _M(arma::mat(problemsize, problemsize, arma::fill::zeros)), _b(arma::vec(problemsize, arma::fill::zeros)) {};
+            virtual ~ArmadilloSolver() = default;
+            virtual double& M(size_t i, size_t j) override { return _M(i,j);};
+            virtual double& b(size_t i) override {return _b(i);};
+            virtual void solve() override {_x = arma::solve(_M, _b);};
+            virtual double& x(size_t i) override { return _x(i);};
+    };
+
+    return interpolate<double, order, ArmadilloSolver>(x, y, boundaries);
+}
+#endif
+
+
+#ifdef MYSPLINE_INTERPOLATION_USE_EIGEN
+/*!
+ * Wrapper method around iterpolate() using eigen for the linear algebra routines.
+ * 
+ * @param x Data on the abscissa. The grid points must be in (steadily) increasing order.
+ * @param y Data on the ordinate.
+ * @param boundaries Boundary conditions.
+ * @tparam T Datatype of the spline and data.
+ * @tparam order Order of the spline.
+ */
+template<typename T, size_t order>
+myspline<T, order> interpolate_eigen(const std::vector<T> &x, const std::vector<T> &y, 
+                             const std::array<boundary<T>, order-1> boundaries = internal::defaultBoundaries<T,order>()) {
+
+    class EigenSolver : public internal::ISolver<T> {
+        private:
+            using DeMat = Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic>;
+            using DeVec = Eigen::Matrix<T, Eigen::Dynamic, 1>;
+            DeMat _M;
+            DeVec _b, _x;
+        public:
+            EigenSolver(size_t problemsize) : _M(DeMat::Zero(problemsize, problemsize)), _b(DeVec::Zero(problemsize)) {};
+            virtual ~EigenSolver() = default;
+            virtual T& M(size_t i, size_t j) override { return _M(i,j);};
+            virtual T& b(size_t i) override {return _b(i);};
+            virtual void solve() override {_x = _M.colPivHouseholderQr().solve(_b);};
+            virtual T& x(size_t i) override { return _x(i);};
+    };
+
+    return interpolate<T, order, EigenSolver>(x, y, boundaries);
+}
+
+#endif
+
+}; // end namespace myspline
 #endif //SPLINE_INTERPOLATION_H
