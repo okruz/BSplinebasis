@@ -268,6 +268,7 @@ myspline<T, order> interpolate(const std::vector<T> &x, const std::vector<T> &y,
 
 /*!
  * Wrapper method around iterpolate() using armadillo for the linear algebra routines. Supports only double precision.
+ * This method will only be activated if the macro MYSPLINE_INTERPOLATION_USE_ARMADILLO is defined. 
  * 
  * @param x Data on the abscissa. The grid points must be in (steadily) increasing order.
  * @param y Data on the ordinate.
@@ -299,6 +300,7 @@ myspline<double, order> interpolate_armadillo(const std::vector<double> &x, cons
 #ifdef MYSPLINE_INTERPOLATION_USE_EIGEN
 /*!
  * Wrapper method around iterpolate() using eigen for the linear algebra routines.
+ * This method will only be activated if the macro MYSPLINE_INTERPOLATION_USE_EIGEN is defined.
  * 
  * @param x Data on the abscissa. The grid points must be in (steadily) increasing order.
  * @param y Data on the ordinate.
