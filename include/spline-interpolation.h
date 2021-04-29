@@ -276,7 +276,7 @@ myspline<T, order> interpolate(const std::vector<T> &x, const std::vector<T> &y,
  * @tparam order Order of the spline.
  */
 template<size_t order>
-myspline<double, order> interpolate_armadillo(const std::vector<double> &x, const std::vector<double> &y, 
+myspline<double, order> interpolate_using_armadillo(const std::vector<double> &x, const std::vector<double> &y, 
                              const std::array<boundary<double>, order-1> boundaries = internal::defaultBoundaries<double,order>()) {
 
     class ArmadilloSolver : public internal::ISolver<double> {
@@ -309,7 +309,7 @@ myspline<double, order> interpolate_armadillo(const std::vector<double> &x, cons
  * @tparam order Order of the spline.
  */
 template<typename T, size_t order>
-myspline<T, order> interpolate_eigen(const std::vector<T> &x, const std::vector<T> &y, 
+myspline<T, order> interpolate_using_eigen(const std::vector<T> &x, const std::vector<T> &y, 
                              const std::array<boundary<T>, order-1> boundaries = internal::defaultBoundaries<T,order>()) {
 
     class EigenSolver : public internal::ISolver<T> {
