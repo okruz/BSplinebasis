@@ -176,7 +176,7 @@ myspline<T, order> interpolate(const std::vector<T> &x, const std::vector<T> &y,
         }
 
         for (const auto &bo: boundaries) {
-            assert(bo.derivative <= order);
+            assert(bo.derivative > 0 && bo.derivative <= order);
             if (bo.node == Node::FIRST) {
                 T power_of_dx1 = static_cast<T>(1); 
                 for (size_t i = bo.derivative; i <= order; i++) {
