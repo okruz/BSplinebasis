@@ -76,17 +76,18 @@ BOOST_AUTO_TEST_CASE (TestIntegration)
     testIntegration<double, 9>(TOL);
     testIntegration<double, 10>(TOL);
 
-
-    constexpr long double TOLL = 1.0e-18l;
-    testIntegration<long double, 2>(TOLL);
-    testIntegration<long double, 3>(TOLL);
-    testIntegration<long double, 4>(TOLL);
-    testIntegration<long double, 5>(TOLL);
-    testIntegration<long double, 6>(TOLL);
-    testIntegration<long double, 7>(TOLL);
-    testIntegration<long double, 8>(TOLL);
-    testIntegration<long double, 9>(TOLL);
-    testIntegration<long double, 10>(TOLL);
+    if constexpr (sizeof(long double) != sizeof(double)) {
+        constexpr long double TOLL = 1.0e-18l;
+        testIntegration<long double, 2>(TOLL);
+        testIntegration<long double, 3>(TOLL);
+        testIntegration<long double, 4>(TOLL);
+        testIntegration<long double, 5>(TOLL);
+        testIntegration<long double, 6>(TOLL);
+        testIntegration<long double, 7>(TOLL);
+        testIntegration<long double, 8>(TOLL);
+        testIntegration<long double, 9>(TOLL);
+        testIntegration<long double, 10>(TOLL);
+    }
 }
 
 template<typename T, size_t order>
@@ -152,14 +153,16 @@ BOOST_AUTO_TEST_CASE (TestArithmetic)
     testArithmetic<double, 9>(TOL);
     testArithmetic<double, 10>(TOL);
 
-    constexpr long double TOLL = 1.0e-18l;
-    testArithmetic<long double, 2>(TOLL);
-    testArithmetic<long double, 3>(TOLL);
-    testArithmetic<long double, 4>(TOLL);
-    testArithmetic<long double, 5>(TOLL);
-    testArithmetic<long double, 6>(TOLL);
-    testArithmetic<long double, 7>(TOLL);
-    testArithmetic<long double, 8>(TOLL);
-    testArithmetic<long double, 9>(TOLL);
-    testArithmetic<long double, 10>(TOLL);
+    if constexpr (sizeof(long double) != sizeof(double)) {
+        constexpr long double TOLL = 1.0e-18l;
+        testArithmetic<long double, 2>(TOLL);
+        testArithmetic<long double, 3>(TOLL);
+        testArithmetic<long double, 4>(TOLL);
+        testArithmetic<long double, 5>(TOLL);
+        testArithmetic<long double, 6>(TOLL);
+        testArithmetic<long double, 7>(TOLL);
+        testArithmetic<long double, 8>(TOLL);
+        testArithmetic<long double, 9>(TOLL);
+        testArithmetic<long double, 10>(TOLL);
+    }
 }

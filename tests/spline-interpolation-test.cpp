@@ -21,13 +21,16 @@ void testInterpolationEigen(T tol) {
 BOOST_AUTO_TEST_CASE (TestInterpolationEigen)
 {
     testInterpolationEigen<double, 1>(2.0e-14);
-    testInterpolationEigen<long double, 1>(1.0e-17l);
     testInterpolationEigen<double, 2>(2.0e-14);
-    testInterpolationEigen<long double, 2>(1.0e-17l);
     testInterpolationEigen<double, 3>(2.0e-14);
-    testInterpolationEigen<long double, 3>(1.0e-17l);
     testInterpolationEigen<double, 4>(2.0e-14);
-    testInterpolationEigen<long double, 4>(1.0e-17l);
+
+    if constexpr (sizeof(long double ) != sizeof(double)) {
+        testInterpolationEigen<long double, 1>(1.0e-17l);
+        testInterpolationEigen<long double, 2>(1.0e-17l);
+        testInterpolationEigen<long double, 3>(1.0e-17l);
+        testInterpolationEigen<long double, 4>(1.0e-17l);
+    }
 }
 #endif
 
