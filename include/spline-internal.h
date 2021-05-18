@@ -2,6 +2,7 @@
 #define MYSPLINE_INTERNAL_H
 #include <assert.h>
 #include <memory>
+#include <optional>
 #include <vector>
 
 /*
@@ -43,6 +44,15 @@ private:
                        behind the last element of the support. */
 
 public:
+  /*!
+   * Represents an interval relative to the global grid represented by _grid.
+   */
+  using AbsoluteIndex = size_t;
+
+  /*!
+   * Represents an interval relative to the intervals contained in this support.
+   */
+  using RelativeIndex = size_t;
   /*!
    * This enum allows to signal to some constructors whether
    * an empty support should be constructed or one representing the
@@ -100,6 +110,32 @@ public:
    * grid points minus one (size() - 1).
    */
   bool containsIntervals() const { return (size() > 1); };
+
+  /*!
+   * Returns the index relative to the intervals of this support from an index
+   * relative to the global grid. If the index refers to an interval outside
+   * this support, std::nullopt is returned.
+   *
+   * @param index The AbsoluteIndex referring to an interval on the global grid.
+   */
+  std::optional<RelativeIndex> relativeFromAbsolute(AbsoluteIndex index) {
+    if (index >= _startIndex && index < _endIndex)
+      return index - _startIndex;
+    else
+      return std::nullopt;
+  };
+
+  /*!
+   * Returns the index relative to the intervals of this support from an index
+   * relative to the global grid. If the index refers to an interval outside
+   * this support, std::nullopt is returned.
+   *
+   * @param index The AbsoluteIndex referring to an interval on the global grid.
+   */
+  AbsoluteIndex absoluteFromRelative(RelativeIndex index) {
+    assert(index < size());
+    return index + _startIndex;
+  };
 
   /*!
    * Returns the number of intervals represented by this support.

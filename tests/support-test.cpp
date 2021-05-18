@@ -76,6 +76,12 @@ template <typename T> void testSupport() {
   BOOST_TEST(s11.hasSameGrid(s3u));
   BOOST_TEST(!s1.hasSameGrid(s4));
   BOOST_TEST(!s1.hasSameGrid(s5));
+  BOOST_TEST(s3.relativeFromAbsolute(3).value() == 0);
+  BOOST_TEST(s3.relativeFromAbsolute(4).value() == 1);
+  BOOST_TEST(!s3.relativeFromAbsolute(2));
+  BOOST_TEST(!s3.relativeFromAbsolute(8));
+  BOOST_TEST(s3.absoluteFromRelative(0) == 3);
+  BOOST_TEST(s3.absoluteFromRelative(1) == 4);
 }
 
 BOOST_AUTO_TEST_CASE(TestSupport) {
