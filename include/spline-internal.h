@@ -30,9 +30,10 @@ namespace myspline::internal {
 template <typename T> using grid = std::shared_ptr<const std::vector<T>>;
 
 /*!
- * Represents the support of a spline as a number of gridpoints. Keeps a
- * shared_ptr to the global grid to check whether two splines are defined on the
- * same grid.
+ * Represents the support of a spline as a number of gridpoints.
+ * It is hence essentially a view onto the global grid. The pointer to the
+ * global grid allows for a speedy comparison whether splines are defined on the
+ * same global grid and methods that assume they are can be used.
  *
  * @tparam T Datatype of the grid and spline.
  */
@@ -208,7 +209,7 @@ public:
    */
   bool hasSameGrid(const support &s) const {
     if (_grid == s._grid)
-      return true;
+      [[likely]] return true;
     else if (_grid->size() != s._grid->size())
       return false;
     for (size_t i = 0; i < _grid->size(); i++)
