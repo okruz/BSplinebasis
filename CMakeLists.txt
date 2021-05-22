@@ -22,14 +22,15 @@ set_property(TARGET splineInterpolationTest PROPERTY CXX_STANDARD 17)
 target_include_directories(splineInterpolationTest PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 target_link_libraries(splineInterpolationTest ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
 add_test(splineInterpolationTest splineInterpolationTest)
+
+# TODO: Check whether armadillo and eigen are installed and set MYSPLINE_INTERPOLATION_USE_* accordingly
 target_compile_definitions(splineInterpolationTest PUBLIC 
                                           MYSPLINE_INTERPOLATION_USE_ARMADILLO
-                                          MYSPLINE_INTERPOLATION_USE_EIGEN
-                                          ARMA_DONT_USE_WRAPPER)
-target_link_libraries(splineInterpolationTest openblas)
+                                          MYSPLINE_INTERPOLATION_USE_EIGEN)
+target_link_libraries(splineInterpolationTest armadillo)
 target_include_directories(splineInterpolationTest PUBLIC "/usr/include/eigen3/")
 
 
-set(CMAKE_CXX_FLAGS "-O3 -Wall -fsanitize=address -fsanitize=undefined")
+set(CMAKE_CXX_FLAGS "-O3 -Wall")
 
 enable_testing()
