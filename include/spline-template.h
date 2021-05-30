@@ -197,7 +197,7 @@ class myspline {
        myspline() = default;
        myspline(const myspline &m) = default;
        myspline(myspline &&m) = default;
-       ~myspline() = default;
+       virtual ~myspline() = default;
        myspline& operator=(const myspline &m) = default;
        myspline& operator=(myspline &&m) = default;
 
