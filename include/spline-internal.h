@@ -24,10 +24,151 @@
 
 namespace myspline::internal {
 
-/*! A shared pointer to a vector representing the global grid. A support
- * represents a subset of the interval represented by this grid.
+/*!
+ * Represents a global grid.
+ *
+ * @tparam T The datatype of the grid elements.
  */
-template <typename T> using grid = std::shared_ptr<const std::vector<T>>;
+template <typename T> class grid {
+private:
+  size_t _size; /*! Number of elements of the global grid. */
+  std::shared_ptr<const T[]> _data; /*! Shared pointer to the data. */
+
+  /*!
+   * Generates the shared pointer to an array from two iterators.
+   *
+   * @param begin The iterator referencing the first element to be copied into
+   * the grid.
+   * @param end The iterator referencing the element behind the last element to
+   * be copied into the grid.
+   * @returns A shared pointer to a dynamic array, holding the grid elements.
+   */
+  template <typename Iter>
+  std::shared_ptr<const T[]> generateData(Iter begin, Iter end) {
+    T *dat = new T[_size];
+    for (size_t i = 0; i < _size; i++) {
+      dat[i] = *(begin + i);
+    }
+    return std::shared_ptr<const T[]>(dat);
+  }
+
+public:
+  /*!
+   * Default constructor, constructing an empty grid.
+   */
+  grid() : _size(0){};
+
+  /*!
+   * Constructs a grid from two iterators. The first element of the grid will be
+   * the element referenced by begin. The last element of the grid will be the
+   * one before the element pointed to by end;
+   *
+   * @param begin The iterator referencing the first element to be copied into
+   * the grid.
+   * @param end The iterator referencing the element behind the last element to
+   * be copied into the grid.
+   * @tparam Iter The type of the two iterators.
+   */
+  template <typename Iter>
+  grid(Iter begin, Iter end)
+      : _size(std::distance(begin, end)), _data(generateData(begin, end)){};
+
+  /*!
+   * Constructs a grid from a std::vector. The elements of the vector are
+   * copied, not moved.
+   *
+   * @param v The input vector.
+   */
+  grid(const std::vector<T> &v) : grid(v.begin(), v.end()){};
+
+  /*!
+   * Constructs a grid by setting its members.
+   *
+   * @param size The size of the grid.
+   * @param data A shared pointer to the grid elements.
+   */
+  grid(size_t size, std::shared_ptr<const T[]> data)
+      : _size(size), _data(std::move(data)){};
+
+  grid(const grid &g) = default;
+  grid(grid &&g) = default;
+  grid &operator=(const grid &g) = default;
+  grid &operator=(grid &&g) = default;
+
+  /*!
+   * Comparison operator.
+   *
+   * @param g The grid to compare this grid with.
+   * @returns Returns true if the grids represent the same logical grid.
+   */
+  bool operator==(const grid &g) const {
+    if (_data == g._data && _size == g._size)
+      [[likely]] return true;
+    else if (_size != g._size)
+      return false;
+    for (size_t i = 0; i < _size; i++)
+      if (_data[i] != g._data[i])
+        return false;
+    return true;
+  }
+
+  /*!
+   * Returns the number of elements of the grid.
+   */
+  size_t size() const { return _size; };
+
+  /*!
+   * Returns a shared pointer to the elements of this grid.
+   */
+  std::shared_ptr<const T[]> getData() const { return _data; };
+
+  /*!
+   * Checks whether this spline holds no elements.
+   *
+   * @returns Returns true if this grid holds no element.
+   */
+  bool empty() const { return _size == 0; };
+
+  /*!
+   * Returns a reference to the ith element of the grid. Performs no bounds
+   * checks.
+   *
+   * @param i The index of the element to be returned.
+   * @returns A reference to the ith element.
+   */
+  const T &operator[](size_t i) const { return _data[i]; };
+
+  /*!
+   * Returns a reference to the ith element of the grid. Checks the bounds.
+   *
+   * @param i The index of the element to be returned.
+   * @returns A reference to the ith element.
+   */
+  const T &at(size_t i) const {
+    assert(i < _size);
+    return _data[i];
+  };
+
+  /*!
+   * Returns a reference to the first element of the grid.
+   *
+   * @returns A reference to the first element.
+   */
+  const T &front() const {
+    assert(_data && _size > 0);
+    return _data[0];
+  };
+
+  /*!
+   * Returns a reference to the last element of the grid.
+   *
+   * @returns A reference to the last element.
+   */
+  const T &back() const {
+    assert(_data && _size > 0);
+    return _data[_size - 1];
+  };
+};
 
 /*!
  * Represents the support of a spline as a number of gridpoints.
@@ -72,7 +213,7 @@ public:
    */
   support(grid<T> grid, size_t startIndex, size_t endIndex)
       : _grid(std::move(grid)), _startIndex(startIndex), _endIndex(endIndex) {
-    assert(_endIndex >= _startIndex && _endIndex <= _grid->size());
+    assert(_endIndex >= _startIndex && _endIndex <= _grid.size());
   };
 
   /*!
@@ -85,7 +226,7 @@ public:
    */
   support(grid<T> grid, Construction constr = Construction::EMPTY)
       : _grid(std::move(grid)), _startIndex(0),
-        _endIndex((constr == Construction::EMPTY) ? 0 : _grid->size()){};
+        _endIndex((constr == Construction::EMPTY) ? 0 : _grid.size()){};
 
   // Default constructors and operators generated by the compiler.
   support() = default;
@@ -171,7 +312,7 @@ public:
    * @param index Index of the element.
    */
   const T &operator[](size_t index) const {
-    return (*_grid)[_startIndex + index];
+    return _grid[_startIndex + index];
   };
 
   /*!
@@ -182,7 +323,7 @@ public:
    */
   const T &at(size_t index) const {
     assert(_startIndex + index < _endIndex);
-    return _grid->at(_startIndex + index);
+    return _grid.at(_startIndex + index);
   };
 
   /*!
@@ -190,7 +331,7 @@ public:
    */
   const T &front() const {
     assert(!empty());
-    return (*_grid)[_startIndex];
+    return _grid[_startIndex];
   };
 
   /*!
@@ -198,7 +339,7 @@ public:
    */
   const T &back() const {
     assert(!empty());
-    return (*_grid)[_endIndex - 1];
+    return _grid[_endIndex - 1];
   };
 
   /*!
@@ -207,16 +348,7 @@ public:
    *
    * @param s Support to check against.
    */
-  bool hasSameGrid(const support &s) const {
-    if (_grid == s._grid)
-      [[likely]] return true;
-    else if (_grid->size() != s._grid->size())
-      return false;
-    for (size_t i = 0; i < _grid->size(); i++)
-      if ((*_grid)[i] != (*(s._grid))[i])
-        return false;
-    return true;
-  };
+  bool hasSameGrid(const support &s) const { return _grid == s._grid; };
 
   /*!
    * Compares two supports for equality. For two supports two be equal, they
