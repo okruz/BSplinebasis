@@ -181,12 +181,6 @@ public:
  * @tparam T Datatype of the grid and spline.
  */
 template <typename T> class support {
-private:
-  grid<T> _grid;      /*! Represents the global grid. */
-  size_t _startIndex; /*! Represents the begin of the support. */
-  size_t _endIndex; /*! Represents the end of the support. Points to the element
-                       behind the last element of the support. */
-
 public:
   /*!
    * Represents an interval relative to the global grid represented by _grid.
@@ -213,7 +207,7 @@ public:
    * @param endIndex The index of the element behind the last grid point which
    * is part of the support.
    */
-  support(grid<T> grid, size_t startIndex, size_t endIndex)
+  support(grid<T> grid, AbsoluteIndex startIndex, AbsoluteIndex endIndex)
       : _grid(std::move(grid)), _startIndex(startIndex), _endIndex(endIndex) {
     assert(_endIndex >= _startIndex && _endIndex <= _grid.size());
   };
@@ -300,12 +294,12 @@ public:
   /*!
    * Returns the _startIndex.
    */
-  size_t getStartIndex() const { return _startIndex; };
+  AbsoluteIndex getStartIndex() const { return _startIndex; };
 
   /*!
    * Returns the _endIndex.
    */
-  size_t getEndIndex() const { return _endIndex; }
+  AbsoluteIndex getEndIndex() const { return _endIndex; }
 
   /*!
    * Allows access to the grid points contained in the support. Performs no
@@ -313,7 +307,7 @@ public:
    *
    * @param index Index of the element.
    */
-  const T &operator[](size_t index) const {
+  const T &operator[](RelativeIndex index) const {
     return _grid[_startIndex + index];
   };
 
@@ -323,7 +317,7 @@ public:
    *
    * @param index Index of the element.
    */
-  const T &at(size_t index) const {
+  const T &at(RelativeIndex index) const {
     assert(_startIndex + index < _endIndex);
     return _grid.at(_startIndex + index);
   };
@@ -403,6 +397,11 @@ public:
       return support(_grid, newStartIndex, newEndIndex);
   };
 
+private:
+  grid<T> _grid;             /*! Represents the global grid. */
+  AbsoluteIndex _startIndex; /*! Represents the begin of the support. */
+  AbsoluteIndex _endIndex; /*! Represents the end of the support. Points to the
+                       element behind the last element of the support. */
 };     // end class support
 };     // end namespace myspline::internal
 #endif // MYSPLINE_INTERNAL_H
