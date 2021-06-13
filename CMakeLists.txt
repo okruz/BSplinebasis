@@ -3,7 +3,7 @@ project(BSplinebasis)
 find_package(Boost COMPONENTS unit_test_framework REQUIRED)
 
 #Add support test
-add_executable(supportTest tests/support-test.cpp)
+add_executable(supportTest tests/okruz/bspline/support/support-test.cpp)
 set_property(TARGET supportTest PROPERTY CXX_STANDARD 17)
 target_include_directories(supportTest PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 target_link_libraries(supportTest ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
