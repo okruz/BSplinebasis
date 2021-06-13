@@ -1,3 +1,5 @@
+#ifndef OKRUZ_BSPLINE_INTEGRATION_ANALYTICAL_H
+#define OKRUZ_BSPLINE_INTEGRATION_ANALYTICAL_H
 /*
  * This file contains additional integration routines computing a few special integrals for the
  * splines defined in spline-template.h. The integrals are computed from analytical formulas and
@@ -22,11 +24,12 @@
  * ########################################################################
  */
 
-#ifndef SPLINE_ANALYTICAL_INTEGRATION_H
-#define SPLINE_ANALYTICAL_INTEGRATION_H
-#include <spline-template.h>
+#include <okruz/bspline/Spline.h>
 
-namespace myspline {
+namespace okruz::bspline::integration {
+
+using okruz::bspline::Spline;
+
 namespace internal {
 /*!
  * Efficient integer power for arbitrary type.
@@ -66,7 +69,7 @@ T pow(T a, size_t n) {
  * @tparam sizeb Number of coefficients per interval for the second spline.
  */
 template<typename T, typename F, size_t sizea, size_t sizeb>
-T integrateInterval_analytically(F f, const std::array<T, sizea> &coeffsa, const std::array<T, sizeb> &coeffsb, const T& x0, const T& x1) {
+T integrateIntervalAnalytically(F f, const std::array<T, sizea> &coeffsa, const std::array<T, sizeb> &coeffsb, const T& x0, const T& x1) {
     T result = static_cast<T>(0);;
     const T dxhalf = (x1-x0)/static_cast<T>(2);
     const T xm = (x1 + x0) / static_cast<T>(2);
@@ -90,16 +93,16 @@ T integrateInterval_analytically(F f, const std::array<T, sizea> &coeffsa, const
  * @tparam order2 Order of the second spline.
  */
 template<typename T, typename F, size_t order1, size_t order2>
-T helper_analytic_integration(F f, const myspline<T, order1> &m1, const myspline<T, order2> &m2){
+T helperAnalyticIntegration(F f, const okruz::bspline::Spline<T, order1> &m1, const okruz::bspline::Spline<T, order2> &m2){
     size_t startindex1, startindex2, nintervals;
-    findOverlappingIntervals(m1, m2, startindex1, startindex2, nintervals);
+    okruz::bspline::internal::findOverlappingIntervals(m1, m2, startindex1, startindex2, nintervals);
 
     if(nintervals == 0) return static_cast<T>(0); // no overlap
 
     T result = static_cast<T>(0);
 
     for (size_t interv = 0; interv < nintervals; interv++) {
-        result += integrateInterval_analytically<T, F, order1+1, order2 + 1>(f, m1.getCoefficients()[startindex1 + interv],
+        result += integrateIntervalAnalytically<T, F, order1+1, order2 + 1>(f, m1.getCoefficients()[startindex1 + interv],
             m2.getCoefficients()[startindex2+interv],
             m1.getIntervals()[startindex1+interv],
             m1.getIntervals()[startindex1+interv+1]);
@@ -117,7 +120,7 @@ T helper_analytic_integration(F f, const myspline<T, order1> &m1, const myspline
  * @tparam order Order of the spline m.
  */
 template<typename T, size_t order>
-T integrate(const myspline<T, order> &m) {
+T integrate(const Spline<T, order> &m) {
     T retval = static_cast<T>(0);
     const auto &ints = m.getIntervals();
     for(size_t i = 0; i +1 < ints.size(); i++) {
@@ -144,12 +147,12 @@ T integrate(const myspline<T, order> &m) {
  * @tparam order2 Order of the second spline m2.
  */
 template<typename T, size_t order1, size_t order2>
-T overlap(const myspline<T, order1> &m1, const myspline<T, order2> &m2) {
+T overlap(const Spline<T, order1> &m1, const Spline<T, order2> &m2) {
     static constexpr auto f = [](size_t i, size_t j, const T& coeffa, const T& coeffb, const T& dxhalf, [[maybe_unused]] const T& xm) {
         if ((i + j +1) % 2 == 0) return static_cast<T>(0);
         return static_cast<T>(2) * coeffa * coeffb * internal::pow<T>(dxhalf, i + j + 1) / static_cast<T>(i+j+1);
     };
-    return internal::helper_analytic_integration(f, m1, m2);
+    return internal::helperAnalyticIntegration(f, m1, m2);
 };
 
 
@@ -163,12 +166,12 @@ T overlap(const myspline<T, order1> &m1, const myspline<T, order2> &m2) {
  * @tparam order2 Order of the second spline m2.
  */
 template<typename T, size_t order1, size_t order2>
-T integrate_x(const myspline<T, order1> &m1, const myspline<T, order2> &m2) {
+T integrate_x(const Spline<T, order1> &m1, const Spline<T, order2> &m2) {
     static constexpr auto f = [](size_t i, size_t j, const T& coeffa, const T& coeffb, const T& dxhalf, const T& xm) {
         if ((i + j + 1) % 2 == 1) return static_cast<T>(2) * coeffa * coeffb * xm * internal::pow<T>(dxhalf, i +j + 1)/static_cast<T>(i + j +1);
         else return static_cast<T>(2) * coeffa * coeffb * internal::pow<T>(dxhalf, i + j + 2)/static_cast<T>(i+j+2);
     };
-    return internal::helper_analytic_integration(f, m1, m2);
+    return internal::helperAnalyticIntegration(f, m1, m2);
 };
 
 
@@ -182,12 +185,12 @@ T integrate_x(const myspline<T, order1> &m1, const myspline<T, order2> &m2) {
  * @tparam order2 Order of the second spline m2.
  */
 template<typename T, size_t order1, size_t order2>
-T integrate_x2(const myspline<T, order1> &m1, const myspline<T, order2> &m2) {
+T integrate_x2(const Spline<T, order1> &m1, const Spline<T, order2> &m2) {
     static constexpr auto f = [](size_t i, size_t j,const T& coeffa, const T& coeffb, const T& dxhalf, const T& xm) {
         if ((i + j + 2) % 2  == 1) return static_cast<T>(4)*coeffa * coeffb * xm * internal::pow<T>(dxhalf, i + j + 2)/static_cast<T>(i+j+2);
         else return static_cast<T>(2) * coeffa * coeffb * internal::pow<T>(dxhalf,i+j+1) * (dxhalf*dxhalf/static_cast<T>(i+j+3) + xm*xm/ static_cast<T>(i+j+1));
     };
-    return internal::helper_analytic_integration(f, m1, m2);
+    return internal::helperAnalyticIntegration(f, m1, m2);
 };
 
 
@@ -201,12 +204,12 @@ T integrate_x2(const myspline<T, order1> &m1, const myspline<T, order2> &m2) {
  * @tparam order2 Order of the second spline m2.
  */
 template<typename T, size_t order1, size_t order2>
-T integrate_dx(const myspline<T, order1> &m1, const myspline<T, order2> &m2) {
+T integrate_dx(const Spline<T, order1> &m1, const Spline<T, order2> &m2) {
     static constexpr auto f = [](size_t i, size_t j, const T& coeffa, const T& coeffb, const T& dxhalf, [[maybe_unused]] const T& xm) {
         if (j == 0 || (i+j) % 2 == 0) return static_cast<T>(0);
         else return static_cast<T>(2* j) * coeffa * coeffb * internal::pow<T>(dxhalf, i+j) / static_cast<T>(i+j);
     };
-    return internal::helper_analytic_integration(f, m1, m2);
+    return internal::helperAnalyticIntegration(f, m1, m2);
 };
 
 
@@ -220,13 +223,13 @@ T integrate_dx(const myspline<T, order1> &m1, const myspline<T, order2> &m2) {
  * @tparam order2 Order of the second spline m2.
  */
 template<typename T, size_t order1, size_t order2>
-T integrate_x_dx(const myspline<T, order1> &m1, const myspline<T, order2> &m2) {
+T integrate_x_dx(const Spline<T, order1> &m1, const Spline<T, order2> &m2) {
     static constexpr auto f = [](size_t i, size_t j, const T& coeffa, const T& coeffb, const T& dxhalf, const T& xm) {
         if (j == 0) return static_cast<T>(0);
         else if ((i+j) % 2 == 0) return static_cast<T>(2 * j ) * coeffa * coeffb  * internal::pow<T>(dxhalf, i+j+1) / static_cast<T>(i+j+1);
         else return static_cast<T>(2 * j) * xm * coeffa * coeffb  * internal::pow<T>(dxhalf, i+j) / static_cast<T>(i+j);
     };
-    return internal::helper_analytic_integration(f, m1, m2);
+    return internal::helperAnalyticIntegration(f, m1, m2);
 };
 
 
@@ -240,12 +243,12 @@ T integrate_x_dx(const myspline<T, order1> &m1, const myspline<T, order2> &m2) {
  * @tparam order2 Order of the second spline m2.
  */
 template<typename T, size_t order1, size_t order2>
-T integrate_dx2(const myspline<T, order1> &m1, const myspline<T, order2> &m2) {
+T integrate_dx2(const Spline<T, order1> &m1, const Spline<T, order2> &m2) {
     static constexpr auto f = [](size_t i, size_t j, const T& coeffa, const T& coeffb, const T& dxhalf, [[maybe_unused]] const T& xm) {
         if (j < 2 || (i + j) % 2 == 1) return static_cast<T>(0);
         return static_cast<T>(2 * j * (j-1)) * coeffa * coeffb * internal::pow<T>(dxhalf, i+j-1) / static_cast<T>(i+j-1);
     };
-    return internal::helper_analytic_integration(f, m1, m2);
+    return internal::helperAnalyticIntegration(f, m1, m2);
 }
 
 /*!
@@ -258,13 +261,13 @@ T integrate_dx2(const myspline<T, order1> &m1, const myspline<T, order2> &m2) {
  * @tparam order2 Order of the second spline m2.
  */
 template<typename T, size_t order1, size_t order2>
-T integrate_x_dx2(const myspline<T, order1> &m1, const myspline<T, order2> &m2) {
+T integrate_x_dx2(const Spline<T, order1> &m1, const Spline<T, order2> &m2) {
     static constexpr auto f = [](size_t i, size_t j, const T& coeffa, const T& coeffb, const T& dxhalf, const T& xm) {
         if (j < 2) return static_cast<T>(0);
         else if ((i+j) % 2 == 1) return static_cast<T>(2 * j * (j-1)) * coeffa * coeffb * internal::pow<T>(dxhalf, i + j) / static_cast<T>(i+j);
         else return static_cast<T>(2 * j * (j-1)) * coeffa * coeffb * xm *  internal::pow<T>(dxhalf, i + j -1)/static_cast<T>(i + j -1);
     };
-    return internal::helper_analytic_integration(f, m1, m2);
+    return internal::helperAnalyticIntegration(f, m1, m2);
 };
 
 
@@ -278,14 +281,14 @@ T integrate_x_dx2(const myspline<T, order1> &m1, const myspline<T, order2> &m2) 
  * @tparam order2 Order of the second spline m2.
  */
 template<typename T, size_t order1, size_t order2>
-T integrate_x2_dx2(const myspline<T, order1> &m1, const myspline<T, order2> &m2) {
+T integrate_x2_dx2(const Spline<T, order1> &m1, const Spline<T, order2> &m2) {
     static constexpr auto f = [](size_t i, size_t j, const T& coeffa, const T& coeffb, const T& dxhalf, const T& xm) {
         if (j < 2) return static_cast<T>(0);
         else if ((i+j) % 2 == 1) return static_cast<T>(4 * j * (j-1)) * xm * coeffa * coeffb * internal::pow<T>(dxhalf, i + j) / static_cast<T>(i+j);
         else return static_cast<T>(2 * j * (j-1)) * coeffa * coeffb * internal::pow<T>(dxhalf, i + j - 1) * (dxhalf * dxhalf /static_cast<T>(i + j +1) + xm * xm /static_cast<T>(i + j -1));
     };
-    return internal::helper_analytic_integration(f, m1, m2);
+    return internal::helperAnalyticIntegration(f, m1, m2);
 };
 
-}; // end  namespace myspline
-#endif // SPLINE_ANALYTICAL_INTEGRATION_H
+}; // end  namespace okruz::bspline::integration
+#endif // OKRUZ_BSPLINE_INTEGRATION_ANALYTICAL_H

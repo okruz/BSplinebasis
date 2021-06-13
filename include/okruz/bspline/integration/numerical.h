@@ -1,3 +1,5 @@
+#ifndef OKRUZ_BSPLINE_INTEGRATION_NUMERICAL_H
+#define OKRUZ_BSPLINE_INTEGRATION_NUMERICAL_H
 /*
  * This file contains additional numerical integration routines (1D, 2D and 3D) for the
  * splines defined in spline-template.h. The numerical routines are based on the
@@ -20,12 +22,10 @@
  * ########################################################################
  */
 
-#ifndef SPLINE_NUMERICAL_INTEGRATION_H
-#define SPLINE_NUMERICAL_INTEGRATION_H
-#include <spline-template.h>
+#include <okruz/bspline/Spline.h>
 #include <boost/math/quadrature/gauss.hpp> 
 
-namespace myspline {
+namespace okruz::bspline::integration {
 using namespace boost::math::quadrature;
 
 namespace internal {
@@ -60,9 +60,9 @@ T evaluateInterval(const T& x, const std::array<T, ARRAY_SIZE> &coeffs, const T&
  * @tparam ordergl Order of the Gauss-Legendre integration scheme provided by the boost library.
  */
 template<typename T, size_t order1, size_t order2, size_t ordergl>
-T integrate(const std::function<T(const T&)> &f, const myspline<T, order1> &m1, const myspline<T, order2> &m2) {
+T integrate(const std::function<T(const T&)> &f, const okruz::bspline::Spline<T, order1> &m1, const okruz::bspline::Spline<T, order2> &m2) {
     size_t startindex1, startindex2, nintervals;
-    internal::findOverlappingIntervals(m1, m2, startindex1, startindex2, nintervals);
+    okruz::bspline::internal::findOverlappingIntervals(m1, m2, startindex1, startindex2, nintervals);
     if (nintervals == 0) return static_cast<T>(0); // no overlap
         
     T result = static_cast<T>(0);
@@ -80,4 +80,4 @@ T integrate(const std::function<T(const T&)> &f, const myspline<T, order1> &m1, 
     return result;
 };
 };
-#endif //SPLINE_NUMERICAL_INTEGRATION_H
+#endif //OKRUZ_BSPLINE_INTEGRATION_NUMERICAL_H

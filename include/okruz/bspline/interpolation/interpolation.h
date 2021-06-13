@@ -1,3 +1,5 @@
+#ifndef OKRUZ_BSPLINE_INTERPOLATION_INTERPOLATION_H
+#define OKRUZ_BSPLINE_INTERPOLATION_INTERPOLATION_H
 /*
  * This file contains additional numerical interpolation routines for the
  * splines defined in spline-template.h. The linear algebra routines can
@@ -22,10 +24,7 @@
  * ########################################################################
  */
 
-#ifndef SPLINE_INTERPOLATION_H
-#define SPLINE_INTERPOLATION_H
-#include <spline-template.h>
-#include <array>
+#include <okruz/bspline/Spline.h>
 
 #ifdef MYSPLINE_INTERPOLATION_USE_EIGEN
   #include <Eigen/Dense>
@@ -35,7 +34,7 @@
   #include <armadillo>
 #endif
 
-namespace myspline {
+namespace okruz::bspline::interpolation {
 
 /*!
  * Represents either the first or last node of the interpolation grid. Used to define boundary conditions.
@@ -46,7 +45,7 @@ enum class Node {FIRST, LAST};
  * Represents a boundary condition, i.e. one fixed derivative on either the first or last node of the interpolation grid.
  */
 template <typename T>
-struct boundary { 
+struct Boundary {
     Node node = Node::FIRST;        /*! Node to apply the boundary condition to. */ 
     size_t derivative = 1;          /*! Order of the derivative to fix. */
     T value = static_cast<T>(0);    /*! Value of the derivative. */
@@ -113,12 +112,12 @@ class ISolver {
  * @tparam order Polynomial order of the spline.
  */
 template<typename T, size_t order>
-std::array<boundary<T>, order-1> defaultBoundaries() {
+std::array<Boundary<T>, order-1> defaultBoundaries() {
      static_assert(order >= 1, "Order may not be zero.");
-     std::array<boundary<T>,order-1> ret;
+     std::array<Boundary<T>,order-1> ret;
      for (size_t i = 0; i < order -1; i++) {
-          if (i % 2 == 0) ret[i] = boundary<T>{.node = Node::FIRST, .derivative = i/2 + 1, .value = static_cast<T>(0)};
-          else ret[i] = boundary<T>{.node = Node::LAST, .derivative = (i-1)/2 + 1, .value = static_cast<T>(0)};
+          if (i % 2 == 0) ret[i] = Boundary<T>{.node = Node::FIRST, .derivative = i/2 + 1, .value = static_cast<T>(0)};
+          else ret[i] = Boundary<T>{.node = Node::LAST, .derivative = (i-1)/2 + 1, .value = static_cast<T>(0)};
      }
      return ret;
 }
@@ -149,13 +148,13 @@ T faculty_ratio(size_t exponent, size_t deriv) {
  * @tparam Solver Class Wrapping the linear algebra routines.
  */
 template<typename T, size_t order, class Solver>
-myspline<T, order> interpolate(const std::vector<T> &x, const std::vector<T> &y, 
-                             const std::array<boundary<T>, order-1> boundaries = internal::defaultBoundaries<T,order>()) {
+okruz::bspline::Spline<T, order> interpolate(const std::vector<T> &x, const std::vector<T> &y,
+                             const std::array<Boundary<T>, order-1> boundaries = internal::defaultBoundaries<T,order>()) {
     static_assert(order >= 1, "Order may not be zero.");
     static_assert(std::is_base_of<internal::ISolver<T>, Solver>::value, "Solver must be a subclass of internal::ISolver<T>.");
 
     assert(x.size() >= 2 && x.size() == y.size());
-    assert(internal::isSteadilyIncreasing(x));
+    assert(okruz::bspline::internal::isSteadilyIncreasing(x));
 
 
     constexpr size_t NUM_COEFFS = order +1;    
@@ -260,7 +259,7 @@ myspline<T, order> interpolate(const std::vector<T> &x, const std::vector<T> &y,
         std::array<T, NUM_COEFFS> &coeffsi = coeffs[i];
         for(size_t j = 0; j < NUM_COEFFS; j++) coeffsi[j] = s.x(NUM_COEFFS * i + j);
     }
-    return myspline<T, order>(x, std::move(coeffs));
+    return okruz::bspline::Spline<T, order>(x, std::move(coeffs));
 }
 
 
@@ -276,8 +275,8 @@ myspline<T, order> interpolate(const std::vector<T> &x, const std::vector<T> &y,
  * @tparam order Order of the spline.
  */
 template<size_t order>
-myspline<double, order> interpolate_using_armadillo(const std::vector<double> &x, const std::vector<double> &y, 
-                             const std::array<boundary<double>, order-1> boundaries = internal::defaultBoundaries<double,order>()) {
+okruz::bspline::Spline<double, order> interpolate_using_armadillo(const std::vector<double> &x, const std::vector<double> &y,
+                             const std::array<Boundary<double>, order-1> boundaries = internal::defaultBoundaries<double,order>()) {
 
     class ArmadilloSolver : public internal::ISolver<double> {
         private:
@@ -309,8 +308,8 @@ myspline<double, order> interpolate_using_armadillo(const std::vector<double> &x
  * @tparam order Order of the spline.
  */
 template<typename T, size_t order>
-myspline<T, order> interpolate_using_eigen(const std::vector<T> &x, const std::vector<T> &y, 
-                             const std::array<boundary<T>, order-1> boundaries = internal::defaultBoundaries<T,order>()) {
+okruz::bspline::Spline<T, order> interpolate_using_eigen(const std::vector<T> &x, const std::vector<T> &y,
+                             const std::array<Boundary<T>, order-1> boundaries = internal::defaultBoundaries<T,order>()) {
 
     class EigenSolver : public internal::ISolver<T> {
         private:
