@@ -5,6 +5,7 @@
 
 template <typename T> void testSupport() {
   using Support = okruz::bspline::support::Support<T>;
+  using Construction = okruz::bspline::support::Construction;
   using Grid = okruz::bspline::support::Grid<T>;
   const T tol = static_cast<T>(1.0e-15l);
 
@@ -37,7 +38,7 @@ template <typename T> void testSupport() {
 
   Support s1(grid1, 0, grid1.size());
   Support s11(grid11, 0, grid11.size());
-  Support s12(grid1, Support::Construction::WHOLE_GRID);
+  Support s12(grid1, Construction::WHOLE_GRID);
   Support s2(grid1);
   Support s3(grid1, 3, 5);
   Support s32(grid1, 0, 2);

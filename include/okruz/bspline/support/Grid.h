@@ -2,7 +2,7 @@
 #define OKRUZ_BSPLINE_SUPPORT_GRID_H
 #include <assert.h>
 #include <memory>
-#include <okruz/bspline/misc.h>
+#include <okruz/bspline/internal/misc.h>
 #include <vector>
 
 /*

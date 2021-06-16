@@ -5,7 +5,7 @@
 #include <assert.h>
 #include <vector>
 
-#include <okruz/bspline/misc.h>
+#include <okruz/bspline/internal/misc.h>
 #include <okruz/bspline/support/Support.h>
 
 /*
