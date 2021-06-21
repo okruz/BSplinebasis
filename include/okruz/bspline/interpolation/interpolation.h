@@ -25,6 +25,7 @@
  */
 
 #include <okruz/bspline/Spline.h>
+#include <okruz/bspline/support/Support.h>
 
 #ifdef MYSPLINE_INTERPOLATION_USE_EIGEN
 #include <Eigen/Dense>
@@ -144,13 +145,14 @@ template <typename T> T faculty_ratio(size_t exponent, size_t deriv) {
 }
 }; // end namespace internal
 
+using okruz::bspline::support::Support;
+
 /*!
  * Interpolates the data given by x and y with a spline of order order. order-1
  * additional conditions are needed for a well defined problem. These can be
  * supplied by fixing derivatives on the first and last node.
  *
- * @param x Data on the abscissa. The grid points must be in (steadily)
- * increasing order.
+ * @param support Data on the abscissa.
  * @param y Data on the ordinate.
  * @param boundaries Boundary conditions.
  * @tparam T Datatype of the spline and data.
@@ -159,7 +161,7 @@ template <typename T> T faculty_ratio(size_t exponent, size_t deriv) {
  */
 template <typename T, size_t order, class Solver>
 okruz::bspline::Spline<T, order>
-interpolate(const std::vector<T> &x, const std::vector<T> &y,
+interpolate(Support<T> x, const std::vector<T> &y,
             const std::array<Boundary<T>, order - 1> boundaries =
                 internal::defaultBoundaries<T, order>()) {
   static_assert(order >= 1, "Order may not be zero.");
@@ -167,7 +169,6 @@ interpolate(const std::vector<T> &x, const std::vector<T> &y,
                 "Solver must be a subclass of internal::ISolver<T>.");
 
   assert(x.size() >= 2 && x.size() == y.size());
-  assert(okruz::bspline::internal::isSteadilyIncreasing(x));
 
   constexpr size_t NUM_COEFFS = order + 1;
 
@@ -275,7 +276,7 @@ interpolate(const std::vector<T> &x, const std::vector<T> &y,
     for (size_t j = 0; j < NUM_COEFFS; j++)
       coeffsi[j] = s.x(NUM_COEFFS * i + j);
   }
-  return okruz::bspline::Spline<T, order>(x, std::move(coeffs));
+  return okruz::bspline::Spline<T, order>(std::move(x), std::move(coeffs));
 }
 
 #ifdef MYSPLINE_INTERPOLATION_USE_ARMADILLO
@@ -293,7 +294,7 @@ interpolate(const std::vector<T> &x, const std::vector<T> &y,
  */
 template <size_t order>
 okruz::bspline::Spline<double, order> interpolate_using_armadillo(
-    const std::vector<double> &x, const std::vector<double> &y,
+    Support<double> x, const std::vector<double> &y,
     const std::array<Boundary<double>, order - 1> boundaries =
         internal::defaultBoundaries<double, order>()) {
 
@@ -332,7 +333,7 @@ okruz::bspline::Spline<double, order> interpolate_using_armadillo(
  */
 template <typename T, size_t order>
 okruz::bspline::Spline<T, order>
-interpolate_using_eigen(const std::vector<T> &x, const std::vector<T> &y,
+interpolate_using_eigen(Support<T> x, const std::vector<T> &y,
                         const std::array<Boundary<T>, order - 1> boundaries =
                             internal::defaultBoundaries<T, order>()) {
 

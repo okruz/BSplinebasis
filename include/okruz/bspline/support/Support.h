@@ -101,13 +101,29 @@ public:
   bool containsIntervals() const { return (size() > 1); };
 
   /*!
-   * Returns the index relative to the intervals of this support from an index
-   * relative to the global grid. If the index refers to an interval outside
-   * this support, std::nullopt is returned.
+   *
+   * Returns the index relative to this support from an index relative to the
+   * global grid. If the global index does not correspond to a grid point
+   * contained in this support, std::nullopt is returned.
    *
    * @param index The AbsoluteIndex referring to an interval on the global grid.
    */
   std::optional<RelativeIndex> relativeFromAbsolute(AbsoluteIndex index) const {
+    if (index >= _startIndex && index < _endIndex)
+      return index - _startIndex;
+    else
+      return std::nullopt;
+  };
+
+  /*!
+   * Returns the index relative to this support from an index relative to the
+   * global grid. If the global index does not correspond to an interval
+   * contained in this support, std::nullopt is returned.
+   *
+   * @param index The AbsoluteIndex referring to an interval on the global grid.
+   */
+  std::optional<RelativeIndex>
+  intervalIndexFromAbsolute(AbsoluteIndex index) const {
     if (index >= _startIndex && index + 1 < _endIndex)
       return index - _startIndex;
     else
@@ -115,9 +131,8 @@ public:
   };
 
   /*!
-   * Returns the index relative to the intervals of this support from an index
-   * relative to the global grid. If the index refers to an interval outside
-   * this support, std::nullopt is returned.
+   * Returns the index relative to the global grid from an inde relative to this
+   * support.
    *
    * @param index The AbsoluteIndex referring to an interval on the global grid.
    */

@@ -388,8 +388,8 @@ public:
 
     for (size_t i = 0; i < nintervals; i++) {
       const auto absIndex = newSupport.absoluteFromRelative(i);
-      const auto thisRelIndex = _support.relativeFromAbsolute(absIndex);
-      const auto aRelIndex = a.getSupport().relativeFromAbsolute(absIndex);
+      const auto thisRelIndex = _support.intervalIndexFromAbsolute(absIndex);
+      const auto aRelIndex = a.getSupport().intervalIndexFromAbsolute(absIndex);
 
       if (thisRelIndex && !aRelIndex) {
         ncoefficients[i] =
@@ -439,8 +439,8 @@ public:
 
     for (size_t i = 0; i < nintervals; i++) {
       const auto absIndex = newSupport.absoluteFromRelative(i);
-      const auto thisRelIndex = _support.relativeFromAbsolute(absIndex);
-      const auto aRelIndex = a.getSupport().relativeFromAbsolute(absIndex);
+      const auto thisRelIndex = _support.intervalIndexFromAbsolute(absIndex);
+      const auto aRelIndex = a.getSupport().intervalIndexFromAbsolute(absIndex);
 
       if (thisRelIndex && !aRelIndex) {
         ncoefficients[i] =
