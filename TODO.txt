@@ -1,0 +1,13 @@
+- Replace assert() for proper exceptions.
+
+- Look over doxygen comments.
+- Add @returns to doxygen comments.
+- Add @throws to doxygen comments?
+
+- Write linear combination method.
+- Write example(s) (harmonic oscillator?).
+
+- Unclutter unit tests.
+- Improve CMakeLists.txt.
+
+- Merge.
