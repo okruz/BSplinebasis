@@ -182,6 +182,38 @@ public:
     assert(_data && _size > 0);
     return _data[_size - 1];
   };
+
+  /*!
+   * Returns the index corresponding to the element x.
+   *
+   * @param x The element to be searched for.
+   */
+  size_t findElement(const T &x) const {
+    assert(_size > 0);
+    size_t startIndex = 0;
+    size_t endIndex = _size - 1;
+
+    if (_data[startIndex] == x) {
+      return startIndex;
+    }
+
+    if (_data[endIndex] == x) {
+      return endIndex;
+    }
+
+    while (endIndex - startIndex > 1) {
+      size_t middleIndex = (startIndex + endIndex) / 2;
+      if (_data[middleIndex] == x) {
+        return middleIndex;
+      } else if (_data[middleIndex] < x) {
+        startIndex = middleIndex;
+      } else {
+        endIndex = middleIndex;
+      }
+    }
+    assert(false); // TODO: Throw custom exception instead
+    return 0;
+  };
 };
 };     // namespace okruz::bspline::support
 #endif // OKRUZ_BSPLINE_SUPPORT_GRID_H

@@ -101,13 +101,14 @@ T helperAnalyticIntegration(F f, const okruz::bspline::Spline<T, order1> &m1,
   assert(m1.getSupport().hasSameGrid(m2.getSupport()));
 
   Support integrandSupport = m1.getSupport().calcIntersection(m2.getSupport());
-  if (integrandSupport.empty())
+  const size_t nintervals = integrandSupport.numberOfIntervals();
+
+  if (nintervals == 0)
     return static_cast<T>(0); // no overlap
 
   T result = static_cast<T>(0);
 
-  for (size_t interv = 0; interv < integrandSupport.numberOfIntervals();
-       interv++) {
+  for (size_t interv = 0; interv < nintervals; interv++) {
     auto absIndex = integrandSupport.absoluteFromRelative(interv);
 
     auto m1Index = m1.getSupport().relativeFromAbsolute(absIndex).value();

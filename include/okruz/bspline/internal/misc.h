@@ -2,25 +2,6 @@
 #define OKRUZ_BSPLINE_MISC_H
 
 /*
- * template<typename T, size_t order>
- * class Spline
- *
- * Represents a spline of dataytype T and order order. The datatype has to
- * fulfill the following requirements:
- *   - comparisons <, <=, >, >=, == and != have to be implemented.
- *   - arithmetic operators + - * /  += -= *= /= have to be implemented
- *   - A pathway must exist, such that integer values of type T can be
- * constructed via static_cast<T>(int) (e. g. via a constructor taking an int).
- * BSplines can be generated via the method generateBspline(...).
- *
- * All methods accessing two splines assume that these splines are defined on
- * the same grid (i.e. that both splines have the same interval boundaries
- * within the intersection of their respective supports). This may also cause
- * problems when splines are constructed by adding up multiple splines. To be
- * safe, make sure that the supports of two splines being added overlap at least
- * in one grid point.
- *
- *
  * ########################################################################
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -104,6 +85,25 @@ std::array<T, sizeout> changearraysize(const std::array<T, sizein> &in) {
     return ret;
   }
 }
+
+/*
+ * Normally, for every evaluation of a spline, a binary search for the correct
+ * interval is necessary. This method is defined in order to integrate every
+ * interval separately during the 1D integration, omitting the necessity for the
+ * binary search.
+ */
+template <typename T, size_t ARRAY_SIZE>
+T evaluateInterval(const T &x, const std::array<T, ARRAY_SIZE> &coeffs,
+                   const T &xm) {
+  T result = static_cast<T>(0), xpot = static_cast<T>(1);
+  const T dx = x - xm;
+  for (const T &c : coeffs) {
+    result += c * xpot;
+    xpot *= dx;
+  }
+  return result;
+};
+
 }; // end namespace okruz::bspline::internal
 
 #endif // OKRUZ_BSPLINE_MISC_H

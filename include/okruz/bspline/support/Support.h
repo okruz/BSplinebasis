@@ -108,7 +108,7 @@ public:
    * @param index The AbsoluteIndex referring to an interval on the global grid.
    */
   std::optional<RelativeIndex> relativeFromAbsolute(AbsoluteIndex index) const {
-    if (index >= _startIndex && index < _endIndex)
+    if (index >= _startIndex && index + 1 < _endIndex)
       return index - _startIndex;
     else
       return std::nullopt;

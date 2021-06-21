@@ -30,7 +30,7 @@ add_test(splineTest splineTest)
 #target_link_libraries(splineInterpolationTest armadillo)
 #target_include_directories(splineInterpolationTest PUBLIC "/usr/include/eigen3/")
 
-
-set(CMAKE_CXX_FLAGS "-O3 -Wall")
+set(CMAKE_CXX_FLAGS_DEBUG_INIT "-Wall")
+set(CMAKE_CXX_FLAGS_RELEASE_INIT "-Wall -O3")
 
 enable_testing()
