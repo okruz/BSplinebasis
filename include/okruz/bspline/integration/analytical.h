@@ -26,10 +26,12 @@
  */
 
 #include <okruz/bspline/Spline.h>
+#include <okruz/bspline/exceptions/BSplineException.h>
 
 namespace okruz::bspline::integration {
 
 using okruz::bspline::Spline;
+using namespace okruz::bspline::exceptions;
 
 namespace internal {
 /*!
@@ -98,7 +100,9 @@ T integrateIntervalAnalytically(F f, const std::array<T, sizea> &coeffsa,
 template <typename T, typename F, size_t order1, size_t order2>
 T helperAnalyticIntegration(F f, const okruz::bspline::Spline<T, order1> &m1,
                             const okruz::bspline::Spline<T, order2> &m2) {
-  assert(m1.getSupport().hasSameGrid(m2.getSupport()));
+  if (!m1.getSupport().hasSameGrid(m2.getSupport())) {
+    throw BSplineException(ErrorCode::DIFFERING_GRIDS);
+  }
 
   Support integrandSupport = m1.getSupport().calcIntersection(m2.getSupport());
   const size_t nintervals = integrandSupport.numberOfIntervals();

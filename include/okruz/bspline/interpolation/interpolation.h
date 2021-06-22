@@ -25,6 +25,7 @@
  */
 
 #include <okruz/bspline/Spline.h>
+#include <okruz/bspline/exceptions/BSplineException.h>
 #include <okruz/bspline/support/Support.h>
 
 #ifdef MYSPLINE_INTERPOLATION_USE_EIGEN
@@ -36,6 +37,7 @@
 #endif
 
 namespace okruz::bspline::interpolation {
+using namespace okruz::bspline::exceptions;
 
 /*!
  * Represents either the first or last node of the interpolation grid. Used to
@@ -137,7 +139,9 @@ std::array<Boundary<T>, order - 1> defaultBoundaries() {
  * @param deriv Order of the derivative.
  */
 template <typename T> T faculty_ratio(size_t exponent, size_t deriv) {
-  assert(deriv <= exponent);
+  if (deriv > exponent) {
+    throw BSplineException(ErrorCode::UNDETERMINED);
+  }
   T ret = static_cast<T>(exponent);
   for (size_t j = 1; j < deriv; j++)
     ret *= static_cast<T>(exponent - j);
@@ -168,7 +172,15 @@ interpolate(Support<T> x, const std::vector<T> &y,
   static_assert(std::is_base_of<internal::ISolver<T>, Solver>::value,
                 "Solver must be a subclass of internal::ISolver<T>.");
 
-  assert(x.size() >= 2 && x.size() == y.size());
+  if (x.size() != y.size()) {
+    throw BSplineException(ErrorCode::INCONSISTENT_DATA);
+  }
+
+  if (x.size() < 2) {
+    throw BSplineException(
+        ErrorCode::UNDETERMINED,
+        "At least two grid points needed for interpolation.");
+  }
 
   constexpr size_t NUM_COEFFS = order + 1;
 
@@ -188,7 +200,10 @@ interpolate(Support<T> x, const std::vector<T> &y,
     }
 
     for (const auto &bo : boundaries) {
-      assert(bo.derivative > 0 && bo.derivative <= order);
+      if (bo.derivative == 0 || bo.derivative > order) {
+        throw BSplineException(ErrorCode::UNDETERMINED,
+                               "Unsupported order of the derivative.");
+      }
       if (bo.node == Node::FIRST) {
         T power_of_dx1 = static_cast<T>(1);
         for (size_t i = bo.derivative; i <= order; i++) {
@@ -267,7 +282,10 @@ interpolate(Support<T> x, const std::vector<T> &y,
     }
   }
 
-  assert(row_counter == NUM_COEFFS * (x.size() - 1));
+  if (row_counter != NUM_COEFFS * (x.size() - 1)) {
+    throw BSplineException(ErrorCode::UNDETERMINED);
+  }
+
   s.solve();
 
   std::vector<std::array<T, NUM_COEFFS>> coeffs((x.size() - 1));

@@ -1,7 +1,9 @@
 #ifndef OKRUZ_BSPLINE_SUPPORT_SUPPORT_H
 #define OKRUZ_BSPLINE_SUPPORT_SUPPORT_H
 
-#include "Grid.h"
+#include <okruz/bspline/exceptions/BSplineException.h>
+#include <okruz/bspline/support/Grid.h>
+
 #include <optional>
 
 /*
@@ -22,6 +24,7 @@
  */
 
 namespace okruz::bspline::support {
+using namespace okruz::bspline::exceptions;
 
 /*!
  * This enum allows to signal to some constructors whether
@@ -61,7 +64,9 @@ public:
    */
   Support(Grid<T> grid, AbsoluteIndex startIndex, AbsoluteIndex endIndex)
       : _grid(std::move(grid)), _startIndex(startIndex), _endIndex(endIndex) {
-    assert(_endIndex >= _startIndex && _endIndex <= _grid.size());
+    if (_startIndex > _endIndex || _endIndex > _grid.size()) {
+      throw BSplineException(ErrorCode::INCONSISTENT_DATA);
+    }
   };
 
   /*!
@@ -137,7 +142,9 @@ public:
    * @param index The AbsoluteIndex referring to an interval on the global grid.
    */
   AbsoluteIndex absoluteFromRelative(RelativeIndex index) const {
-    assert(index < size());
+    if (index >= size()) {
+      throw BSplineException(ErrorCode::UNDETERMINED);
+    }
     return index + _startIndex;
   };
 
@@ -179,12 +186,14 @@ public:
 
   /*!
    * Allows access to the grid points contained in the support. Checks bounds
-   * via an assert.
+   * and throws exception in case of out-of-bounds access.
    *
    * @param index Index of the element.
    */
   const T &at(RelativeIndex index) const {
-    assert(_startIndex + index < _endIndex);
+    if (_startIndex + index >= _endIndex) {
+      throw BSplineException(ErrorCode::INVALID_ACCESS);
+    }
     return _grid.at(_startIndex + index);
   };
 
@@ -192,7 +201,9 @@ public:
    * Returns a reference to the first grid point that is part of the support.
    */
   const T &front() const {
-    assert(!empty());
+    if (empty()) {
+      throw BSplineException(ErrorCode::INVALID_ACCESS);
+    }
     return _grid[_startIndex];
   };
 
@@ -200,7 +211,9 @@ public:
    * Returns a reference to the last grid point that is part of the support.
    */
   const T &back() const {
-    assert(!empty());
+    if (empty()) {
+      throw BSplineException(ErrorCode::INVALID_ACCESS);
+    }
     return _grid[_endIndex - 1];
   };
 
@@ -234,7 +247,9 @@ public:
    * @param s The Support to calculate the union with.
    */
   Support calcUnion(const Support &s) const {
-    assert(hasSameGrid(s));
+    if (!hasSameGrid(s)) {
+      throw BSplineException(ErrorCode::DIFFERING_GRIDS);
+    }
     const bool thisEmpty = empty();
     const bool sEmpty = s.empty();
     if (thisEmpty && sEmpty)
@@ -254,7 +269,9 @@ public:
    * @param s The Support to calculate the intersection with.
    */
   Support calcIntersection(const Support &s) const {
-    assert(hasSameGrid(s));
+    if (!hasSameGrid(s)) {
+      throw BSplineException(ErrorCode::DIFFERING_GRIDS);
+    }
     size_t newStartIndex = std::max(_startIndex, s._startIndex);
     size_t newEndIndex = std::min(_endIndex, s._endIndex);
     if (newStartIndex >= newEndIndex)

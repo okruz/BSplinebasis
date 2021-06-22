@@ -2,9 +2,9 @@
 #define OKRUZ_BSPLINE_SPLINE_H
 #include <algorithm>
 #include <array>
-#include <assert.h>
 #include <vector>
 
+#include <okruz/bspline/exceptions/BSplineException.h>
 #include <okruz/bspline/internal/misc.h>
 #include <okruz/bspline/support/Support.h>
 
@@ -50,6 +50,7 @@
 namespace okruz::bspline {
 
 using namespace support;
+using namespace okruz::bspline::exceptions;
 
 //####################################################### Beginning of defintion
 // of Spline class
@@ -97,9 +98,12 @@ private:
    * Performs consistency checks on the internal data.
    */
   void checkValidity() const {
-    assert((!_support.containsIntervals() && _coefficients.size() == 0) ||
-           (_support.size() >= 2 &&
-            _coefficients.size() == _support.numberOfIntervals()));
+    bool isValid =
+        (!_support.containsIntervals() && _coefficients.size() == 0) ||
+        (_support.size() >= 2 &&
+         _coefficients.size() == _support.numberOfIntervals());
+    if (!isValid)
+      throw BSplineException(ErrorCode::INCONSISTENT_DATA);
   };
 
   /*!
@@ -332,7 +336,9 @@ public:
    */
   template <size_t ordera>
   Spline<T, order + ordera> operator*(const Spline<T, ordera> &a) const {
-    assert(_support.hasSameGrid(a.getSupport()));
+    if (!_support.hasSameGrid(a.getSupport())) {
+      throw BSplineException(ErrorCode::DIFFERING_GRIDS);
+    }
 
     static constexpr size_t NEW_ORDER = order + ordera;
     static constexpr size_t NEW_ARRAY_SIZE = NEW_ORDER + 1;
@@ -375,7 +381,9 @@ public:
   template <size_t ordera>
   Spline<T, std::max(order, ordera)>
   operator+(const Spline<T, ordera> &a) const {
-    assert(_support.hasSameGrid(a.getSupport()));
+    if (!_support.hasSameGrid(a.getSupport())) {
+      throw BSplineException(ErrorCode::DIFFERING_GRIDS);
+    }
 
     static constexpr size_t NEW_ORDER = std::max(order, ordera);
     static constexpr size_t NEW_ARRAY_SIZE = NEW_ORDER + 1;
@@ -426,7 +434,10 @@ public:
         ordera <= order,
         "The operators += and -= are only defined if the order of the rhs "
         "spline is lower than or equal to that of the lhs spline.");
-    assert(_support.hasSameGrid(a.getSupport()));
+
+    if (!_support.hasSameGrid(a.getSupport())) {
+      throw BSplineException(ErrorCode::DIFFERING_GRIDS);
+    }
 
     static constexpr size_t NEW_ORDER = std::max(order, ordera);
     static constexpr size_t NEW_ARRAY_SIZE = NEW_ORDER + 1;

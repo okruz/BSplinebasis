@@ -22,10 +22,13 @@
 
 #include <boost/math/quadrature/gauss.hpp>
 #include <okruz/bspline/Spline.h>
+#include <okruz/bspline/exceptions/BSplineException.h>
 #include <okruz/bspline/internal/misc.h>
 
 namespace okruz::bspline::integration {
 using namespace boost::math::quadrature;
+using okruz::bspline::support::Support;
+using namespace okruz::bspline::exceptions;
 
 /*!
  * Calculates the 1D integral \\int\\limits_{-\\infty}^{\\infty} dx m1(x) f(x)
@@ -45,7 +48,11 @@ using namespace boost::math::quadrature;
 template <size_t ordergl, typename T, typename F, size_t order1, size_t order2>
 T integrate(const F &f, const okruz::bspline::Spline<T, order1> &m1,
             const okruz::bspline::Spline<T, order2> &m2) {
-  using okruz::bspline::support::Support;
+
+  if (!m1.getSupport().hasSameGrid(m2.getSupport())) {
+    throw BSplineException(ErrorCode::DIFFERING_GRIDS);
+  }
+
   Support newSupport = m1.getSupport().calcIntersection(m2.getSupport());
   const size_t nintervals = newSupport.numberOfIntervals();
   if (nintervals == 0)
