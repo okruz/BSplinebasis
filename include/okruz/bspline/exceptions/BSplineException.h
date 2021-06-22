@@ -26,7 +26,7 @@
 namespace okruz::bspline::exceptions {
 
 /*!
- * Viable error codes.
+ * The error codes, which may be expected.
  */
 enum class ErrorCode {
   DIFFERING_GRIDS,
@@ -43,12 +43,12 @@ enum class ErrorCode {
 std::string getErrorMessage(ErrorCode errorCode) {
   switch (errorCode) {
   case ErrorCode::DIFFERING_GRIDS:
-    return "The requested operation is not possible for splines defined on "
+    return "The requested operation is not implemented for splines defined on "
            "different grids.";
   case ErrorCode::INCONSISTENT_DATA:
-    return "The data used for the construction of an object are inconsitent.";
+    return "The data provided is inconsitent.";
   case ErrorCode::INVALID_ACCESS:
-    return "Attempted access of nonexistant data.";
+    return "Attempted access of nonexistent data.";
   case ErrorCode::UNDETERMINED:
     return "The cause of the error is undetermined.";
   default:
@@ -72,7 +72,7 @@ std::string getErrorCodeName(ErrorCode errorCode) {
   case ErrorCode::UNDETERMINED:
     return "UNDETERMINED";
   default:
-    return "ERROR: code is unknown.";
+    return "UNKNOWN_ERRORCODE";
   }
 };
 
