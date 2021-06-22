@@ -28,6 +28,10 @@
 #include <okruz/bspline/Spline.h>
 #include <okruz/bspline/exceptions/BSplineException.h>
 
+/*!
+ * Namespace containing the code for numerical and analytical integration of
+ * splines.
+ */
 namespace okruz::bspline::integration {
 
 using okruz::bspline::Spline;

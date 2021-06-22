@@ -28,7 +28,12 @@ namespace okruz::bspline::exceptions {
 /*!
  * Viable error codes.
  */
-enum class ErrorCode { DIFFERING_GRIDS, INCONSISTENT_DATA, INVALID_ACCESS, UNDETERMINED };
+enum class ErrorCode {
+  DIFFERING_GRIDS,
+  INCONSISTENT_DATA,
+  INVALID_ACCESS,
+  UNDETERMINED
+};
 
 /*!
  * Returns the default error message for an error code.
@@ -43,7 +48,7 @@ std::string getErrorMessage(ErrorCode errorCode) {
   case ErrorCode::INCONSISTENT_DATA:
     return "The data used for the construction of an object are inconsitent.";
   case ErrorCode::INVALID_ACCESS:
-	  return "Attempted access of nonexistant data.";
+    return "Attempted access of nonexistant data.";
   case ErrorCode::UNDETERMINED:
     return "The cause of the error is undetermined.";
   default:
@@ -63,7 +68,7 @@ std::string getErrorCodeName(ErrorCode errorCode) {
   case ErrorCode::INCONSISTENT_DATA:
     return "INCONSISTENT_DATA";
   case ErrorCode::INVALID_ACCESS:
-	  return "INVALID_ACCESS";
+    return "INVALID_ACCESS";
   case ErrorCode::UNDETERMINED:
     return "UNDETERMINED";
   default:
@@ -76,8 +81,10 @@ std::string getErrorCodeName(ErrorCode errorCode) {
  */
 class BSplineException : public std::exception {
 private:
-  ErrorCode _errorCode; /*! The error code. */
-  std::string _message; /*! A custom defined or defaulted error message. */
+  /*! The error code. */
+  ErrorCode _errorCode;
+  /*! A custom defined or defaulted error message. */
+  std::string _message;
 
 public:
   /*!

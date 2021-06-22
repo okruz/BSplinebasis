@@ -23,6 +23,10 @@
  * ########################################################################
  */
 
+/*!
+ * The namspace containing the internal representation of the Spline's support
+ * and the global grid.
+ */
 namespace okruz::bspline::support {
 using namespace okruz::bspline::exceptions;
 

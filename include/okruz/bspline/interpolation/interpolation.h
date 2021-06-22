@@ -36,6 +36,9 @@
 #include <armadillo>
 #endif
 
+/*!
+ * Interpolate data using the okruz::bspline::Spline
+ */
 namespace okruz::bspline::interpolation {
 using namespace okruz::bspline::exceptions;
 
