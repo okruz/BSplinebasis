@@ -46,7 +46,7 @@ std::string getErrorMessage(ErrorCode errorCode) {
     return "The requested operation is not implemented for splines defined on "
            "different grids.";
   case ErrorCode::INCONSISTENT_DATA:
-    return "The data provided is inconsitent.";
+    return "The data provided is inconsistent.";
   case ErrorCode::INVALID_ACCESS:
     return "Attempted access of nonexistent data.";
   case ErrorCode::UNDETERMINED:
@@ -83,8 +83,22 @@ class BSplineException : public std::exception {
 private:
   /*! The error code. */
   ErrorCode _errorCode;
-  /*! A custom defined or defaulted error message. */
-  std::string _message;
+  /*! The string returned by the what() method. */
+  std::string _whatString;
+
+  /*!
+   * Generates the std::string returned in the what() method.
+   *
+   * @param errorCode The errorCode to generate the what string for.
+   * @param message A message string that can be custom.
+   */
+  std::string generateWhatString(ErrorCode errorCode,
+                                 const std::string &message) const {
+    std::stringstream ret;
+    ret << "BSplineException (code: " << getErrorCodeName(errorCode)
+        << "): " << message;
+    return ret.str();
+  };
 
 public:
   /*!
@@ -93,7 +107,8 @@ public:
    * @param errorCode The errorCode.
    */
   BSplineException(ErrorCode errorCode)
-      : _errorCode(errorCode), _message(getErrorMessage(errorCode)){};
+      : _errorCode(errorCode), _whatString(generateWhatString(
+                                   errorCode, getErrorMessage(errorCode))){};
 
   /*!
    * Use the default error message for the error code.
@@ -102,17 +117,20 @@ public:
    */
 
   BSplineException(ErrorCode errorCode, std::string message)
-      : _errorCode(errorCode), _message(std::move(message)){};
+      : _errorCode(errorCode),
+        _whatString(generateWhatString(errorCode, message)){};
 
   /*!
-   * Returns a string representaiton of the exception.
+   * Returns a string representation of the exception.
    */
   virtual const char *what() const noexcept override {
-    std::stringstream ret;
-    ret << "BSplineException (code: " << getErrorCodeName(_errorCode)
-        << "): " << _message;
-    return ret.str().c_str();
+    return _whatString.c_str();
   };
+
+  /*!
+   * Returns the error code of this exception.
+   */
+  ErrorCode getErrorCode() const { return _errorCode; };
 };
 
 };     // namespace okruz::bspline::exceptions
