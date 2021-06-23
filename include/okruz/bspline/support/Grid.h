@@ -1,5 +1,6 @@
 #ifndef OKRUZ_BSPLINE_SUPPORT_GRID_H
 #define OKRUZ_BSPLINE_SUPPORT_GRID_H
+#include <algorithm>
 #include <memory>
 #include <vector>
 
@@ -33,30 +34,12 @@ using namespace okruz::bspline::exceptions;
  */
 template <typename T> class Grid {
 private:
-  size_t _size; /*! Number of elements of the global grid. */
-  std::shared_ptr<const T[]> _data; /*! Shared pointer to the data. */
-
-  /*!
-   * Generates the shared pointer to an array from two iterators.
-   *
-   * @param begin The iterator referencing the first element to be copied into
-   * the grid.
-   * @param end The iterator referencing the element behind the last element to
-   * be copied into the grid.
-   * @returns A shared pointer to a dynamic array, holding the grid elements.
-   */
-  template <typename Iter>
-  std::shared_ptr<const T[]> generateData(Iter begin, Iter end) {
-    T *dat = new T[_size];
-    for (size_t i = 0; i < _size; i++) {
-      dat[i] = *(begin + i);
-    }
-    return std::shared_ptr<const T[]>(dat);
-  };
+  /*! The gridpoints. */
+  std::shared_ptr<const std::vector<T>> _data;
 
   bool isSteadilyIncreasing() const {
-    for (size_t i = 1; i < _size; i++) {
-      if (_data[i - 1] >= _data[i]) {
+    for (size_t i = 1; i < _data->size(); i++) {
+      if ((*_data)[i - 1] >= (*_data)[i]) {
         return false;
       }
     }
@@ -65,9 +48,11 @@ private:
 
 public:
   /*!
-   * Default constructor, constructing an empty grid.
+   * Iterator type.
    */
-  Grid() : _size(0){};
+  using const_iterator = typename std::vector<T>::const_iterator;
+
+  Grid() = delete;
 
   /*!
    * Constructs a grid from two iterators. The first element of the grid will be
@@ -82,8 +67,8 @@ public:
    */
   template <typename Iter>
   Grid(Iter begin, Iter end)
-      : _size(std::distance(begin, end)), _data(generateData(begin, end)) {
-    if (!isSteadilyIncreasing()) {
+      : _data(std::make_shared<const std::vector<T>>(begin, end)) {
+    if (!_data || !isSteadilyIncreasing()) {
       throw BSplineException(ErrorCode::INCONSISTENT_DATA,
                              "The grid points are not steadily increasing.");
     }
@@ -103,9 +88,8 @@ public:
    * @param size The size of the grid.
    * @param data A shared pointer to the grid elements.
    */
-  Grid(size_t size, std::shared_ptr<const T[]> data)
-      : _size(size), _data(std::move(data)) {
-    if (!isSteadilyIncreasing()) {
+  Grid(std::shared_ptr<const std::vector<T>> data) : _data(std::move(data)) {
+    if (!_data || !isSteadilyIncreasing()) {
       throw BSplineException(ErrorCode::INCONSISTENT_DATA,
                              "The grid points are not steadily increasing.");
     }
@@ -125,12 +109,12 @@ public:
    * @returns Returns true if the grids represent the same logical grid.
    */
   bool operator==(const Grid &g) const {
-    if (_data == g._data && _size == g._size)
+    if (_data == g._data)
       [[likely]] return true;
-    else if (_size != g._size)
+    else if (_data->size() != g._data->size())
       return false;
-    for (size_t i = 0; i < _size; i++)
-      if (_data[i] != g._data[i])
+    for (size_t i = 0; i < _data->size(); i++)
+      if ((*_data)[i] != (*g._data)[i])
         return false;
     return true;
   }
@@ -138,19 +122,19 @@ public:
   /*!
    * Returns the number of elements of the grid.
    */
-  size_t size() const { return _size; };
+  size_t size() const { return _data->size(); };
 
   /*!
    * Returns a shared pointer to the elements of this grid.
    */
-  std::shared_ptr<const T[]> getData() const { return _data; };
+  std::shared_ptr<const std::vector<T>> getData() const { return _data; };
 
   /*!
    * Checks whether this spline holds no elements.
    *
    * @returns Returns true if this grid holds no element.
    */
-  bool empty() const { return _size == 0; };
+  bool empty() const { return _data->empty(); };
 
   /*!
    * Returns a reference to the ith element of the grid. Performs no bounds
@@ -159,7 +143,7 @@ public:
    * @param i The index of the element to be returned.
    * @returns A reference to the ith element.
    */
-  const T &operator[](size_t i) const { return _data[i]; };
+  const T &operator[](size_t i) const { return (*_data)[i]; };
 
   /*!
    * Returns a reference to the ith element of the grid. Checks the bounds.
@@ -168,10 +152,10 @@ public:
    * @returns A reference to the ith element.
    */
   const T &at(size_t i) const {
-    if (!_data || i > _size) {
+    if (i > size()) {
       throw BSplineException(ErrorCode::INVALID_ACCESS);
     }
-    return _data[i];
+    return (*_data)[i];
   };
 
   /*!
@@ -180,10 +164,10 @@ public:
    * @returns A reference to the first element.
    */
   const T &front() const {
-    if (!_data || _size == 0) {
+    if (empty()) {
       throw BSplineException(ErrorCode::INVALID_ACCESS);
     }
-    return _data[0];
+    return _data->front();
   };
 
   /*!
@@ -192,11 +176,25 @@ public:
    * @returns A reference to the last element.
    */
   const T &back() const {
-    if (!_data || _size == 0) {
+    if (empty()) {
       throw BSplineException(ErrorCode::INVALID_ACCESS);
     }
-    return _data[_size - 1];
+    return _data->back();
   };
+
+  /*!
+   * Returns the begin iterator of the grid.
+   *
+   * @returns An iterator to the first element.
+   */
+  const_iterator begin() const { return _data->begin(); };
+
+  /*!
+   * Returns the end iterator of the grid..
+   *
+   * @returns An iterator pointing behind the last element.
+   */
+  const_iterator end() const { return _data->end(); };
 
   /*!
    * Returns the index corresponding to the element x.
@@ -204,32 +202,15 @@ public:
    * @param x The element to be searched for.
    */
   size_t findElement(const T &x) const {
-    if (!_data || _size == 0) {
-      throw BSplineException(ErrorCode::INVALID_ACCESS);
-    }
-    size_t startIndex = 0;
-    size_t endIndex = _size - 1;
 
-    if (_data[startIndex] == x) {
-      return startIndex;
-    }
+    auto it = std::lower_bound(begin(), end(), x);
 
-    if (_data[endIndex] == x) {
-      return endIndex;
+    if (it == end() || *it != x) {
+      // Element was not found
+      throw BSplineException(ErrorCode::INCONSISTENT_DATA);
+    } else {
+      return std::distance(_data->begin(), it);
     }
-
-    while (endIndex - startIndex > 1) {
-      size_t middleIndex = (startIndex + endIndex) / 2;
-      if (_data[middleIndex] == x) {
-        return middleIndex;
-      } else if (_data[middleIndex] < x) {
-        startIndex = middleIndex;
-      } else {
-        endIndex = middleIndex;
-      }
-    }
-    // Should never be reached.
-    throw BSplineException(ErrorCode::UNDETERMINED);
   };
 };
 };     // namespace okruz::bspline::support

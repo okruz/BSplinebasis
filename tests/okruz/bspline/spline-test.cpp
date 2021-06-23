@@ -158,7 +158,7 @@ template <typename T, size_t order> void testArithmetic(T tol) {
     Spline1 sdx22 = s.dx2();
     Spline sdx0 = s.template dx<0>();
 
-    for (T x = s.start(); x <= s.end(); x += 0.01L) {
+    for (T x = s.front(); x <= s.back(); x += 0.01L) {
       BOOST_CHECK_SMALL(sm(x) + s(x), tol);
       BOOST_CHECK_SMALL(s2(x) - static_cast<T>(2) * s(x), tol);
       BOOST_CHECK_SMALL(s22(x) - static_cast<T>(2) * s(x),
@@ -185,6 +185,8 @@ template <typename T, size_t order> void testArithmetic(T tol) {
       BOOST_CHECK_SMALL(s(x) - sdx0(x), tol);     // Tests dx method
     }
   }
+  BOOST_TEST(static_cast<T>(1) == one(one.front()));
+  BOOST_TEST(static_cast<T>(1) == one(one.back()));
 }
 
 BOOST_AUTO_TEST_CASE(TestArithmetic) {

@@ -58,6 +58,11 @@ public:
   using RelativeIndex = size_t;
 
   /*!
+   * Iterator type.
+   */
+  using const_iterator = typename std::vector<T>::const_iterator;
+
+  /*!
    * Constructs a support relative to the global grid grid.
    *
    * @param grid The global grid.
@@ -220,6 +225,20 @@ public:
     }
     return _grid[_endIndex - 1];
   };
+
+  /*!
+   * Returns the begin iterator of the support.
+   *
+   * @returns An iterator to the first element.
+   */
+  const_iterator begin() const { return _grid.begin() + _startIndex; };
+
+  /*!
+   * Returns the end iterator of the support..
+   *
+   * @returns An iterator pointing behind the last element.
+   */
+  const_iterator end() const { return _grid.begin() + _endIndex; };
 
   /*!
    * Checks whether the global grids, the two supports are defined on, are

@@ -65,12 +65,13 @@ using namespace okruz::bspline::exceptions;
  */
 template <typename T, size_t order> class Spline {
 private:
-  static constexpr size_t ARRAY_SIZE =
-      order + 1;       /*! Number of coefficients per interval. */
-  Support<T> _support; /*! The support of this spline, represented by N+1 grid
-                          points. */
-  std::vector<std::array<T, ARRAY_SIZE>>
-      _coefficients; /*! Coefficients of the polynomials on each interval. */
+  /*! Number of coefficients per interval. */
+  static constexpr size_t ARRAY_SIZE = order + 1;
+  /*! The support of this spline, represented by N+1 grid
+                            points. */
+  Support<T> _support;
+  /*! Coefficients of the polynomials on each interval. */
+  std::vector<std::array<T, ARRAY_SIZE>> _coefficients;
 
   /*!
    * Finds the interval in which x lies by binary search. Used during the
@@ -83,15 +84,12 @@ private:
   int findInterval(const T &x) const {
     if (_support.size() < 2 || x > _support.back() || x < _support.front())
       return -1; // x is not part of the spline's support
-    int starti = 0, endi = int(_support.size()) - 1;
-    while (endi - starti > 1) {
-      int middlei = (endi + starti) / 2;
-      if (x > _support[middlei])
-        starti = middlei;
-      else
-        endi = middlei;
-    }
-    return starti;
+
+    const auto begin = _support.begin();
+    const auto it = std::lower_bound(begin, _support.end(), x);
+
+    int retval = std::distance(begin, it);
+    return std::max(0, retval - 1);
   };
 
   /**
@@ -188,9 +186,10 @@ public:
    * Returns the beginning of the support of this spline. If the spline is
    * empty, zero is returned.
    */
-  T start() const {
+  const T &front() const {
     if (_support.size() == 0) {
-      return static_cast<T>(0);
+      const static T ZERO = static_cast<T>(0);
+      return ZERO;
     }
     return _support.front();
   };
@@ -199,9 +198,10 @@ public:
    * Returns the end of the support of this spline. If the spline is empty, zero
    * is returned.
    */
-  T end() const {
+  const T &back() const {
     if (_support.size() == 0) {
-      return static_cast<T>(0);
+      const static T ZERO = static_cast<T>(0);
+      return ZERO;
     }
     return _support.back();
   };
