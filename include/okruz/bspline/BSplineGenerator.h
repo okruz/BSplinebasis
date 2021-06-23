@@ -90,7 +90,7 @@ public:
    * @tparam k Number of the coefficients per interval for the spline (i.e.
    * order of the spline plus one).
    */
-  template <size_t k> Spline<T, k - 1> generateBspline(size_t i) const {
+  template <size_t k> Spline<T, k - 1> generateBSpline(size_t i) const {
     using Support = okruz::bspline::support::Support<T>;
     static_assert(k >= 1, "k has to be at least 1.");
 
@@ -115,7 +115,7 @@ public:
       const T &xipkm1 = _knots.at(i + k - 1);
       if (xipkm1 > xi) {
         const T prefac = static_cast<T>(1) / (xipkm1 - xi);
-        const Spline<T, k - 2> spline1 = prefac * generateBspline<k - 1>(i);
+        const Spline<T, k - 2> spline1 = prefac * generateBSpline<k - 1>(i);
         ret += spline1.timesx() - xi * spline1;
       }
 
@@ -123,7 +123,7 @@ public:
       const T &xipk = _knots.at(i + k);
       if (xipk > xip1) {
         const T prefac = static_cast<T>(1) / (xipk - xip1);
-        const Spline<T, k - 2> spline2 = prefac * generateBspline<k - 1>(i + 1);
+        const Spline<T, k - 2> spline2 = prefac * generateBSpline<k - 1>(i + 1);
         ret += xipk * spline2 - spline2.timesx();
       }
 
@@ -146,7 +146,7 @@ public:
     std::vector<Spline<T, k - 1>> ret;
     ret.reserve(_knots.size() - k);
     for (size_t i = 0; i < _knots.size() - k; i++) {
-      ret.push_back(generateBspline<k>(i));
+      ret.push_back(generateBSpline<k>(i));
     }
     return ret;
   }
