@@ -1,5 +1,3 @@
-- Implement Grid<T> based on shared_ptr<const vector<T>> and benchmark.
-
 - Look over doxygen comments.
 - Add @returns to doxygen comments.
 - Add @throws to doxygen comments?
