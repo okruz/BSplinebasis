@@ -434,43 +434,7 @@ public:
         ordera <= order,
         "The operators += and -= are only defined if the order of the rhs "
         "spline is lower than or equal to that of the lhs spline.");
-
-    if (!_support.hasSameGrid(a.getSupport())) {
-      throw BSplineException(ErrorCode::DIFFERING_GRIDS);
-    }
-
-    static constexpr size_t NEW_ORDER = std::max(order, ordera);
-    static constexpr size_t NEW_ARRAY_SIZE = NEW_ORDER + 1;
-
-    Support newSupport = _support.calcUnion(a.getSupport());
-
-    const size_t nintervals = newSupport.numberOfIntervals();
-
-    std::vector<std::array<T, NEW_ARRAY_SIZE>> ncoefficients(nintervals);
-
-    for (size_t i = 0; i < nintervals; i++) {
-      const auto absIndex = newSupport.absoluteFromRelative(i);
-      const auto thisRelIndex = _support.intervalIndexFromAbsolute(absIndex);
-      const auto aRelIndex = a.getSupport().intervalIndexFromAbsolute(absIndex);
-
-      if (thisRelIndex && !aRelIndex) {
-        ncoefficients[i] =
-            internal::changearraysize<T, order + 1, NEW_ARRAY_SIZE>(
-                _coefficients[thisRelIndex.value()]);
-      } else if (aRelIndex && !thisRelIndex) {
-        ncoefficients[i] =
-            internal::changearraysize<T, ordera + 1, NEW_ARRAY_SIZE>(
-                a.getCoefficients()[aRelIndex.value()]);
-      } else if (thisRelIndex && aRelIndex) {
-        ncoefficients[i] = internal::add<T, ordera + 1, order + 1>(
-            a.getCoefficients()[aRelIndex.value()],
-            _coefficients[thisRelIndex.value()]);
-      } else {
-        ncoefficients[i] =
-            internal::make_array<T, NEW_ARRAY_SIZE>(static_cast<T>(0));
-      }
-    }
-    setData(std::move(newSupport), std::move(ncoefficients));
+    (*this) = (*this) + a;
     return *this;
   };
 
