@@ -572,12 +572,19 @@ inline Spline<T, order> operator*(const T &d, const Spline<T, order> &b) {
  * Calculates the linear combination of splines. Is more efficient than
  * successive scalara multiplications and additions.
  *
- * @param coeffs The coefficients of the linear combination.
- * @param splines The splines to be combined.
- * @tparam T the datatype of the splines.
- * @tparam order The order of the splines.
- * @returns The linear combination, i.e. coeffs[0] * splines[0] + coeffs[1] *
- * splines[1] + ...
+ * @param coeffsBegin The iterator referencing the first element of the
+ * coefficient collection.
+ * @param coeffsEnd The iterator referencing the end of the coefficient
+ * collection.
+ * @param splinesBegin The iterator referencing the first element of the spline
+ * collection.
+ * @param splinesEnd The iterator referencing the end of the spline collection.
+ * @tparam CeffIter An iterator referencing a coefficient of type T.
+ * @tparam SplineIter An iterator referenchig a spline of type Spline<T, order>.
+ * @returns The linear combination as a spline of type Spline<T, order>.
+ * @throws BSplineException If the number of coefficients differs from the
+ * number of splines.
+ * @throws BSplineException If the number of coefficients and splines are zero.
  */
 template <typename CoeffIter, typename SplineIter>
 decltype(auto) linearCombination(CoeffIter coeffsBegin, CoeffIter coeffsEnd,

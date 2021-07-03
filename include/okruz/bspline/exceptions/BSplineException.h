@@ -107,7 +107,7 @@ private:
 
 public:
   /*!
-   * Use the default error message for the error code.
+   * Uses the default error message corresponding to the error code.
    *
    * @param errorCode The errorCode.
    */
@@ -116,9 +116,10 @@ public:
                                    errorCode, getErrorMessage(errorCode))){};
 
   /*!
-   * Use the default error message for the error code.
+   * Uses a custom error message.
    *
    * @param errorCode The errorCode.
+   * @param message The custom error message.
    */
 
   BSplineException(ErrorCode errorCode, std::string message)
