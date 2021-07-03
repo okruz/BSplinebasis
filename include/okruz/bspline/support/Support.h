@@ -161,7 +161,7 @@ public:
    * Returns the number of intervals represented by this support.
    */
   size_t numberOfIntervals() const {
-    size_t si = size();
+    const size_t si = size();
     if (si == 0)
       return 0;
     else
@@ -281,8 +281,8 @@ public:
       return s;
     else if (!thisEmpty && sEmpty)
       return *this;
-    size_t newStartIndex = std::min(_startIndex, s._startIndex);
-    size_t newEndIndex = std::max(_endIndex, s._endIndex);
+    const size_t newStartIndex = std::min(_startIndex, s._startIndex);
+    const size_t newEndIndex = std::max(_endIndex, s._endIndex);
     return Support(_grid, newStartIndex, newEndIndex);
   };
 
@@ -295,8 +295,8 @@ public:
     if (!hasSameGrid(s)) {
       throw BSplineException(ErrorCode::DIFFERING_GRIDS);
     }
-    size_t newStartIndex = std::max(_startIndex, s._startIndex);
-    size_t newEndIndex = std::min(_endIndex, s._endIndex);
+    const size_t newStartIndex = std::max(_startIndex, s._startIndex);
+    const size_t newEndIndex = std::min(_endIndex, s._endIndex);
     if (newStartIndex >= newEndIndex)
       return Support(_grid); // no overlap, return empty Support
     else

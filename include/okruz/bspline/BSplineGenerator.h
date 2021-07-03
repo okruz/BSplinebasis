@@ -104,7 +104,7 @@ public:
 
       std::vector<std::array<T, 1>> coefficients{{static_cast<T>(1)}};
 
-      size_t gridIndex = _grid.findElement(xi);
+      const size_t gridIndex = _grid.findElement(xi);
 
       return Spline<T, 0>(Support(_grid, gridIndex, gridIndex + 2),
                           std::move(coefficients));

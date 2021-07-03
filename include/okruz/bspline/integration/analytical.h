@@ -79,7 +79,6 @@ T integrateIntervalAnalytically(F f, const std::array<T, sizea> &coeffsa,
                                 const std::array<T, sizeb> &coeffsb,
                                 const T &x0, const T &x1) {
   T result = static_cast<T>(0);
-  ;
   const T dxhalf = (x1 - x0) / static_cast<T>(2);
   const T xm = (x1 + x0) / static_cast<T>(2);
   for (size_t i = 0; i < sizea; i++) {
@@ -117,10 +116,10 @@ T helperAnalyticIntegration(F f, const okruz::bspline::Spline<T, order1> &m1,
   T result = static_cast<T>(0);
 
   for (size_t interv = 0; interv < nintervals; interv++) {
-    auto absIndex = integrandSupport.absoluteFromRelative(interv);
+    const auto absIndex = integrandSupport.absoluteFromRelative(interv);
 
-    auto m1Index = m1.getSupport().relativeFromAbsolute(absIndex).value();
-    auto m2Index = m2.getSupport().relativeFromAbsolute(absIndex).value();
+    const auto m1Index = m1.getSupport().relativeFromAbsolute(absIndex).value();
+    const auto m2Index = m2.getSupport().relativeFromAbsolute(absIndex).value();
 
     result += integrateIntervalAnalytically<T, F, order1 + 1, order2 + 1>(
         f, m1.getCoefficients()[m1Index], m2.getCoefficients()[m2Index],

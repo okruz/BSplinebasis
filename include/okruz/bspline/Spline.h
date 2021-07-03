@@ -491,7 +491,6 @@ public:
           coeffsi[j] += coeffs_old[j - 1];
         if (j < coeffs_old.size())
           coeffsi[j] += xm * coeffs_old[j];
-        ;
       }
     }
     return Spline<T, order + 1>(_support, std::move(newcoeffs));
@@ -630,8 +629,8 @@ decltype(auto) linearCombination(CoeffIter coeffsBegin, CoeffIter coeffsEnd,
       throw BSplineException(ErrorCode::DIFFERING_GRIDS);
     }
 
-    size_t si = it->getSupport().getStartIndex();
-    size_t ei = it->getSupport().getEndIndex();
+    const size_t si = it->getSupport().getStartIndex();
+    const size_t ei = it->getSupport().getEndIndex();
 
     if (si < startIndex) {
       startIndex = si;
@@ -657,10 +656,10 @@ decltype(auto) linearCombination(CoeffIter coeffsBegin, CoeffIter coeffsEnd,
 
     for (size_t j = 0; j < spline.getSupport().numberOfIntervals(); j++) {
       // Index of the interval relative to the global grid.
-      size_t absoluteIndex = spline.getSupport().absoluteFromRelative(j);
+      const size_t absoluteIndex = spline.getSupport().absoluteFromRelative(j);
 
       // Index of the interval relative to the newSupport.
-      size_t newSupportIndex =
+      const size_t newSupportIndex =
           newSupport.intervalIndexFromAbsolute(absoluteIndex).value();
 
       const std::array<T, order + 1> &splineCoeffs =
