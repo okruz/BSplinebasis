@@ -309,5 +309,5 @@ private:
   AbsoluteIndex _endIndex; /*! Represents the end of the Support. Points to the
                        element behind the last element of the Support. */
 };                         // end class Support
-};                         // namespace okruz::bspline::support
-#endif                     // OKRUZ_BSPLINE_SUPPORT_SUPPORT_H
+} // namespace okruz::bspline::support
+#endif // OKRUZ_BSPLINE_SUPPORT_SUPPORT_H

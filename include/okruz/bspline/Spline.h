@@ -227,7 +227,7 @@ public:
     const bool isNotOverlapping = m2.getSupport().back() <= _support.front() ||
                                   m2.getSupport().front() >= _support.back();
     return !isNotOverlapping;
-  };
+  }
 
   /*!
    * Checks whether this spline returns zero for all x. Can be the case, either
@@ -247,8 +247,8 @@ public:
     return true;
   };
 
-  // ################################ Operator definitions
-  // ###############################################
+  //######################## Operator definitions ########################
+  //######################################################################
 
   /*!
    * Scalar-division operator. Divides this spline by the scalar d.
@@ -333,7 +333,7 @@ public:
     }
     setData(a.getSupport(), std::move(ncoefficients));
     return *this;
-  };
+  }
 
   /*!
    * Spline-spline multiplication operator. Returns a spline of order order +
@@ -378,7 +378,7 @@ public:
     }
     return Spline<T, NEW_ORDER>(std::move(newSupport),
                                 std::move(newCoefficients));
-  };
+  }
 
   /*!
    * Addition operator. Adds spline a to this spline.
@@ -426,7 +426,7 @@ public:
     }
     return Spline<T, NEW_ORDER>(std::move(newSupport),
                                 std::move(ncoefficients));
-  };
+  }
 
   /*!
    * In-place addition operator. Adds spline a to this spline. The operation is
@@ -444,7 +444,7 @@ public:
         "spline is lower than or equal to that of the lhs spline.");
     (*this) = (*this) + a;
     return *this;
-  };
+  }
 
   /*!
    * Binary in-place subtraction operator. Subtracts spline a from this spline.
@@ -472,8 +472,8 @@ public:
     return (*this) + (static_cast<T>(-1) * a);
   }
 
-  // ################################### Spline transformations
-  // ###########################################################
+  //####################### Spline transformations #######################
+  //######################################################################
 
   /*!
    * Returns a spline g(x) = x f(x), where f(x) is this spline.
@@ -539,7 +539,7 @@ public:
       }
       return Spline<T, NEW_ORDER>(_support, std::move(ncoeffs));
     }
-  };
+  }
 
   /*!
    * Calculates the second derivative.
@@ -567,7 +567,7 @@ public:
 template <typename T, size_t order>
 inline Spline<T, order> operator*(const T &d, const Spline<T, order> &b) {
   return b * d;
-};
+}
 
 /*!
  * Calculates the linear combination of splines. Is more efficient than
@@ -679,5 +679,5 @@ decltype(auto) linearCombination(CoeffIter coeffsBegin, CoeffIter coeffsEnd,
   return Spline(std::move(newSupport), std::move(newCoefficients));
 }
 
-};     // namespace okruz::bspline
+} // namespace okruz::bspline
 #endif // OKRUZ_BSPLINE_SPLINE_H

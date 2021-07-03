@@ -129,7 +129,7 @@ public:
 
       return ret;
     }
-  };
+  }
 
   /*!
    * Generates all BSplines with respect to the knots vector.
@@ -152,5 +152,5 @@ public:
   }
 };
 
-};     // namespace okruz::bspline
+} // namespace okruz::bspline
 #endif // OKRUZ_BSPLINE_BSPLINEGENERATOR_H

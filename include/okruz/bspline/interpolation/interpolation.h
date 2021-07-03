@@ -123,14 +123,15 @@ std::array<Boundary<T>, order - 1> defaultBoundaries() {
   static_assert(order >= 1, "Order may not be zero.");
   std::array<Boundary<T>, order - 1> ret;
   for (size_t i = 0; i < order - 1; i++) {
-    if (i % 2 == 0)
-      ret[i] = Boundary<T>{.node = Node::FIRST,
-                           .derivative = i / 2 + 1,
-                           .value = static_cast<T>(0)};
-    else
-      ret[i] = Boundary<T>{.node = Node::LAST,
-                           .derivative = (i - 1) / 2 + 1,
-                           .value = static_cast<T>(0)};
+    if (i % 2 == 0) {
+      ret[i] = Boundary<T>{/*.node = */ Node::FIRST,
+                           /*.derivative = */ i / 2 + 1,
+                           /*.value = */ static_cast<T>(0)};
+    } else {
+      ret[i] = Boundary<T>{/*.node = */ Node::LAST,
+                           /*.derivative = */ (i - 1) / 2 + 1,
+                           /*.value = */ static_cast<T>(0)};
+    }
   }
   return ret;
 }
@@ -150,7 +151,7 @@ template <typename T> T faculty_ratio(size_t exponent, size_t deriv) {
     ret *= static_cast<T>(exponent - j);
   return ret;
 }
-}; // end namespace internal
+} // end namespace internal
 
 using okruz::bspline::support::Support;
 
@@ -381,5 +382,5 @@ interpolate_using_eigen(Support<T> x, const std::vector<T> &y,
 
 #endif
 
-};     // namespace okruz::bspline::interpolation
+} // namespace okruz::bspline::interpolation
 #endif // SPLINE_INTERPOLATION_H

@@ -58,7 +58,7 @@ template <typename T> T pow(T a, size_t n) {
     a *= a;
   }
   return ret;
-};
+}
 
 /*!
  * Performs an integral over splines m1 and m2 on one interval. The type of the
@@ -88,7 +88,7 @@ T integrateIntervalAnalytically(F f, const std::array<T, sizea> &coeffsa,
     }
   }
   return result;
-};
+}
 
 /*!
  * Performs an integral over the common support of splines m1 and m2. The type
@@ -127,9 +127,9 @@ T helperAnalyticIntegration(F f, const okruz::bspline::Spline<T, order1> &m1,
         m1.getSupport()[m1Index], m1.getSupport()[m1Index + 1]);
   }
   return result;
-};
+}
 
-}; // end namespace internal
+} // end namespace internal
 
 /*!
  * Returns the integral \\int\\limits_{-\\infty}^{\\infty} dx m(x). Calculated
@@ -156,7 +156,7 @@ template <typename T, size_t order> T integrate(const Spline<T, order> &m) {
     }
   }
   return retval;
-};
+}
 
 /*!
  * Returns the integral \\int\\limits_{-\\infty}^{\\infty} dx m1(x) m2(x).
@@ -179,7 +179,7 @@ T overlap(const Spline<T, order1> &m1, const Spline<T, order2> &m2) {
            internal::pow<T>(dxhalf, i + j + 1) / static_cast<T>(i + j + 1);
   };
   return internal::helperAnalyticIntegration(f, m1, m2);
-};
+}
 
 /*!
  * Returns the integral \\int\\limits_{-\\infty}^{\\infty} dx m1(x) x m2(x).
@@ -203,7 +203,7 @@ T integrate_x(const Spline<T, order1> &m1, const Spline<T, order2> &m2) {
              internal::pow<T>(dxhalf, i + j + 2) / static_cast<T>(i + j + 2);
   };
   return internal::helperAnalyticIntegration(f, m1, m2);
-};
+}
 
 /*!
  * Returns the integral \\int\\limits_{-\\infty}^{\\infty} dx m1(x) x^2 m2(x).
@@ -229,7 +229,7 @@ T integrate_x2(const Spline<T, order1> &m1, const Spline<T, order2> &m2) {
               xm * xm / static_cast<T>(i + j + 1));
   };
   return internal::helperAnalyticIntegration(f, m1, m2);
-};
+}
 
 /*!
  * Returns the integral \\int\\limits_{-\\infty}^{\\infty} dx m1(x)
@@ -254,7 +254,7 @@ T integrate_dx(const Spline<T, order1> &m1, const Spline<T, order2> &m2) {
              internal::pow<T>(dxhalf, i + j) / static_cast<T>(i + j);
   };
   return internal::helperAnalyticIntegration(f, m1, m2);
-};
+}
 
 /*!
  * Returns the integral \\int\\limits_{-\\infty}^{\\infty} dx x m1(x)
@@ -281,7 +281,7 @@ T integrate_x_dx(const Spline<T, order1> &m1, const Spline<T, order2> &m2) {
              internal::pow<T>(dxhalf, i + j) / static_cast<T>(i + j);
   };
   return internal::helperAnalyticIntegration(f, m1, m2);
-};
+}
 
 /*!
  * Returns the integral \\int\\limits_{-\\infty}^{\\infty} dx m1(x)
@@ -332,7 +332,7 @@ T integrate_x_dx2(const Spline<T, order1> &m1, const Spline<T, order2> &m2) {
              internal::pow<T>(dxhalf, i + j - 1) / static_cast<T>(i + j - 1);
   };
   return internal::helperAnalyticIntegration(f, m1, m2);
-};
+}
 
 /*!
  * Returns the integral \\int\\limits_{-\\infty}^{\\infty} dx m1(x) x^2
@@ -361,7 +361,7 @@ T integrate_x2_dx2(const Spline<T, order1> &m1, const Spline<T, order2> &m2) {
               xm * xm / static_cast<T>(i + j - 1));
   };
   return internal::helperAnalyticIntegration(f, m1, m2);
-};
+}
 
-};     // end  namespace okruz::bspline::integration
+} // end  namespace okruz::bspline::integration
 #endif // OKRUZ_BSPLINE_INTEGRATION_ANALYTICAL_H

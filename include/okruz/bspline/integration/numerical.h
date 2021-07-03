@@ -77,6 +77,6 @@ T integrate(const F &f, const okruz::bspline::Spline<T, order1> &m1,
     result += gauss<T, ordergl>::integrate(fwrap, xstart, xend);
   }
   return result;
-};
-};     // namespace okruz::bspline::integration
+}
+} // namespace okruz::bspline::integration
 #endif // OKRUZ_BSPLINE_INTEGRATION_NUMERICAL_H

@@ -61,7 +61,7 @@ std::array<T, std::max(sizea, sizeb)> add(const std::array<T, sizea> &a,
     }
     return ret;
   }
-};
+}
 
 /*!
  * Copies one array into a larger one, filling up the additional members with
@@ -102,8 +102,8 @@ T evaluateInterval(const T &x, const std::array<T, ARRAY_SIZE> &coeffs,
     xpot *= dx;
   }
   return result;
-};
+}
 
-}; // end namespace okruz::bspline::internal
+} // end namespace okruz::bspline::internal
 
 #endif // OKRUZ_BSPLINE_MISC_H

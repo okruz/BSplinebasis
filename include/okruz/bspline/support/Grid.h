@@ -72,7 +72,7 @@ public:
       throw BSplineException(ErrorCode::INCONSISTENT_DATA,
                              "The grid points are not steadily increasing.");
     }
-  };
+  }
 
   /*!
    * Constructs a grid from a std::vector. The elements of the vector are
@@ -213,5 +213,5 @@ public:
     }
   };
 };
-};     // namespace okruz::bspline::support
+} // namespace okruz::bspline::support
 #endif // OKRUZ_BSPLINE_SUPPORT_GRID_H

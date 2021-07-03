@@ -41,7 +41,7 @@ enum class ErrorCode {
  *
  * @param errorCode The errorCode for which the default message is requested.
  */
-std::string getErrorMessage(ErrorCode errorCode) {
+inline std::string getErrorMessage(ErrorCode errorCode) {
   switch (errorCode) {
   case ErrorCode::DIFFERING_GRIDS:
     return "The requested operation is not implemented for splines defined on "
@@ -57,14 +57,14 @@ std::string getErrorMessage(ErrorCode errorCode) {
   default:
     return "Errorcode unknown.";
   }
-};
+}
 
 /*!
  * Returns the errorCode name.
  *
  * @param errorCode The errorCode for which the name is requested.
  */
-std::string getErrorCodeName(ErrorCode errorCode) {
+inline std::string getErrorCodeName(ErrorCode errorCode) {
   switch (errorCode) {
   case ErrorCode::DIFFERING_GRIDS:
     return "DIFFERING_GRIDS";
@@ -79,7 +79,7 @@ std::string getErrorCodeName(ErrorCode errorCode) {
   default:
     return "UNKNOWN_ERRORCODE";
   }
-};
+}
 
 /*!
  * The main exception class.
@@ -138,5 +138,5 @@ public:
   ErrorCode getErrorCode() const { return _errorCode; };
 };
 
-};     // namespace okruz::bspline::exceptions
+} // namespace okruz::bspline::exceptions
 #endif // OKRUZ_BSPLINE_BSPLINEEXCEPTION_H

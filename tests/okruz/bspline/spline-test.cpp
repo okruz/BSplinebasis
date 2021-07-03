@@ -33,7 +33,7 @@ template <typename T, size_t order> void testIntegration(T tol) {
       generator.template generateBSplines<order + 1>();
   const Spline0 one = getOne(generator.getGrid());
 
-  const auto f1 = [](const T &x) { return static_cast<T>(1); };
+  const auto f1 = [](const T & /*x*/) { return static_cast<T>(1); };
   const auto fx = [](const T &x) { return x; };
 
   for (const auto &s1 : splines) {
@@ -125,7 +125,7 @@ template <typename T, size_t order>
 T lc(T x, const std::vector<T> &coeffs,
      const std::vector<okruz::bspline::Spline<T, order>> &splines) {
   T ret = static_cast<T>(0);
-  for (int i = 0; i < coeffs.size(); i++) {
+  for (size_t i = 0; i < coeffs.size(); i++) {
     ret += coeffs.at(i) * splines.at(i)(x);
   }
   return ret;
