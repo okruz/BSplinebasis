@@ -29,7 +29,7 @@
 #include <okruz/bspline/support/Support.h>
 
 #ifdef MYSPLINE_INTERPOLATION_USE_EIGEN
-#include <Eigen/Dense>
+#include <eigen3/Eigen/Dense>
 #endif
 
 #ifdef MYSPLINE_INTERPOLATION_USE_ARMADILLO
