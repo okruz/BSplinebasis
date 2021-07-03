@@ -602,8 +602,8 @@ decltype(auto) linearCombination(CoeffIter coeffsBegin, CoeffIter coeffsEnd,
 
   {
     // The number of coefficients and splines.
-    const size_t coeffsSize = std::distance(coeffsBegin, coeffsEnd);
-    const size_t splinesSize = std::distance(splinesBegin, splinesEnd);
+    const int coeffsSize = std::distance(coeffsBegin, coeffsEnd);
+    const int splinesSize = std::distance(splinesBegin, splinesEnd);
 
     // Check, the data is consistent.
     if (coeffsSize != splinesSize) {
@@ -612,7 +612,8 @@ decltype(auto) linearCombination(CoeffIter coeffsBegin, CoeffIter coeffsEnd,
           "The number of coefficients and splines must coincide.");
     }
 
-    if (coeffsSize == 0) {
+    // std::distance() may return negative values.
+    if (coeffsSize <= 0) {
       throw BSplineException(
           ErrorCode::MISSING_DATA,
           "The number of coefficients and splines may not be zero.");
