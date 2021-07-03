@@ -2,6 +2,7 @@
 #define OKRUZ_BSPLINE_SPLINE_H
 #include <algorithm>
 #include <array>
+#include <type_traits>
 #include <vector>
 
 #include <okruz/bspline/exceptions/BSplineException.h>
@@ -52,9 +53,6 @@ namespace okruz::bspline {
 using namespace support;
 using namespace okruz::bspline::exceptions;
 
-//####################################################### Beginning of defintion
-// of Spline class
-//############################################################################################
 /*!
  * Spline class representing spline of datatype T and order order.
  * The coefficients of the spline are defined with respect to the center point
@@ -119,6 +117,16 @@ private:
   };
 
 public:
+  /*!
+   * Provides acces to the data type T of the spline.
+   */
+  using data_type = T;
+
+  /*!
+   * Provides access to the order of the spline.
+   */
+  static constexpr size_t spline_order = order;
+
   /*!
    * Constructor setting the data. Performs sanity checks.
    *
@@ -544,8 +552,9 @@ public:
   Spline<T, orderdx(order, 3)> dx3() const { return this->template dx<3>(); };
 
 }; // class Spline
-//####################################################### End of defintion of
-// Spline class
+
+//############################# End of defintion of Spline class
+//#############################
 //############################################################################################
 
 /*!
@@ -560,6 +569,115 @@ template <typename T, size_t order>
 inline Spline<T, order> operator*(const T &d, const Spline<T, order> &b) {
   return b * d;
 };
+
+/*!
+ * Calculates the linear combination of splines. Is more efficient than
+ * successive scalara multiplications and additions.
+ *
+ * @param coeffs The coefficients of the linear combination.
+ * @param splines The splines to be combined.
+ * @tparam T the datatype of the splines.
+ * @tparam order The order of the splines.
+ * @returns The linear combination, i.e. coeffs[0] * splines[0] + coeffs[1] *
+ * splines[1] + ...
+ */
+template <typename CoeffIter, typename SplineIter>
+decltype(auto) linearCombination(CoeffIter coeffsBegin, CoeffIter coeffsEnd,
+                                 SplineIter splinesBegin,
+                                 SplineIter splinesEnd) {
+  // The spline data type.
+  using Spline = typename std::remove_cv_t<
+      typename std::iterator_traits<SplineIter>::value_type>;
+
+  // The coefficient data type.
+  using T = typename std::remove_cv_t<
+      typename std::iterator_traits<CoeffIter>::value_type>;
+
+  // The order of the spline.
+  constexpr size_t order = Spline::spline_order;
+
+  // Check, the data type of the spline and the coefficients are consistent.
+  static_assert(
+      std::is_same<typename Spline::data_type, T>::value,
+      "Coefficients must be of the same type as the data type of the spline.");
+
+  {
+    // The number of coefficients and splines.
+    const size_t coeffsSize = std::distance(coeffsBegin, coeffsEnd);
+    const size_t splinesSize = std::distance(splinesBegin, splinesEnd);
+
+    // Check, the data is consistent.
+    if (coeffsSize != splinesSize) {
+      throw BSplineException(
+          ErrorCode::INCONSISTENT_DATA,
+          "The number of coefficients and splines must coincide.");
+    }
+
+    if (coeffsSize == 0) {
+      throw BSplineException(
+          ErrorCode::MISSING_DATA,
+          "The number of coefficients and splines may not be zero.");
+    }
+  }
+
+  const auto &support0 = splinesBegin->getSupport();
+  size_t startIndex = support0.getStartIndex();
+  size_t endIndex = support0.getEndIndex();
+
+  // Determine the union of all the splines' supports.
+  for (auto it = splinesBegin + 1; it < splinesEnd; it++) {
+    if (!it->getSupport().hasSameGrid(support0)) {
+      throw BSplineException(ErrorCode::DIFFERING_GRIDS);
+    }
+
+    size_t si = it->getSupport().getStartIndex();
+    size_t ei = it->getSupport().getEndIndex();
+
+    if (si < startIndex) {
+      startIndex = si;
+    }
+
+    if (ei > endIndex) {
+      endIndex = ei;
+    }
+  }
+
+  // Set up support and coefficients vector for the returned spline.
+  Support newSupport(support0.getGrid(), startIndex, endIndex);
+  std::vector<std::array<T, order + 1>> newCoefficients(
+      newSupport.numberOfIntervals(),
+      internal::make_array<T, order + 1>(static_cast<T>(0)));
+
+  auto coeffIt = coeffsBegin;
+  auto splineIt = splinesBegin;
+  while (splineIt < splinesEnd) {
+    // Get spline and coefficient.
+    const auto &spline = *splineIt;
+    const T coeff = *coeffIt;
+
+    for (size_t j = 0; j < spline.getSupport().numberOfIntervals(); j++) {
+      // Index of the interval relative to the global grid.
+      size_t absoluteIndex = spline.getSupport().absoluteFromRelative(j);
+
+      // Index of the interval relative to the newSupport.
+      size_t newSupportIndex =
+          newSupport.intervalIndexFromAbsolute(absoluteIndex).value();
+
+      const std::array<T, order + 1> &splineCoeffs =
+          spline.getCoefficients().at(j);
+      std::array<T, order + 1> &newCoeffs = newCoefficients.at(newSupportIndex);
+
+      for (size_t k = 0; k < order + 1; k++) {
+        newCoeffs[k] += coeff * splineCoeffs[k];
+      }
+    }
+
+    splineIt++;
+    coeffIt++;
+  }
+
+  return Spline(std::move(newSupport), std::move(newCoefficients));
+}
 
 };     // namespace okruz::bspline
 #endif // OKRUZ_BSPLINE_SPLINE_H

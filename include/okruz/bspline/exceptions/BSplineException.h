@@ -31,6 +31,7 @@ namespace okruz::bspline::exceptions {
 enum class ErrorCode {
   DIFFERING_GRIDS,
   INCONSISTENT_DATA,
+  MISSING_DATA,
   INVALID_ACCESS,
   UNDETERMINED
 };
@@ -47,6 +48,8 @@ std::string getErrorMessage(ErrorCode errorCode) {
            "different grids.";
   case ErrorCode::INCONSISTENT_DATA:
     return "The data provided is inconsistent.";
+  case ErrorCode::MISSING_DATA:
+    return "Mandatory data was not provided.";
   case ErrorCode::INVALID_ACCESS:
     return "Attempted access of nonexistent data.";
   case ErrorCode::UNDETERMINED:
@@ -67,6 +70,8 @@ std::string getErrorCodeName(ErrorCode errorCode) {
     return "DIFFERING_GRIDS";
   case ErrorCode::INCONSISTENT_DATA:
     return "INCONSISTENT_DATA";
+  case ErrorCode::MISSING_DATA:
+    return "MISSING_DATA";
   case ErrorCode::INVALID_ACCESS:
     return "INVALID_ACCESS";
   case ErrorCode::UNDETERMINED:

@@ -121,7 +121,18 @@ BOOST_AUTO_TEST_CASE(TestIntegration) {
   }
 }
 
+template <typename T, size_t order>
+T lc(T x, const std::vector<T> &coeffs,
+     const std::vector<okruz::bspline::Spline<T, order>> &splines) {
+  T ret = static_cast<T>(0);
+  for (int i = 0; i < coeffs.size(); i++) {
+    ret += coeffs.at(i) * splines.at(i)(x);
+  }
+  return ret;
+}
+
 template <typename T, size_t order> void testArithmetic(T tol) {
+  std::cout.precision(20);
   static_assert(order >= 2, "For this test, order must be at least 2");
   using Spline = okruz::bspline::Spline<T, order>;
   using Spline6 = okruz::bspline::Spline<T, 2 * order>;
@@ -137,6 +148,18 @@ template <typename T, size_t order> void testArithmetic(T tol) {
   const std::vector<Spline> splines =
       generator.template generateBSplines<order + 1>();
   const Spline0 one = getOne(generator.getGrid());
+
+  const std::vector<T> lcCoeffs{1, 2, 3, 4, 3};
+  const std::vector<Spline> lcSplines{
+      splines[0], splines[1], splines[splines.size() / 2],
+      splines[splines.size() - 2], splines[splines.size() - 1]};
+  Spline slc = okruz::bspline::linearCombination(
+      lcCoeffs.begin(), lcCoeffs.end(), lcSplines.begin(), lcSplines.end());
+
+  for (T x = slc.front(); x <= slc.back(); x += 0.01L) {
+    BOOST_CHECK_SMALL(slc(x) - lc(x, lcCoeffs, lcSplines),
+                      static_cast<T>(10) * tol);
+  }
 
   for (const auto &s : splines) {
     Spline s2 = s * static_cast<T>(2);
