@@ -29,6 +29,14 @@ target_compile_definitions(splineInterpolationTest PUBLIC
                                           MYSPLINE_INTERPOLATION_USE_EIGEN)
 target_link_libraries(splineInterpolationTest armadillo)
 
+
+
+add_executable(examples examples/main.cpp examples/harmonic-oscillator.cpp)
+set_property(TARGET examples PROPERTY CXX_STANDARD 17)
+target_include_directories(examples PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+target_include_directories(examples PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/examples)
+
+
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic -Werror")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
 
