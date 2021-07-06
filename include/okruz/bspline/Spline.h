@@ -520,6 +520,8 @@ public:
   template <size_t n = 1> Spline<T, orderdx(order, n)> dx() const {
     if constexpr (n > order)
       return Spline<T, 0>(Support(_support.getGrid()), {});
+    else if constexpr (n == 0)
+      return *this;
     else {
       static constexpr size_t NEW_ORDER = orderdx(order, n);
       static constexpr size_t NEW_ARRAY_SIZE = NEW_ORDER + 1;

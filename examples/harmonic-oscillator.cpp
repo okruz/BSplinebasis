@@ -32,7 +32,6 @@ namespace okruz::bspline::examples::harmonic_oscillator {
 
 using namespace okruz::bspline;
 using DeMat = Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>;
-using DeVec = Eigen::Matrix<double, Eigen::Dynamic, 1>;
 
 /**
  * @brief setUpKnotsVector Sets up the knots vector on which the basis splines
@@ -82,13 +81,11 @@ static DeMat setUpSymmetricMatrix(
 }
 
 /**
- * @brief getIndexVector Returns a vector of size size, where every element is
- * filled by its own index.
- * @param size The size of the vector.
- * @return Returns a vector of size size, where every element is filled by its
- * own index.
+ * @brief getIdentityPerm Returns the identity permutation for size elements.
+ * @param size The number of elements.
+ * @return Returns the identity permutation for size elements.
  */
-static std::vector<size_t> getIndexVector(size_t size) {
+static std::vector<size_t> getIdentityPerm(size_t size) {
   std::vector<size_t> ret(size);
   for (size_t i = 0; i < size; i++)
     ret[i] = i;
@@ -142,10 +139,11 @@ std::vector<HarmonicOscillatorRetVal> solveHarmonicOscillator() {
   const auto eigenvalues = ges.eigenvalues();
   const auto eigenvectors = ges.eigenvectors();
 
-  std::vector<size_t> indices = getIndexVector(basis.size());
+  // Get the identity permutation.
+  std::vector<size_t> perm = getIdentityPerm(basis.size());
 
-  // Sort index vector by real part of the eigenvector.
-  std::sort(indices.begin(), indices.end(), [&eigenvalues](size_t i, size_t j) {
+  // Get the sorted permutation (by the real part of the eigenvalues).s
+  std::sort(perm.begin(), perm.end(), [&eigenvalues](size_t i, size_t j) {
     const double vali = eigenvalues(i).real();
     const double valj = eigenvalues(j).real();
     return vali < valj;
@@ -156,7 +154,7 @@ std::vector<HarmonicOscillatorRetVal> solveHarmonicOscillator() {
   // Return the eienvalues and eigenfunctions correspondig to the ten lowest
   // eigenvalues.  The imaginary part should be zero within numerical accuracy.
   for (size_t i = 0; i < 10; i++) {
-    size_t index = indices[i];
+    size_t index = perm[i];
     const auto eigenvalue = eigenvalues(index);
     const auto eigenvector = toRealVector(eigenvectors.col(index));
     auto wavefunction = okruz::bspline::linearCombination(

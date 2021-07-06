@@ -55,7 +55,7 @@ public:
   /*!
    * Constructor generating the grid from the knots vector.
    *
-   * @param knots The knots, the BSplines shall be generatre on.
+   * @param knots The knots, the BSplines shall be generated on.
    */
   BSplineGenerator(std::vector<T> knots)
       : _grid(generateGrid(knots)), _knots(std::move(knots)){};
