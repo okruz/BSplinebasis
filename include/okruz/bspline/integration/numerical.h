@@ -20,10 +20,11 @@
  * ########################################################################
  */
 
-#include <boost/math/quadrature/gauss.hpp>
 #include <okruz/bspline/Spline.h>
 #include <okruz/bspline/exceptions/BSplineException.h>
 #include <okruz/bspline/internal/misc.h>
+
+#include <boost/math/quadrature/gauss.hpp>
 
 namespace okruz::bspline::integration {
 using namespace boost::math::quadrature;
@@ -48,19 +49,16 @@ using namespace okruz::bspline::exceptions;
 template <size_t ordergl, typename T, typename F, size_t order1, size_t order2>
 T integrate(const F &f, const okruz::bspline::Spline<T, order1> &m1,
             const okruz::bspline::Spline<T, order2> &m2) {
-
   if (!m1.getSupport().hasSameGrid(m2.getSupport())) {
     throw BSplineException(ErrorCode::DIFFERING_GRIDS);
   }
 
   Support newSupport = m1.getSupport().calcIntersection(m2.getSupport());
   const size_t nintervals = newSupport.numberOfIntervals();
-  if (nintervals == 0)
-    return static_cast<T>(0); // no overlap
+  if (nintervals == 0) return static_cast<T>(0);  // no overlap
 
   T result = static_cast<T>(0);
   for (size_t interv = 0; interv < nintervals; interv++) {
-
     const auto ai = newSupport.absoluteFromRelative(interv);
     const auto m1Index = m1.getSupport().relativeFromAbsolute(ai).value();
     const auto m2Index = m2.getSupport().relativeFromAbsolute(ai).value();
@@ -78,5 +76,5 @@ T integrate(const F &f, const okruz::bspline::Spline<T, order1> &m1,
   }
   return result;
 }
-} // namespace okruz::bspline::integration
-#endif // OKRUZ_BSPLINE_INTEGRATION_NUMERICAL_H
+}  // namespace okruz::bspline::integration
+#endif  // OKRUZ_BSPLINE_INTEGRATION_NUMERICAL_H

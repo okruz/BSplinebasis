@@ -15,10 +15,11 @@
  * ########################################################################
  */
 
-#include "harmonic-oscillator.h"
 #include <fstream>
 #include <iostream>
 #include <vector>
+
+#include "harmonic-oscillator.h"
 
 using namespace okruz::bspline::examples::harmonic_oscillator;
 
@@ -37,7 +38,7 @@ int main() {
     std::ofstream out("harmonic-oscillator-wavefunctions.txt");
     out.precision(20);
     for (double x = -10.1; x <= 10.1; x += 0.01) {
-      out << x;
+      out << x << "\t" << 0.5 * x * x;
       for (const auto &r : harmonicOscillator) {
         out << "\t" << r.wavefunction(x) + r.energy;
       }

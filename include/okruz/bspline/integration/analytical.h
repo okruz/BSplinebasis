@@ -45,7 +45,8 @@ namespace internal {
  * @param n Integer exponent.
  * @tparam T Datatype.
  */
-template <typename T> T pow(T a, size_t n) {
+template <typename T>
+T pow(T a, size_t n) {
   size_t power_of_2 = 1;
   T ret = static_cast<T>(1);
   while (power_of_2 <= n) {
@@ -110,8 +111,7 @@ T helperAnalyticIntegration(F f, const okruz::bspline::Spline<T, order1> &m1,
   Support integrandSupport = m1.getSupport().calcIntersection(m2.getSupport());
   const size_t nintervals = integrandSupport.numberOfIntervals();
 
-  if (nintervals == 0)
-    return static_cast<T>(0); // no overlap
+  if (nintervals == 0) return static_cast<T>(0);  // no overlap
 
   T result = static_cast<T>(0);
 
@@ -128,7 +128,7 @@ T helperAnalyticIntegration(F f, const okruz::bspline::Spline<T, order1> &m1,
   return result;
 }
 
-} // end namespace internal
+}  // end namespace internal
 
 /*!
  * Returns the integral \\int\\limits_{-\\infty}^{\\infty} dx m(x). Calculated
@@ -138,14 +138,15 @@ T helperAnalyticIntegration(F f, const okruz::bspline::Spline<T, order1> &m1,
  * @tparam T Datatype of the spline m.
  * @tparam order Order of the spline m.
  */
-template <typename T, size_t order> T integrate(const Spline<T, order> &m) {
+template <typename T, size_t order>
+T integrate(const Spline<T, order> &m) {
   T retval = static_cast<T>(0);
   const auto &ints = m.getSupport();
   for (size_t i = 0; i + 1 < ints.size(); i++) {
     const T &start = ints[i];
     const T &end = ints[i + 1];
     T pot = (end - start) /
-            static_cast<T>(2); // power of dxhalf, initialised to dxhalf^1
+            static_cast<T>(2);  // power of dxhalf, initialised to dxhalf^1
     const T dxhalf_squared = pot * pot;
     const auto &coeffs = m.getCoefficients()[i];
     for (size_t index = 0; index < order + 1; index += 2) {
@@ -172,8 +173,7 @@ T overlap(const Spline<T, order1> &m1, const Spline<T, order2> &m2) {
   static constexpr auto f = [](size_t i, size_t j, const T &coeffa,
                                const T &coeffb, const T &dxhalf,
                                [[maybe_unused]] const T &xm) {
-    if ((i + j + 1) % 2 == 0)
-      return static_cast<T>(0);
+    if ((i + j + 1) % 2 == 0) return static_cast<T>(0);
     return static_cast<T>(2) * coeffa * coeffb *
            internal::pow<T>(dxhalf, i + j + 1) / static_cast<T>(i + j + 1);
   };
@@ -298,8 +298,7 @@ T integrate_dx2(const Spline<T, order1> &m1, const Spline<T, order2> &m2) {
   static constexpr auto f = [](size_t i, size_t j, const T &coeffa,
                                const T &coeffb, const T &dxhalf,
                                [[maybe_unused]] const T &xm) {
-    if (j < 2 || (i + j) % 2 == 1)
-      return static_cast<T>(0);
+    if (j < 2 || (i + j) % 2 == 1) return static_cast<T>(0);
     return static_cast<T>(2 * j * (j - 1)) * coeffa * coeffb *
            internal::pow<T>(dxhalf, i + j - 1) / static_cast<T>(i + j - 1);
   };
@@ -362,5 +361,5 @@ T integrate_x2_dx2(const Spline<T, order1> &m1, const Spline<T, order2> &m2) {
   return internal::helperAnalyticIntegration(f, m1, m2);
 }
 
-} // end  namespace okruz::bspline::integration
-#endif // OKRUZ_BSPLINE_INTEGRATION_ANALYTICAL_H
+}  // end  namespace okruz::bspline::integration
+#endif  // OKRUZ_BSPLINE_INTEGRATION_ANALYTICAL_H

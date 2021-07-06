@@ -1,24 +1,26 @@
 #define BOOST_TEST_MODULE SplineTest
-#include <boost/test/included/unit_test.hpp>
-#include <boost/test/tools/floating_point_comparison.hpp>
-
 #include <okruz/bspline/BSplineGenerator.h>
 #include <okruz/bspline/integration/analytical.h>
 #include <okruz/bspline/integration/numerical.h>
+
+#include <boost/test/included/unit_test.hpp>
+#include <boost/test/tools/floating_point_comparison.hpp>
 
 using okruz::bspline::BSplineGenerator;
 using okruz::bspline::Spline;
 
 using namespace okruz::bspline::support;
 
-template <typename T> Spline<T, 0> getOne(const Grid<T> &grid) {
+template <typename T>
+Spline<T, 0> getOne(const Grid<T> &grid) {
   T onet = static_cast<T>(1);
   Support support(grid, Construction::WHOLE_GRID);
   std::vector<std::array<T, 1>> coeffs(support.size() - 1, {onet});
   return Spline<T, 0>(std::move(support), std::move(coeffs));
 }
 
-template <typename T, size_t order> void testIntegration(T tol) {
+template <typename T, size_t order>
+void testIntegration(T tol) {
   using namespace okruz::bspline::integration;
 
   using Spline = okruz::bspline::Spline<T, order>;
@@ -45,41 +47,41 @@ template <typename T, size_t order> void testIntegration(T tol) {
                         tol);
       BOOST_CHECK_SMALL(overlap<T>(s1.timesx(), s2) - integrate_x<T>(s1, s2),
                         tol);
-      BOOST_CHECK_SMALL(overlap<T>(s1, s2.timesx().timesx()) -
-                            integrate_x2<T>(s1, s2),
-                        static_cast<T>(5) * tol);
-      BOOST_CHECK_SMALL(overlap<T>(s1.timesx(), s2.timesx()) -
-                            integrate_x2<T>(s1, s2),
-                        static_cast<T>(5) * tol);
-      BOOST_CHECK_SMALL(overlap<T>(s1.timesx().timesx(), s2) -
-                            integrate_x2<T>(s1, s2),
-                        static_cast<T>(5) * tol);
+      BOOST_CHECK_SMALL(
+          overlap<T>(s1, s2.timesx().timesx()) - integrate_x2<T>(s1, s2),
+          static_cast<T>(5) * tol);
+      BOOST_CHECK_SMALL(
+          overlap<T>(s1.timesx(), s2.timesx()) - integrate_x2<T>(s1, s2),
+          static_cast<T>(5) * tol);
+      BOOST_CHECK_SMALL(
+          overlap<T>(s1.timesx().timesx(), s2) - integrate_x2<T>(s1, s2),
+          static_cast<T>(5) * tol);
       BOOST_CHECK_SMALL(overlap<T>(s1, s2.dx()) - integrate_dx<T>(s1, s2), tol);
       BOOST_CHECK_SMALL(
           overlap<T>(s1.timesx(), s2.dx()) - integrate_x_dx<T>(s1, s2), tol);
       BOOST_CHECK_SMALL(overlap<T>(s1, s2.dx().dx()) - integrate_dx2<T>(s1, s2),
                         tol);
       BOOST_CHECK_SMALL(overlap<T>(s1, s2dx2) - integrate_dx2<T>(s1, s2), tol);
-      BOOST_CHECK_SMALL(overlap<T>(s1.timesx(), s2.dx().dx()) -
-                            integrate_x_dx2<T>(s1, s2),
-                        static_cast<T>(11) * tol);
-      BOOST_CHECK_SMALL(overlap<T>(s1, s2.dx().dx().timesx()) -
-                            integrate_x_dx2<T>(s1, s2),
-                        static_cast<T>(8) * tol);
+      BOOST_CHECK_SMALL(
+          overlap<T>(s1.timesx(), s2.dx().dx()) - integrate_x_dx2<T>(s1, s2),
+          static_cast<T>(11) * tol);
+      BOOST_CHECK_SMALL(
+          overlap<T>(s1, s2.dx().dx().timesx()) - integrate_x_dx2<T>(s1, s2),
+          static_cast<T>(8) * tol);
       BOOST_CHECK_SMALL(overlap<T>(s1.timesx().timesx(), s2.dx().dx()) -
                             integrate_x2_dx2<T>(s1, s2),
                         static_cast<T>(60) * tol);
       BOOST_CHECK_SMALL(overlap<T>(s1, s2.dx().dx().timesx().timesx()) -
                             integrate_x2_dx2<T>(s1, s2),
                         static_cast<T>(60) * tol);
-      BOOST_CHECK_SMALL(overlap<T>(s1, s2dx2.timesx().timesx()) -
-                            integrate_x2_dx2<T>(s1, s2),
-                        static_cast<T>(60) * tol);
+      BOOST_CHECK_SMALL(
+          overlap<T>(s1, s2dx2.timesx().timesx()) - integrate_x2_dx2<T>(s1, s2),
+          static_cast<T>(60) * tol);
       BOOST_CHECK_SMALL(overlap<T>(s1, s2) - integrate<2 * order>(f1, s1, s2),
                         static_cast<T>(10) * tol);
-      BOOST_CHECK_SMALL(integrate_x<T>(s1, s2) -
-                            integrate<2 * order>(fx, s1, s2),
-                        static_cast<T>(10) * tol);
+      BOOST_CHECK_SMALL(
+          integrate_x<T>(s1, s2) - integrate<2 * order>(fx, s1, s2),
+          static_cast<T>(10) * tol);
     }
 
     auto s1_d_order = s1.template dx<order>();
@@ -131,7 +133,8 @@ T lc(T x, const std::vector<T> &coeffs,
   return ret;
 }
 
-template <typename T, size_t order> void testArithmetic(T tol) {
+template <typename T, size_t order>
+void testArithmetic(T tol) {
   std::cout.precision(20);
   static_assert(order >= 2, "For this test, order must be at least 2");
   using Spline = okruz::bspline::Spline<T, order>;
@@ -185,27 +188,27 @@ template <typename T, size_t order> void testArithmetic(T tol) {
       BOOST_CHECK_SMALL(sm(x) + s(x), tol);
       BOOST_CHECK_SMALL(s2(x) - static_cast<T>(2) * s(x), tol);
       BOOST_CHECK_SMALL(s22(x) - static_cast<T>(2) * s(x),
-                        tol); // Tests *= operator
+                        tol);  // Tests *= operator
       BOOST_CHECK_SMALL(shalf(x) - s(x) / static_cast<T>(2),
-                        tol); // Tests / operator
+                        tol);  // Tests / operator
       BOOST_CHECK_SMALL(shalf2(x) - s(x) / static_cast<T>(2),
-                        tol); // Tests /= operator
-      BOOST_CHECK_SMALL(s5half(x) -
-                            static_cast<T>(5) * s(x) / static_cast<T>(2),
-                        tol); // Tests + operator
-      BOOST_CHECK_SMALL(s5half2(x) -
-                            static_cast<T>(5) * s(x) / static_cast<T>(2),
-                        tol); // Tests += operator
-      BOOST_CHECK_SMALL(s3half(x) -
-                            static_cast<T>(3) * s(x) / static_cast<T>(2),
-                        tol); // Tests - operator
-      BOOST_CHECK_SMALL(s3half2(x) -
-                            static_cast<T>(3) * s(x) / static_cast<T>(2),
-                        tol); // Tests -= operator
+                        tol);  // Tests /= operator
+      BOOST_CHECK_SMALL(
+          s5half(x) - static_cast<T>(5) * s(x) / static_cast<T>(2),
+          tol);  // Tests + operator
+      BOOST_CHECK_SMALL(
+          s5half2(x) - static_cast<T>(5) * s(x) / static_cast<T>(2),
+          tol);  // Tests += operator
+      BOOST_CHECK_SMALL(
+          s3half(x) - static_cast<T>(3) * s(x) / static_cast<T>(2),
+          tol);  // Tests - operator
+      BOOST_CHECK_SMALL(
+          s3half2(x) - static_cast<T>(3) * s(x) / static_cast<T>(2),
+          tol);  // Tests -= operator
       BOOST_CHECK_SMALL(splusone(x) - s(x) - static_cast<T>(1),
-                        tol);                     // Tests + operator
-      BOOST_CHECK_SMALL(sdx2(x) - sdx22(x), tol); // Tests dx method
-      BOOST_CHECK_SMALL(s(x) - sdx0(x), tol);     // Tests dx method
+                        tol);                      // Tests + operator
+      BOOST_CHECK_SMALL(sdx2(x) - sdx22(x), tol);  // Tests dx method
+      BOOST_CHECK_SMALL(s(x) - sdx0(x), tol);      // Tests dx method
     }
   }
   BOOST_TEST(static_cast<T>(1) == one(one.front()));

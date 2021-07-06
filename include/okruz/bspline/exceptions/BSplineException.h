@@ -43,19 +43,20 @@ enum class ErrorCode {
  */
 inline std::string getErrorMessage(ErrorCode errorCode) {
   switch (errorCode) {
-  case ErrorCode::DIFFERING_GRIDS:
-    return "The requested operation is not implemented for splines defined on "
-           "different grids.";
-  case ErrorCode::INCONSISTENT_DATA:
-    return "The data provided is inconsistent.";
-  case ErrorCode::MISSING_DATA:
-    return "Mandatory data was not provided.";
-  case ErrorCode::INVALID_ACCESS:
-    return "Attempted access of nonexistent data.";
-  case ErrorCode::UNDETERMINED:
-    return "The cause of the error is undetermined.";
-  default:
-    return "Errorcode unknown.";
+    case ErrorCode::DIFFERING_GRIDS:
+      return "The requested operation is not implemented for splines defined "
+             "on "
+             "different grids.";
+    case ErrorCode::INCONSISTENT_DATA:
+      return "The data provided is inconsistent.";
+    case ErrorCode::MISSING_DATA:
+      return "Mandatory data was not provided.";
+    case ErrorCode::INVALID_ACCESS:
+      return "Attempted access of nonexistent data.";
+    case ErrorCode::UNDETERMINED:
+      return "The cause of the error is undetermined.";
+    default:
+      return "Errorcode unknown.";
   }
 }
 
@@ -66,18 +67,18 @@ inline std::string getErrorMessage(ErrorCode errorCode) {
  */
 inline std::string getErrorCodeName(ErrorCode errorCode) {
   switch (errorCode) {
-  case ErrorCode::DIFFERING_GRIDS:
-    return "DIFFERING_GRIDS";
-  case ErrorCode::INCONSISTENT_DATA:
-    return "INCONSISTENT_DATA";
-  case ErrorCode::MISSING_DATA:
-    return "MISSING_DATA";
-  case ErrorCode::INVALID_ACCESS:
-    return "INVALID_ACCESS";
-  case ErrorCode::UNDETERMINED:
-    return "UNDETERMINED";
-  default:
-    return "UNKNOWN_ERRORCODE";
+    case ErrorCode::DIFFERING_GRIDS:
+      return "DIFFERING_GRIDS";
+    case ErrorCode::INCONSISTENT_DATA:
+      return "INCONSISTENT_DATA";
+    case ErrorCode::MISSING_DATA:
+      return "MISSING_DATA";
+    case ErrorCode::INVALID_ACCESS:
+      return "INVALID_ACCESS";
+    case ErrorCode::UNDETERMINED:
+      return "UNDETERMINED";
+    default:
+      return "UNKNOWN_ERRORCODE";
   }
 }
 
@@ -85,7 +86,7 @@ inline std::string getErrorCodeName(ErrorCode errorCode) {
  * The main exception class.
  */
 class BSplineException : public std::exception {
-private:
+ private:
   /*! The error code. */
   ErrorCode _errorCode;
   /*! The string returned by the what() method. */
@@ -105,15 +106,16 @@ private:
     return ret.str();
   };
 
-public:
+ public:
   /*!
    * Uses the default error message corresponding to the error code.
    *
    * @param errorCode The errorCode.
    */
   BSplineException(ErrorCode errorCode)
-      : _errorCode(errorCode), _whatString(generateWhatString(
-                                   errorCode, getErrorMessage(errorCode))){};
+      : _errorCode(errorCode),
+        _whatString(
+            generateWhatString(errorCode, getErrorMessage(errorCode))){};
 
   /*!
    * Uses a custom error message.
@@ -139,5 +141,5 @@ public:
   ErrorCode getErrorCode() const { return _errorCode; };
 };
 
-} // namespace okruz::bspline::exceptions
-#endif // OKRUZ_BSPLINE_BSPLINEEXCEPTION_H
+}  // namespace okruz::bspline::exceptions
+#endif  // OKRUZ_BSPLINE_BSPLINEEXCEPTION_H

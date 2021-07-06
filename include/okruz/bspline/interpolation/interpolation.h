@@ -52,7 +52,8 @@ enum class Node { FIRST, LAST };
  * Represents a boundary condition, i.e. one fixed derivative on either the
  * first or last node of the interpolation grid.
  */
-template <typename T> struct Boundary {
+template <typename T>
+struct Boundary {
   Node node = Node::FIRST;     /*! Node to apply the boundary condition to. */
   size_t derivative = 1;       /*! Order of the derivative to fix. */
   T value = static_cast<T>(0); /*! Value of the derivative. */
@@ -68,8 +69,9 @@ namespace internal {
  *
  * @tparam T Datatype of the linear system of equations to be solved.
  */
-template <typename T> class ISolver {
-public:
+template <typename T>
+class ISolver {
+ public:
   /*!
    * Default constructor.
    */
@@ -142,16 +144,16 @@ std::array<Boundary<T>, order - 1> defaultBoundaries() {
  * @param exponent Exponent of the monomial.
  * @param deriv Order of the derivative.
  */
-template <typename T> T faculty_ratio(size_t exponent, size_t deriv) {
+template <typename T>
+T faculty_ratio(size_t exponent, size_t deriv) {
   if (deriv > exponent) {
     throw BSplineException(ErrorCode::UNDETERMINED);
   }
   T ret = static_cast<T>(exponent);
-  for (size_t j = 1; j < deriv; j++)
-    ret *= static_cast<T>(exponent - j);
+  for (size_t j = 1; j < deriv; j++) ret *= static_cast<T>(exponent - j);
   return ret;
 }
-} // end namespace internal
+}  // end namespace internal
 
 using okruz::bspline::support::Support;
 
@@ -168,10 +170,10 @@ using okruz::bspline::support::Support;
  * @tparam Solver Class Wrapping the linear algebra routines.
  */
 template <typename T, size_t order, class Solver>
-okruz::bspline::Spline<T, order>
-interpolate(Support<T> x, const std::vector<T> &y,
-            const std::array<Boundary<T>, order - 1> boundaries =
-                internal::defaultBoundaries<T, order>()) {
+okruz::bspline::Spline<T, order> interpolate(
+    Support<T> x, const std::vector<T> &y,
+    const std::array<Boundary<T>, order - 1> boundaries =
+        internal::defaultBoundaries<T, order>()) {
   static_assert(order >= 1, "Order may not be zero.");
   static_assert(std::is_base_of<internal::ISolver<T>, Solver>::value,
                 "Solver must be a subclass of internal::ISolver<T>.");
@@ -319,13 +321,12 @@ okruz::bspline::Spline<double, order> interpolate_using_armadillo(
     Support<double> x, const std::vector<double> &y,
     const std::array<Boundary<double>, order - 1> boundaries =
         internal::defaultBoundaries<double, order>()) {
-
   class ArmadilloSolver : public internal::ISolver<double> {
-  private:
+   private:
     arma::mat _M;
     arma::vec _b, _x;
 
-  public:
+   public:
     ArmadilloSolver(size_t problemsize)
         : _M(arma::mat(problemsize, problemsize, arma::fill::zeros)),
           _b(arma::vec(problemsize, arma::fill::zeros)){};
@@ -354,19 +355,18 @@ okruz::bspline::Spline<double, order> interpolate_using_armadillo(
  * @tparam order Order of the spline.
  */
 template <typename T, size_t order>
-okruz::bspline::Spline<T, order>
-interpolate_using_eigen(Support<T> x, const std::vector<T> &y,
-                        const std::array<Boundary<T>, order - 1> boundaries =
-                            internal::defaultBoundaries<T, order>()) {
-
+okruz::bspline::Spline<T, order> interpolate_using_eigen(
+    Support<T> x, const std::vector<T> &y,
+    const std::array<Boundary<T>, order - 1> boundaries =
+        internal::defaultBoundaries<T, order>()) {
   class EigenSolver : public internal::ISolver<T> {
-  private:
+   private:
     using DeMat = Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic>;
     using DeVec = Eigen::Matrix<T, Eigen::Dynamic, 1>;
     DeMat _M;
     DeVec _b, _x;
 
-  public:
+   public:
     EigenSolver(size_t problemsize)
         : _M(DeMat::Zero(problemsize, problemsize)),
           _b(DeVec::Zero(problemsize)){};
@@ -382,5 +382,5 @@ interpolate_using_eigen(Support<T> x, const std::vector<T> &y,
 
 #endif
 
-} // namespace okruz::bspline::interpolation
-#endif // SPLINE_INTERPOLATION_H
+}  // namespace okruz::bspline::interpolation
+#endif  // SPLINE_INTERPOLATION_H

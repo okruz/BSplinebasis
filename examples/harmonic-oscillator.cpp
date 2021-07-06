@@ -17,15 +17,14 @@
 
 #include "harmonic-oscillator.h"
 
-#include <eigen3/Eigen/Dense>
-#include <eigen3/Eigen/Eigenvalues>
-
+#include <assert.h>
 #include <okruz/bspline/BSplineGenerator.h>
 #include <okruz/bspline/integration/analytical.h>
 
 #include <algorithm>
-#include <assert.h>
 #include <complex>
+#include <eigen3/Eigen/Dense>
+#include <eigen3/Eigen/Eigenvalues>
 #include <functional>
 
 namespace okruz::bspline::examples::harmonic_oscillator {
@@ -87,15 +86,15 @@ static DeMat setUpSymmetricMatrix(
  */
 static std::vector<size_t> getIdentityPerm(size_t size) {
   std::vector<size_t> ret(size);
-  for (size_t i = 0; i < size; i++)
-    ret[i] = i;
+  for (size_t i = 0; i < size; i++) ret[i] = i;
   return ret;
 }
 
 /**
  * Turns the complex Eigen vector into a real std::vector.
  */
-template <typename Ev> static std::vector<double> toRealVector(const Ev &d) {
+template <typename Ev>
+static std::vector<double> toRealVector(const Ev &d) {
   std::vector<double> ret;
   ret.reserve(d.size());
   for (int i = 0; i < d.size(); i++) {
@@ -167,4 +166,4 @@ std::vector<HarmonicOscillatorRetVal> solveHarmonicOscillator() {
   return ret;
 }
 
-} // namespace okruz::bspline::examples::harmonic_oscillator
+}  // namespace okruz::bspline::examples::harmonic_oscillator

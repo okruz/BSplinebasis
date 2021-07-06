@@ -2,6 +2,7 @@
 #define OKRUZ_BSPLINE_EXAMPLES_HARMONICOSCILLATOR_H
 
 #include <okruz/bspline/Spline.h>
+
 #include <vector>
 
 /*
@@ -39,5 +40,5 @@ struct HarmonicOscillatorRetVal {
  */
 std::vector<HarmonicOscillatorRetVal> solveHarmonicOscillator();
 
-} // namespace okruz::bspline::examples::harmonic_oscillator
-#endif // OKRUZ_BSPLINE_EXAMPLES_HARMONICOSCILLATOR_H
+}  // namespace okruz::bspline::examples::harmonic_oscillator
+#endif  // OKRUZ_BSPLINE_EXAMPLES_HARMONICOSCILLATOR_H

@@ -1,8 +1,9 @@
 #ifndef OKRUZ_BSPLINE_BSPLINEGENERATOR_H
 #define OKRUZ_BSPLINE_BSPLINEGENERATOR_H
-#include <algorithm>
 #include <okruz/bspline/Spline.h>
 #include <okruz/bspline/exceptions/BSplineException.h>
+
+#include <algorithm>
 
 /*
  * ########################################################################
@@ -31,8 +32,9 @@ using namespace okruz::bspline::exceptions;
  *
  * @tparam T The datatype of the spline and grid.
  */
-template <typename T> class BSplineGenerator {
-private:
+template <typename T>
+class BSplineGenerator {
+ private:
   Grid<T> _grid; /*! The global grid.*/
   std::vector<T>
       _knots; /*! The knots. Contrary to the grid, the knots vector may contain
@@ -51,7 +53,7 @@ private:
     return Grid<T>(knots.begin(), endIterator);
   }
 
-public:
+ public:
   /*!
    * Constructor generating the grid from the knots vector.
    *
@@ -90,7 +92,8 @@ public:
    * @tparam k Number of the coefficients per interval for the spline (i.e.
    * order of the spline plus one).
    */
-  template <size_t k> Spline<T, k - 1> generateBSpline(size_t i) const {
+  template <size_t k>
+  Spline<T, k - 1> generateBSpline(size_t i) const {
     using Support = okruz::bspline::support::Support<T>;
     static_assert(k >= 1, "k has to be at least 1.");
 
@@ -136,7 +139,8 @@ public:
    * @tparam k Number of the coefficients per interval for the spline (i.e.
    * order of the spline plus one).
    */
-  template <size_t k> std::vector<Spline<T, k - 1>> generateBSplines() const {
+  template <size_t k>
+  std::vector<Spline<T, k - 1>> generateBSplines() const {
     if (_knots.size() < k) {
       throw BSplineException(ErrorCode::UNDETERMINED,
                              "The knots vector contains too few elements to "
@@ -152,5 +156,5 @@ public:
   }
 };
 
-} // namespace okruz::bspline
-#endif // OKRUZ_BSPLINE_BSPLINEGENERATOR_H
+}  // namespace okruz::bspline
+#endif  // OKRUZ_BSPLINE_BSPLINEGENERATOR_H

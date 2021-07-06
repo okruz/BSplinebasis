@@ -1,13 +1,13 @@
 #ifndef OKRUZ_BSPLINE_SPLINE_H
 #define OKRUZ_BSPLINE_SPLINE_H
+#include <okruz/bspline/exceptions/BSplineException.h>
+#include <okruz/bspline/internal/misc.h>
+#include <okruz/bspline/support/Support.h>
+
 #include <algorithm>
 #include <array>
 #include <type_traits>
 #include <vector>
-
-#include <okruz/bspline/exceptions/BSplineException.h>
-#include <okruz/bspline/internal/misc.h>
-#include <okruz/bspline/support/Support.h>
 
 /*
  * template<typename T, size_t order>
@@ -61,8 +61,9 @@ using namespace okruz::bspline::exceptions;
  * @tparam T Datatype of the spline.
  * @tparam order Order of the spline.
  */
-template <typename T, size_t order> class Spline {
-private:
+template <typename T, size_t order>
+class Spline {
+ private:
   /*! Number of coefficients per interval. */
   static constexpr size_t ARRAY_SIZE = order + 1;
   /*! The support of this spline, represented by N+1 grid
@@ -81,7 +82,7 @@ private:
    */
   int findInterval(const T &x) const {
     if (_support.size() < 2 || x > _support.back() || x < _support.front())
-      return -1; // x is not part of the spline's support
+      return -1;  // x is not part of the spline's support
 
     const auto begin = _support.begin();
     const auto it = std::lower_bound(begin, _support.end(), x);
@@ -98,8 +99,7 @@ private:
         (!_support.containsIntervals() && _coefficients.size() == 0) ||
         (_support.size() >= 2 &&
          _coefficients.size() == _support.numberOfIntervals());
-    if (!isValid)
-      throw BSplineException(ErrorCode::INCONSISTENT_DATA);
+    if (!isValid) throw BSplineException(ErrorCode::INCONSISTENT_DATA);
   };
 
   /*!
@@ -116,7 +116,7 @@ private:
     checkValidity();
   };
 
-public:
+ public:
   /*!
    * Provides acces to the data type T of the spline.
    */
@@ -162,8 +162,8 @@ public:
   /*!
    * Returns the polynomial coefficients of the spline for each interval.
    */
-  const std::vector<std::array<T, ARRAY_SIZE>> &
-  getCoefficients() const noexcept {
+  const std::vector<std::array<T, ARRAY_SIZE>> &getCoefficients()
+      const noexcept {
     return _coefficients;
   };
 
@@ -175,8 +175,7 @@ public:
    */
   T operator()(const T &x) const {
     int index = findInterval(x);
-    if (index < 0)
-      return static_cast<T>(0);
+    if (index < 0) return static_cast<T>(0);
     const auto &coeffs = _coefficients[index];
 
     // distance between x and the middlepoint of the interval
@@ -235,13 +234,11 @@ public:
    * or if all coefficients are zero.
    */
   bool isZero() const {
-    if (!_support.containsIntervals())
-      return true;
+    if (!_support.containsIntervals()) return true;
     const T zero = static_cast<T>(0);
     for (const auto &cs : _coefficients) {
       for (const auto &c : cs) {
-        if (c != zero)
-          return false;
+        if (c != zero) return false;
       }
     }
     return true;
@@ -328,8 +325,7 @@ public:
     for (size_t i = 0; i < a.getCoefficients().size(); i++) {
       const auto &coeffsi = a.getCoefficients()[i];
       auto &ncoeffsi = ncoefficients[i];
-      for (size_t j = 0; j < coeffsi.size(); j++)
-        ncoeffsi[j] = coeffsi[j];
+      for (size_t j = 0; j < coeffsi.size(); j++) ncoeffsi[j] = coeffsi[j];
     }
     setData(a.getSupport(), std::move(ncoefficients));
     return *this;
@@ -355,7 +351,7 @@ public:
     const size_t nintervals = newSupport.numberOfIntervals();
 
     if (nintervals == 0)
-      return Spline<T, NEW_ORDER>(std::move(newSupport), {}); // No overlap
+      return Spline<T, NEW_ORDER>(std::move(newSupport), {});  // No overlap
 
     std::vector<std::array<T, NEW_ARRAY_SIZE>> newCoefficients(
         nintervals, internal::make_array<T, NEW_ARRAY_SIZE>(static_cast<T>(0)));
@@ -387,8 +383,8 @@ public:
    * @tparam ordera Order of spline a.
    */
   template <size_t ordera>
-  Spline<T, std::max(order, ordera)>
-  operator+(const Spline<T, ordera> &a) const {
+  Spline<T, std::max(order, ordera)> operator+(
+      const Spline<T, ordera> &a) const {
     if (!_support.hasSameGrid(a.getSupport())) {
       throw BSplineException(ErrorCode::DIFFERING_GRIDS);
     }
@@ -467,8 +463,8 @@ public:
    * @tparam ordera Order of spline a.
    */
   template <size_t ordera>
-  Spline<T, std::max(order, ordera)>
-  operator-(const Spline<T, ordera> &a) const {
+  Spline<T, std::max(order, ordera)> operator-(
+      const Spline<T, ordera> &a) const {
     return (*this) + (static_cast<T>(-1) * a);
   }
 
@@ -487,10 +483,8 @@ public:
       const std::array<T, ARRAY_SIZE> &coeffs_old = _coefficients[i];
       auto &coeffsi = newcoeffs[i];
       for (size_t j = 0; j <= coeffs_old.size(); j++) {
-        if (j > 0)
-          coeffsi[j] += coeffs_old[j - 1];
-        if (j < coeffs_old.size())
-          coeffsi[j] += xm * coeffs_old[j];
+        if (j > 0) coeffsi[j] += coeffs_old[j - 1];
+        if (j < coeffs_old.size()) coeffsi[j] += xm * coeffs_old[j];
       }
     }
     return Spline<T, order + 1>(_support, std::move(newcoeffs));
@@ -517,7 +511,8 @@ public:
    *
    * @tparam n Order of the derivative.
    */
-  template <size_t n = 1> Spline<T, orderdx(order, n)> dx() const {
+  template <size_t n = 1>
+  Spline<T, orderdx(order, n)> dx() const {
     if constexpr (n > order)
       return Spline<T, 0>(Support(_support.getGrid()), {});
     else if constexpr (n == 0)
@@ -533,8 +528,7 @@ public:
         const auto &c = _coefficients[ii];
         for (size_t i = n; i < c.size(); i++) {
           size_t faculty = 1;
-          for (size_t j = 0; j < n; j++)
-            faculty *= i - j;
+          for (size_t j = 0; j < n; j++) faculty *= i - j;
           nc[i - n] = faculty * c[i];
         }
       }
@@ -552,7 +546,7 @@ public:
    */
   Spline<T, orderdx(order, 3)> dx3() const { return this->template dx<3>(); };
 
-}; // class Spline
+};  // class Spline
 
 //################### End of defintion of Spline class ###################
 //########################################################################
@@ -687,5 +681,5 @@ decltype(auto) linearCombination(CoeffIter coeffsBegin, CoeffIter coeffsEnd,
   return Spline(std::move(newSupport), std::move(newCoefficients));
 }
 
-} // namespace okruz::bspline
-#endif // OKRUZ_BSPLINE_SPLINE_H
+}  // namespace okruz::bspline
+#endif  // OKRUZ_BSPLINE_SPLINE_H

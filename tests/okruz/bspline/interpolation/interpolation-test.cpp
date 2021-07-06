@@ -1,11 +1,13 @@
 #define BOOST_TEST_MODULE SplineTest
-#include <boost/test/included/unit_test.hpp>
-#include <boost/test/tools/floating_point_comparison.hpp>
 #include <okruz/bspline/interpolation/interpolation.h>
 #include <okruz/bspline/support/Support.h>
 
+#include <boost/test/included/unit_test.hpp>
+#include <boost/test/tools/floating_point_comparison.hpp>
+
 #ifdef MYSPLINE_INTERPOLATION_USE_EIGEN
-template <typename T, size_t order> void testInterpolationEigen(T tol) {
+template <typename T, size_t order>
+void testInterpolationEigen(T tol) {
   using Spline = okruz::bspline::Spline<T, order>;
   using Support = okruz::bspline::support::Support<T>;
   using Grid = okruz::bspline::support::Grid<T>;
@@ -39,7 +41,8 @@ BOOST_AUTO_TEST_CASE(TestInterpolationEigen) {
 #endif
 
 #ifdef MYSPLINE_INTERPOLATION_USE_ARMADILLO
-template <size_t order> void testInterpolationArmadillo(double tol) {
+template <size_t order>
+void testInterpolationArmadillo(double tol) {
   using Spline = okruz::bspline::Spline<double, order>;
   using Support = okruz::bspline::support::Support<double>;
   using Grid = okruz::bspline::support::Grid<double>;

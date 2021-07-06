@@ -1,5 +1,6 @@
 #ifndef OKRUZ_BSPLINE_MISC_H
 #define OKRUZ_BSPLINE_MISC_H
+#include <array>
 
 /*
  * ########################################################################
@@ -32,7 +33,8 @@ namespace okruz::bspline::internal {
  * @tparam T Datatype of the array.
  * @tparam size Size of the array.
  */
-template <typename T, size_t size> std::array<T, size> make_array(T val) {
+template <typename T, size_t size>
+std::array<T, size> make_array(T val) {
   std::array<T, size> ret;
   ret.fill(val);
   return ret;
@@ -80,8 +82,7 @@ std::array<T, sizeout> changearraysize(const std::array<T, sizein> &in) {
     return in;
   else {
     std::array<T, sizeout> ret = make_array<T, sizeout>(static_cast<T>(0));
-    for (size_t i = 0; i < sizein; i++)
-      ret[i] = in[i];
+    for (size_t i = 0; i < sizein; i++) ret[i] = in[i];
     return ret;
   }
 }
@@ -104,6 +105,6 @@ T evaluateInterval(const T &x, const std::array<T, ARRAY_SIZE> &coeffs,
   return result;
 }
 
-} // end namespace okruz::bspline::internal
+}  // end namespace okruz::bspline::internal
 
-#endif // OKRUZ_BSPLINE_MISC_H
+#endif  // OKRUZ_BSPLINE_MISC_H

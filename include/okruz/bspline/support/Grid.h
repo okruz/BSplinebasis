@@ -1,11 +1,11 @@
 #ifndef OKRUZ_BSPLINE_SUPPORT_GRID_H
 #define OKRUZ_BSPLINE_SUPPORT_GRID_H
+#include <okruz/bspline/exceptions/BSplineException.h>
+#include <okruz/bspline/internal/misc.h>
+
 #include <algorithm>
 #include <memory>
 #include <vector>
-
-#include <okruz/bspline/exceptions/BSplineException.h>
-#include <okruz/bspline/internal/misc.h>
 
 /*
  * ########################################################################
@@ -32,8 +32,9 @@ using namespace okruz::bspline::exceptions;
  *
  * @tparam T The datatype of the grid elements.
  */
-template <typename T> class Grid {
-private:
+template <typename T>
+class Grid {
+ private:
   /*! The gridpoints. */
   std::shared_ptr<const std::vector<T>> _data;
 
@@ -46,7 +47,7 @@ private:
     return true;
   }
 
-public:
+ public:
   /*!
    * Iterator type.
    */
@@ -114,8 +115,7 @@ public:
     else if (_data->size() != g._data->size())
       return false;
     for (size_t i = 0; i < _data->size(); i++)
-      if ((*_data)[i] != (*g._data)[i])
-        return false;
+      if ((*_data)[i] != (*g._data)[i]) return false;
     return true;
   }
 
@@ -202,7 +202,6 @@ public:
    * @param x The element to be searched for.
    */
   size_t findElement(const T &x) const {
-
     auto it = std::lower_bound(begin(), end(), x);
 
     if (it == end() || *it != x) {
@@ -213,5 +212,5 @@ public:
     }
   };
 };
-} // namespace okruz::bspline::support
-#endif // OKRUZ_BSPLINE_SUPPORT_GRID_H
+}  // namespace okruz::bspline::support
+#endif  // OKRUZ_BSPLINE_SUPPORT_GRID_H

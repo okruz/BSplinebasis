@@ -1,9 +1,11 @@
 #define BOOST_TEST_MODULE SupportTest
-#include <boost/test/included/unit_test.hpp>
-#include <boost/test/tools/floating_point_comparison.hpp>
 #include <okruz/bspline/support/Support.h>
 
-template <typename T> void testSupport() {
+#include <boost/test/included/unit_test.hpp>
+#include <boost/test/tools/floating_point_comparison.hpp>
+
+template <typename T>
+void testSupport() {
   using Support = okruz::bspline::support::Support<T>;
   using Construction = okruz::bspline::support::Construction;
   using Grid = okruz::bspline::support::Grid<T>;
@@ -42,7 +44,7 @@ template <typename T> void testSupport() {
   Support s2(grid1);
   Support s3(grid1, 3, 5);
   Support s32(grid1, 0, 2);
-  Support spl(grid1, 1, 2); // point-like support
+  Support spl(grid1, 1, 2);  // point-like support
   Support s3i = s3.calcIntersection(s32);
   Support s3u = s3.calcUnion(s32);
 
@@ -86,7 +88,6 @@ template <typename T> void testSupport() {
 }
 
 BOOST_AUTO_TEST_CASE(TestSupport) {
-
   testSupport<float>();
   testSupport<double>();
   testSupport<long double>();
