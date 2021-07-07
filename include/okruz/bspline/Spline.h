@@ -579,8 +579,8 @@ inline Spline<T, order> operator*(const T &d, const Spline<T, order> &b) {
  * @tparam SplineIter An iterator referenchig a spline of type Spline<T, order>.
  * @returns The linear combination as a spline of type Spline<T, order>.
  * @throws BSplineException If the number of coefficients differs from the
- * number of splines.
- * @throws BSplineException If the number of coefficients and splines are zero.
+ * number of splines, if the number of coefficients and splines are zero or the
+ * grids of all splines are not logically equivalent.
  */
 template <typename CoeffIter, typename SplineIter>
 decltype(auto) linearCombination(CoeffIter coeffsBegin, CoeffIter coeffsEnd,
