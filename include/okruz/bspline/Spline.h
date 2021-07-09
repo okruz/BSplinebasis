@@ -191,27 +191,19 @@ class Spline {
 
   /*!
    * Returns the beginning of the support of this spline. If the spline is
-   * empty, zero is returned.
+   * empty, an exception is thrown.
+   *
+   * @throws BSplineException If the spline's support is empty.
    */
-  const T &front() const {
-    if (_support.size() == 0) {
-      const static T ZERO = static_cast<T>(0);
-      return ZERO;
-    }
-    return _support.front();
-  };
+  const T &front() const { return _support.front(); };
 
   /*!
-   * Returns the end of the support of this spline. If the spline is empty, zero
-   * is returned.
+   * Returns the end of the support of this spline. If the spline is empty, an
+   * exception is thrown.
+   *
+   * @throws BSplineException If the spline's support is empty.
    */
-  const T &back() const {
-    if (_support.size() == 0) {
-      const static T ZERO = static_cast<T>(0);
-      return ZERO;
-    }
-    return _support.back();
-  };
+  const T &back() const { return _support.back(); };
 
   /*!
    * Checks whether the supports of the two splines overlap.
@@ -234,11 +226,11 @@ class Spline {
    * or if all coefficients are zero.
    */
   bool isZero() const {
+    static const T ZERO = static_cast<T>(0);
     if (!_support.containsIntervals()) return true;
-    const T zero = static_cast<T>(0);
     for (const auto &cs : _coefficients) {
       for (const auto &c : cs) {
-        if (c != zero) return false;
+        if (c != ZERO) return false;
       }
     }
     return true;
@@ -566,7 +558,7 @@ inline Spline<T, order> operator*(const T &d, const Spline<T, order> &b) {
 
 /*!
  * Calculates the linear combination of splines. Is more efficient than
- * successive scalara multiplications and additions.
+ * successive scalar multiplications and spline additions.
  *
  * @param coeffsBegin The iterator referencing the first element of the
  * coefficient collection.
