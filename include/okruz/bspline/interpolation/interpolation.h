@@ -5,8 +5,9 @@
  * splines defined in spline-template.h. The linear algebra routines can
  * be supplied via the implementation of a Solver class (a subclass of
  * internal::ISolver<T>. Implementations based on armadillo and eigen are
- * provided and can be used by defining MYSPLINE_INTERPOLATION_USE_ARMADILLO or
- * MYSPLINE_INTERPOLATION_USE_EIGEN , respectively.
+ * provided and can be used by defining
+ * OKRUZ_BSPLINE_INTERPOLATION_USE_ARMADILLO or
+ * OKRUZ_BSPLINE_INTERPOLATION_USE_EIGEN , respectively.
  *
  * ########################################################################
  *  This program is free software: you can redistribute it and/or modify
@@ -28,11 +29,11 @@
 #include <okruz/bspline/exceptions/BSplineException.h>
 #include <okruz/bspline/support/Support.h>
 
-#ifdef MYSPLINE_INTERPOLATION_USE_EIGEN
+#ifdef OKRUZ_BSPLINE_INTERPOLATION_USE_EIGEN
 #include <eigen3/Eigen/Dense>
 #endif
 
-#ifdef MYSPLINE_INTERPOLATION_USE_ARMADILLO
+#ifdef OKRUZ_BSPLINE_INTERPOLATION_USE_ARMADILLO
 #include <armadillo>
 #endif
 
@@ -303,12 +304,12 @@ okruz::bspline::Spline<T, order> interpolate(
   return okruz::bspline::Spline<T, order>(std::move(x), std::move(coeffs));
 }
 
-#ifdef MYSPLINE_INTERPOLATION_USE_ARMADILLO
+#ifdef OKRUZ_BSPLINE_INTERPOLATION_USE_ARMADILLO
 
 /*!
  * Wrapper method around interpolate() using armadillo for the linear algebra
  * routines. Supports only double precision. This method will only be activated
- * if the macro MYSPLINE_INTERPOLATION_USE_ARMADILLO is defined.
+ * if the macro OKRUZ_BSPLINE_INTERPOLATION_USE_ARMADILLO is defined.
  *
  * @param x Data on the abscissa. The grid points must be in (steadily)
  * increasing order.
@@ -341,11 +342,11 @@ okruz::bspline::Spline<double, order> interpolate_using_armadillo(
 }
 #endif
 
-#ifdef MYSPLINE_INTERPOLATION_USE_EIGEN
+#ifdef OKRUZ_BSPLINE_INTERPOLATION_USE_EIGEN
 /*!
  * Wrapper method around interpolate() using eigen for the linear algebra
  * routines. This method will only be activated if the macro
- * MYSPLINE_INTERPOLATION_USE_EIGEN is defined.
+ * OKRUZ_BSPLINE_INTERPOLATION_USE_EIGEN is defined.
  *
  * @param x Data on the abscissa. The grid points must be in (steadily)
  * increasing order.

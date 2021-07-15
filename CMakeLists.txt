@@ -25,8 +25,8 @@ add_test(splineInterpolationTest splineInterpolationTest)
 
 # TODO: Check whether armadillo and eigen are installed and set MYSPLINE_INTERPOLATION_USE_* accordingly
 target_compile_definitions(splineInterpolationTest PUBLIC 
-                                          MYSPLINE_INTERPOLATION_USE_ARMADILLO
-                                          MYSPLINE_INTERPOLATION_USE_EIGEN)
+                                          OKRUZ_BSPLINE_INTERPOLATION_USE_ARMADILLO
+                                          OKRUZ_BSPLINE_INTERPOLATION_USE_EIGEN)
 target_link_libraries(splineInterpolationTest armadillo)
 
 

@@ -5,7 +5,7 @@
 #include <boost/test/included/unit_test.hpp>
 #include <boost/test/tools/floating_point_comparison.hpp>
 
-#ifdef MYSPLINE_INTERPOLATION_USE_EIGEN
+#ifdef OKRUZ_BSPLINE_INTERPOLATION_USE_EIGEN
 template <typename T, size_t order>
 void testInterpolationEigen(T tol) {
   using Spline = okruz::bspline::Spline<T, order>;
@@ -40,7 +40,7 @@ BOOST_AUTO_TEST_CASE(TestInterpolationEigen) {
 }
 #endif
 
-#ifdef MYSPLINE_INTERPOLATION_USE_ARMADILLO
+#ifdef OKRUZ_BSPLINE_INTERPOLATION_USE_ARMADILLO
 template <size_t order>
 void testInterpolationArmadillo(double tol) {
   using Spline = okruz::bspline::Spline<double, order>;
