@@ -1,5 +1,5 @@
-#ifndef OKRUZ_BSPLINE_EXAMPLES_HARMONICOSCILLATOR_H
-#define OKRUZ_BSPLINE_EXAMPLES_HARMONICOSCILLATOR_H
+#ifndef OKRUZ_BSPLINE_EXAMPLES_HYDROGEN_H
+#define OKRUZ_BSPLINE_EXAMPLES_HYDROGEN_H
 
 #include <okruz/bspline/Spline.h>
 
@@ -24,13 +24,19 @@
  * ########################################################################
  */
 
-namespace okruz::bspline::examples::harmonic_oscillator {
+namespace okruz::bspline::examples::hydrogen {
+
 /**
- * Solves the quantum mechanical harmonic oscillator problem with a BSpline
+ * The orbital quantum number.
+ */
+static constexpr int L = 1;
+
+/**
+ * Solves the radial hydrogen problem with a BSpline
  * basis.
  * @return Returns the (real) eigenenergies and the corresponding wavefunctions.
  */
-std::vector<Eigenspace> solveHarmonicOscillator();
+std::vector<Eigenspace> solveRadialHydrogen();
 
-}  // namespace okruz::bspline::examples::harmonic_oscillator
-#endif  // OKRUZ_BSPLINE_EXAMPLES_HARMONICOSCILLATOR_H
+}  // namespace okruz::bspline::examples::hydrogen
+#endif  // OKRUZ_BSPLINE_EXAMPLES_HYDROGEN_H

@@ -15,7 +15,7 @@
  * ########################################################################
  */
 
-#include "harmonic-oscillator.h"
+#include "hydrogen.h"
 
 #include <okruz/bspline/BSplineGenerator.h>
 #include <okruz/bspline/integration/analytical.h>
@@ -23,7 +23,7 @@
 #include <algorithm>
 #include <eigen3/Eigen/Eigenvalues>
 
-namespace okruz::bspline::examples::harmonic_oscillator {
+namespace okruz::bspline::examples::hydrogen {
 
 using namespace okruz::bspline;
 
@@ -33,14 +33,35 @@ using namespace okruz::bspline;
  * @return A vector of doubles representing the knots.
  */
 static std::vector<double> setUpKnotsVector() {
-  std::vector<double> ret{0};
+  std::vector<double> ret;
 
-  for (int i = 1; i < 100; i++) {
-    const double val = double(i * i) / 1000.0;
-    ret.push_back(val);
-    ret.push_back(-val);
+  size_t numberOfZeros = 1;
+
+  if (SPLINE_ORDER + 1 > L) {
+    numberOfZeros = SPLINE_ORDER + 1 - L;
   }
-  std::sort(ret.begin(), ret.end());
+
+  // Adding a knot multiple times alters the continuity properties of the
+  // generated splines at the corresponding grid point (see literature on
+  // BSplines). This guarantees that the radial wavefunctions have the correct
+  // scaling in the vicinity of r=0 (at least for sufficiently low L).
+  for (size_t i = 0; i < numberOfZeros; i++) ret.push_back(0.0);
+
+  // First point of the logarithmic grid.
+  const double rmin = 0.01;
+
+  // Last point of the logarithmic grid.
+  const double rmax = 1.0e3;
+
+  // Roughly the number of grid points on the logarithmic grid.
+  const int numberOfGridPoints = 200;
+
+  // logarithmic step
+  const double step = pow(rmax / rmin, 1.0 / double(numberOfGridPoints));
+
+  for (int i = 1; i <= numberOfGridPoints; i++) {
+    ret.push_back(rmin * pow(step, i));
+  }
   return ret;
 }
 
@@ -53,26 +74,49 @@ static std::vector<Spline> setUpBasis() {
   return gen.template generateBSplines<SPLINE_ORDER + 1>();
 }
 
-std::vector<Eigenspace> solveHarmonicOscillator() {
+std::vector<Eigenspace> solveRadialHydrogen() {
+  static_assert(L >= 0, "L may not be below zero.");
+
   // Get the basis.
   std::vector<Spline> basis = setUpBasis();
 
-  // kinetic term -1/2 d^2/dx^2
-  DeMat hamiltonian =
-      -0.5 * setUpSymmetricMatrix(okruz::bspline::integration::integrate_dx2<
-                                      double, SPLINE_ORDER, SPLINE_ORDER>,
-                                  basis);
+  // First part of the kinetic term -d^2/dr^2 . Includes the term r^2 from the
+  // functional determinant.
+  DeMat hamiltonian = -setUpSymmetricMatrix(
+      okruz::bspline::integration::integrate_x2_dx2<double, SPLINE_ORDER,
+                                                    SPLINE_ORDER>,
+      basis);
 
-  // potential term 1/2 x^2
+  // Second part of the kinetic term -2/r d/dr . Includes the term r^2 from the
+  // functional determinant.
   hamiltonian +=
-      0.5 * setUpSymmetricMatrix(
-                okruz::bspline::integration::integrate_x2<double, SPLINE_ORDER,
-                                                          SPLINE_ORDER>,
-                basis);
+      -2 * setUpSymmetricMatrix(
+               okruz::bspline::integration::integrate_x_dx<double, SPLINE_ORDER,
+                                                           SPLINE_ORDER>,
+               basis);
 
-  // overlap matrix
+  if constexpr (L != 0) {
+    // Third part of the kinetic term L * (L + 1) / r^2 . Includes the term r^2
+    // from the functional determinant.
+    hamiltonian +=
+        L * (L + 1) *
+        setUpSymmetricMatrix(
+            okruz::bspline::integration::overlap<double, SPLINE_ORDER,
+                                                 SPLINE_ORDER>,
+            basis);
+  }
+
+  // potential term -2/r. Includes the term r^2 from the functional determinant.
+  hamiltonian +=
+      -2 * setUpSymmetricMatrix(
+               okruz::bspline::integration::integrate_x<double, SPLINE_ORDER,
+                                                        SPLINE_ORDER>,
+               basis);
+
+  // Overlap matrix. Includes the term r^2 from the functional determinant.
   DeMat overlapMatrix = setUpSymmetricMatrix(
-      okruz::bspline::integration::overlap<double, SPLINE_ORDER, SPLINE_ORDER>,
+      okruz::bspline::integration::integrate_x2<double, SPLINE_ORDER,
+                                                SPLINE_ORDER>,
       basis);
 
   // Solve the generalized eigenvalue problem A.x = lambda B.x
@@ -113,4 +157,4 @@ std::vector<Eigenspace> solveHarmonicOscillator() {
   return ret;
 }
 
-}  // namespace okruz::bspline::examples::harmonic_oscillator
+}  // namespace okruz::bspline::examples::hydrogen

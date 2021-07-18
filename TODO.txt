@@ -2,7 +2,6 @@
 - Add @returns to doxygen comments.
 - Add @throws to doxygen comments?
 
-- Write example(s) (harmonic oscillator?).
 
 - Unclutter unit tests.
 - Improve CMakeLists.txt.

@@ -31,7 +31,10 @@ target_link_libraries(splineInterpolationTest armadillo)
 
 
 
-add_executable(examples examples/main.cpp examples/harmonic-oscillator.cpp)
+add_executable(examples examples/main.cpp 
+                        examples/harmonic-oscillator.cpp
+                        examples/hydrogen.cpp)
+
 set_property(TARGET examples PROPERTY CXX_STANDARD 17)
 target_include_directories(examples PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 target_include_directories(examples PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/examples)
