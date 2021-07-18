@@ -63,7 +63,7 @@ void radialHydrogen() {
     std::ofstream out("radial-hydrogen-wavefunctions.txt");
     out.precision(20);
     for (double x = 0.0; x <= 1.0e3; x = x * 1.02 + 1.0e-3) {
-      out << x << "\t" << 0.5 * x * x;
+      out << x << "\t" << ((x < 0.75) ? -2.0 / 0.75 : -2.0 / x);
       for (const auto &r : hydrogen) {
         out << "\t" << r.wavefunction(x) + r.energy;
       }
