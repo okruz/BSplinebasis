@@ -76,39 +76,33 @@ std::vector<Eigenspace> solveHarmonicOscillator() {
       basis);
 
   // Solve the generalized eigenvalue problem A.x = lambda B.x
-  Eigen::GeneralizedEigenSolver<DeMat> ges;
+  Eigen::GeneralizedSelfAdjointEigenSolver<DeMat> ges;
   ges.compute(hamiltonian, overlapMatrix);
 
-  // Retrieve the (complex) eigenvalues and eigenvectors.
-  // As the overlap matrix is symmetric and positively definite, the imaginary
-  // parts of both should be zero within numerical accuracy.
+  // Retrieve the (real) eigenvalues and eigenvectors.
   const auto eigenvalues = ges.eigenvalues();
   const auto eigenvectors = ges.eigenvectors();
 
   // Get the identity permutation.
   std::vector<size_t> perm = getIdentityPerm(basis.size());
 
-  // Get the sorted permutation (by the real part of the eigenvalues).s
+  // Get the sorted permutation (by the value of the corresponding eigenvalues).
   std::sort(perm.begin(), perm.end(), [&eigenvalues](size_t i, size_t j) {
-    const double vali = eigenvalues(i).real();
-    const double valj = eigenvalues(j).real();
-    return vali < valj;
+    return eigenvalues(i) < eigenvalues(j);
   });
 
   std::vector<Eigenspace> ret;
   ret.reserve(10);
   // Return the eienvalues and eigenfunctions correspondig to the ten lowest
-  // eigenvalues.  The imaginary part should be zero within numerical accuracy.
+  // eigenvalues.
   for (size_t i = 0; i < 10; i++) {
     size_t index = perm[i];
     const auto eigenvalue = eigenvalues(index);
-    const auto eigenvector = toRealVector(eigenvectors.col(index));
+    const auto eigenvector = toStdVector(eigenvectors.col(index));
     auto wavefunction = okruz::bspline::linearCombination(
         eigenvector.begin(), eigenvector.end(), basis.begin(), basis.end());
 
-    // Imaginary part should be negligible.
-    assert(abs(eigenvalue.imag()) < 1.0e-10);
-    ret.push_back({eigenvalue.real(), std::move(wavefunction)});
+    ret.push_back({eigenvalue, std::move(wavefunction)});
   }
   return ret;
 }

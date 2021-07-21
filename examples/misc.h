@@ -72,17 +72,14 @@ inline std::vector<size_t> getIdentityPerm(size_t size) {
 }
 
 /**
- * Turns the complex Eigen vector into a real std::vector.
+ * Turns the real Eigen vector into a std::vector.
  */
 template <typename Ev>
-std::vector<double> toRealVector(const Ev &d) {
+std::vector<double> toStdVector(const Ev &d) {
   std::vector<double> ret;
   ret.reserve(d.size());
   for (int i = 0; i < d.size(); i++) {
-    ret.push_back(d(i).real());
-
-    // Imaginary part should be negligible.
-    assert(abs(d(i).imag()) < 1.0e-10);
+    ret.push_back(d(i));
   }
   return ret;
 }

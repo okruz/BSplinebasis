@@ -17,6 +17,7 @@
 
 #include <fstream>
 #include <iostream>
+#include <limits>
 #include <vector>
 
 #include "harmonic-oscillator.h"
@@ -27,7 +28,7 @@ using namespace okruz::bspline::examples::harmonic_oscillator;
 using namespace okruz::bspline::examples;
 
 void harmonicOscillator() {
-  std::cout.precision(20);
+  std::cout.precision(std::numeric_limits<double>::max_digits10);
   std::vector<Eigenspace> harmonicOscillator = solveHarmonicOscillator();
 
   std::cout << "Harmonic Oscillator eigenvalues:\n";
