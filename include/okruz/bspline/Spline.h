@@ -567,7 +567,7 @@ inline Spline<T, order> operator*(const T &d, const Spline<T, order> &b) {
  * @param splinesBegin The iterator referencing the first element of the spline
  * collection.
  * @param splinesEnd The iterator referencing the end of the spline collection.
- * @tparam CeffIter An iterator referencing a coefficient of type T.
+ * @tparam CoeffIter An iterator referencing a coefficient of type T.
  * @tparam SplineIter An iterator referenchig a spline of type Spline<T, order>.
  * @returns The linear combination as a spline of type Spline<T, order>.
  * @throws BSplineException If the number of coefficients differs from the
@@ -671,6 +671,28 @@ decltype(auto) linearCombination(CoeffIter coeffsBegin, CoeffIter coeffsEnd,
   }
 
   return Spline(std::move(newSupport), std::move(newCoefficients));
+}
+
+/*!
+ * Calculates the linear combination of splines. Is more efficient than
+ * successive scalar multiplications and spline additions.
+ *
+ * @param coeffs The coefficient collection.
+ * @param splinesThe spline collection.
+ * @tparam CoeffCollection A collection of coefficients of type T. Must provide
+ * begin() and end() iterators.
+ * @tparam SplineCollection A collection of splines of type Spline<T, order>.
+ * Must provide begin() and end() iterators.
+ * @returns The linear combination as a spline of type Spline<T, order>.
+ * @throws BSplineException If the number of coefficients differs from the
+ * number of splines, if the number of coefficients and splines are zero or the
+ * grids of all splines are not logically equivalent.
+ */
+template <typename CoeffCollection, typename SplineCollection>
+decltype(auto) linearCombination(const CoeffCollection &coeffs,
+                                 const SplineCollection &splines) {
+  return linearCombination(coeffs.begin(), coeffs.end(), splines.begin(),
+                           splines.end());
 }
 
 }  // namespace okruz::bspline

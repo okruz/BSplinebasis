@@ -143,8 +143,7 @@ std::vector<Eigenspace> solveRadialHydrogen() {
     size_t index = perm[i];
     const auto eigenvalue = eigenvalues(index);
     const auto eigenvector = toStdVector(eigenvectors.col(index));
-    auto wavefunction = okruz::bspline::linearCombination(
-        eigenvector.begin(), eigenvector.end(), basis.begin(), basis.end());
+    auto wavefunction = okruz::bspline::linearCombination(eigenvector, basis);
     ret.push_back({eigenvalue, std::move(wavefunction)});
   }
   return ret;
