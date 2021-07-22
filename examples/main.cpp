@@ -16,6 +16,7 @@
  */
 
 #include <fstream>
+#include <iomanip>
 #include <iostream>
 #include <limits>
 #include <vector>
@@ -31,9 +32,17 @@ void harmonicOscillator() {
   std::cout.precision(std::numeric_limits<double>::max_digits10);
   std::vector<Eigenspace> harmonicOscillator = solveHarmonicOscillator();
 
-  std::cout << "Harmonic Oscillator eigenvalues:\n";
+  std::cout << "Harmonic Oscillator eigenvalues:\n\n";
+  std::cout << std::setw(2) << "n"
+            << "\t" << std::setw(20) << "energy"
+            << "\t" << std::setw(20) << "relative deviation" << '\n';
   for (size_t i = 0; i < harmonicOscillator.size(); i++) {
-    std::cout << i << "\t" << harmonicOscillator[i].energy << '\n';
+    const double expected = i + 0.5;
+    const double relativeDev =
+        abs((harmonicOscillator[i].energy - expected) / expected);
+    std::cout << std::setw(2) << i << "\t" << std::setw(20)
+              << harmonicOscillator[i].energy << "\t" << std::setw(20)
+              << relativeDev << '\n';
   }
   std::cout << '\n' << std::endl;
 
@@ -54,9 +63,16 @@ void radialHydrogen() {
   std::cout.precision(20);
   std::vector<Eigenspace> hydrogen = solveRadialHydrogen();
 
-  std::cout << "Hydrogen (L=" << L << ") eigenvalues:\n";
+  std::cout << "Hydrogen (L=" << L << ") eigenvalues:\n\n";
+  std::cout << std::setw(2) << "n"
+            << "\t" << std::setw(25) << "energy"
+            << "\t" << std::setw(25) << "relative deviation" << '\n';
   for (size_t i = 0; i < hydrogen.size(); i++) {
-    std::cout << i << "\t" << hydrogen[i].energy << '\n';
+    const double expected = -1.0 / pow(L + i + 1.0, 2);
+    const double relativeDev = abs((hydrogen[i].energy - expected) / expected);
+    std::cout << std::setw(2) << i + L + 1 << "\t" << std::setw(25)
+              << hydrogen[i].energy << "\t" << std::setw(25) << relativeDev
+              << '\n';
   }
   std::cout << '\n' << std::endl;
 
