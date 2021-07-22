@@ -30,13 +30,13 @@ using namespace okruz::bspline;
 /**
  * @brief setUpKnotsVector Sets up the knots vector on which the basis splines
  * are defined.
- * @return A vector of doubles representing the knots.
+ * @return A vector of data_t representing the knots.
  */
-static std::vector<double> setUpKnotsVector() {
-  std::vector<double> ret{0};
+static std::vector<data_t> setUpKnotsVector() {
+  std::vector<data_t> ret{0};
 
   for (int i = 1; i < 100; i++) {
-    const double val = double(i * i) / 1000.0;
+    const data_t val = static_cast<data_t>(i * i) / 1000;
     ret.push_back(val);
     ret.push_back(-val);
   }
@@ -59,20 +59,23 @@ std::vector<Eigenspace> solveHarmonicOscillator() {
 
   // kinetic term -1/2 d^2/dx^2
   DeMat hamiltonian =
-      -0.5 * setUpSymmetricMatrix(okruz::bspline::integration::integrate_dx2<
-                                      double, SPLINE_ORDER, SPLINE_ORDER>,
-                                  basis);
+      -(static_cast<data_t>(1) / 2) *
+      setUpSymmetricMatrix(
+          okruz::bspline::integration::integrate_dx2<data_t, SPLINE_ORDER,
+                                                     SPLINE_ORDER>,
+          basis);
 
   // potential term 1/2 x^2
   hamiltonian +=
-      0.5 * setUpSymmetricMatrix(
-                okruz::bspline::integration::integrate_x2<double, SPLINE_ORDER,
-                                                          SPLINE_ORDER>,
-                basis);
+      (static_cast<data_t>(1) / 2) *
+      setUpSymmetricMatrix(
+          okruz::bspline::integration::integrate_x2<data_t, SPLINE_ORDER,
+                                                    SPLINE_ORDER>,
+          basis);
 
   // overlap matrix
   DeMat overlapMatrix = setUpSymmetricMatrix(
-      okruz::bspline::integration::overlap<double, SPLINE_ORDER, SPLINE_ORDER>,
+      okruz::bspline::integration::overlap<data_t, SPLINE_ORDER, SPLINE_ORDER>,
       basis);
 
   // Solve the generalized eigenvalue problem A.x = lambda B.x

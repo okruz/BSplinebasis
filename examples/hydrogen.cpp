@@ -30,10 +30,10 @@ using namespace okruz::bspline;
 /**
  * @brief setUpKnotsVector Sets up the knots vector on which the basis splines
  * are defined.
- * @return A vector of doubles representing the knots.
+ * @return A vector of data_t representing the knots.
  */
-static std::vector<double> setUpKnotsVector() {
-  std::vector<double> ret;
+static std::vector<data_t> setUpKnotsVector() {
+  std::vector<data_t> ret;
 
   size_t numberOfZeros = 1;
 
@@ -45,19 +45,21 @@ static std::vector<double> setUpKnotsVector() {
   // generated splines at the corresponding grid point (see literature on
   // BSplines). This guarantees that the radial wavefunctions have the correct
   // scaling in the vicinity of r=0 (at least for sufficiently low L).
-  for (size_t i = 0; i < numberOfZeros; i++) ret.push_back(0.0);
+  for (size_t i = 0; i < numberOfZeros; i++)
+    ret.push_back(static_cast<data_t>(0));
 
   // First point of the logarithmic grid.
-  const double rmin = 0.01;
+  const data_t rmin = static_cast<data_t>(1) / 100;
 
   // Last point of the logarithmic grid.
-  const double rmax = 1.0e3;
+  const data_t rmax = static_cast<data_t>(1000);
 
   // Roughly the number of grid points on the logarithmic grid.
   const int numberOfGridPoints = 200;
 
   // logarithmic step
-  const double step = pow(rmax / rmin, 1.0 / double(numberOfGridPoints));
+  const data_t step =
+      pow(rmax / rmin, 1 / static_cast<data_t>(numberOfGridPoints));
 
   for (int i = 1; i <= numberOfGridPoints; i++) {
     ret.push_back(rmin * pow(step, i));
@@ -83,7 +85,7 @@ std::vector<Eigenspace> solveRadialHydrogen() {
   // First part of the kinetic term -d^2/dr^2 . Includes the term r^2 from the
   // functional determinant.
   DeMat hamiltonian = -setUpSymmetricMatrix(
-      okruz::bspline::integration::integrate_x2_dx2<double, SPLINE_ORDER,
+      okruz::bspline::integration::integrate_x2_dx2<data_t, SPLINE_ORDER,
                                                     SPLINE_ORDER>,
       basis);
 
@@ -91,7 +93,7 @@ std::vector<Eigenspace> solveRadialHydrogen() {
   // functional determinant.
   hamiltonian +=
       -2 * setUpSymmetricMatrix(
-               okruz::bspline::integration::integrate_x_dx<double, SPLINE_ORDER,
+               okruz::bspline::integration::integrate_x_dx<data_t, SPLINE_ORDER,
                                                            SPLINE_ORDER>,
                basis);
 
@@ -101,7 +103,7 @@ std::vector<Eigenspace> solveRadialHydrogen() {
     hamiltonian +=
         L * (L + 1) *
         setUpSymmetricMatrix(
-            okruz::bspline::integration::overlap<double, SPLINE_ORDER,
+            okruz::bspline::integration::overlap<data_t, SPLINE_ORDER,
                                                  SPLINE_ORDER>,
             basis);
   }
@@ -109,13 +111,13 @@ std::vector<Eigenspace> solveRadialHydrogen() {
   // potential term -2/r. Includes the term r^2 from the functional determinant.
   hamiltonian +=
       -2 * setUpSymmetricMatrix(
-               okruz::bspline::integration::integrate_x<double, SPLINE_ORDER,
+               okruz::bspline::integration::integrate_x<data_t, SPLINE_ORDER,
                                                         SPLINE_ORDER>,
                basis);
 
   // Overlap matrix. Includes the term r^2 from the functional determinant.
   DeMat overlapMatrix = setUpSymmetricMatrix(
-      okruz::bspline::integration::integrate_x2<double, SPLINE_ORDER,
+      okruz::bspline::integration::integrate_x2<data_t, SPLINE_ORDER,
                                                 SPLINE_ORDER>,
       basis);
 

@@ -28,14 +28,16 @@
 
 namespace okruz::bspline::examples {
 
-using DeMat = Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>;
+using data_t = double;
+
+using DeMat = Eigen::Matrix<data_t, Eigen::Dynamic, Eigen::Dynamic>;
 
 constexpr size_t SPLINE_ORDER = 5;
 
-using Spline = okruz::bspline::Spline<double, SPLINE_ORDER>;
+using Spline = okruz::bspline::Spline<data_t, SPLINE_ORDER>;
 
 struct Eigenspace {
-  double energy;
+  data_t energy;
   Spline wavefunction;
 };
 
@@ -47,12 +49,12 @@ struct Eigenspace {
  * @return The matrix.
  */
 inline DeMat setUpSymmetricMatrix(
-    const std::function<double(const Spline &, const Spline &)> &f,
+    const std::function<data_t(const Spline &, const Spline &)> &f,
     const std::vector<Spline> &basis) {
   DeMat ret = DeMat::Zero(basis.size(), basis.size());
   for (size_t i = 0; i < basis.size(); i++) {
     for (size_t j = i; j < basis.size(); j++) {
-      double val = f(basis.at(i), basis.at(j));
+      const data_t val = f(basis.at(i), basis.at(j));
       ret(i, j) = val;
       ret(j, i) = val;
     }
@@ -75,8 +77,8 @@ inline std::vector<size_t> getIdentityPerm(size_t size) {
  * Turns the real Eigen vector into a std::vector.
  */
 template <typename Ev>
-std::vector<double> toStdVector(const Ev &d) {
-  std::vector<double> ret;
+std::vector<data_t> toStdVector(const Ev &d) {
+  std::vector<data_t> ret;
   ret.reserve(d.size());
   for (int i = 0; i < d.size(); i++) {
     ret.push_back(d(i));

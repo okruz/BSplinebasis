@@ -29,7 +29,7 @@ using namespace okruz::bspline::examples::harmonic_oscillator;
 using namespace okruz::bspline::examples;
 
 void harmonicOscillator() {
-  std::cout.precision(std::numeric_limits<double>::max_digits10);
+  std::cout.precision(std::numeric_limits<data_t>::max_digits10);
   std::vector<Eigenspace> harmonicOscillator = solveHarmonicOscillator();
 
   std::cout << "Harmonic Oscillator eigenvalues:\n\n";
@@ -37,8 +37,8 @@ void harmonicOscillator() {
             << "\t" << std::setw(20) << "energy"
             << "\t" << std::setw(20) << "relative deviation" << '\n';
   for (size_t i = 0; i < harmonicOscillator.size(); i++) {
-    const double expected = i + 0.5;
-    const double relativeDev =
+    const data_t expected = static_cast<data_t>(2 * i + 1) / 2;
+    const data_t relativeDev =
         abs((harmonicOscillator[i].energy - expected) / expected);
     std::cout << std::setw(2) << i << "\t" << std::setw(20)
               << harmonicOscillator[i].energy << "\t" << std::setw(20)
@@ -48,8 +48,10 @@ void harmonicOscillator() {
 
   {
     std::ofstream out("harmonic-oscillator-wavefunctions.txt");
-    out.precision(20);
-    for (double x = -10.1; x <= 10.1; x += 0.01) {
+    out.precision(std::numeric_limits<data_t>::max_digits10);
+    for (data_t x = static_cast<data_t>(-101) / 10;
+         x <= static_cast<data_t>(101) / 10;
+         x += static_cast<data_t>(1) / 100) {
       out << x << "\t" << 0.5 * x * x;
       for (const auto &r : harmonicOscillator) {
         out << "\t" << r.wavefunction(x) + r.energy;
@@ -60,7 +62,7 @@ void harmonicOscillator() {
 }
 
 void radialHydrogen() {
-  std::cout.precision(20);
+  std::cout.precision(std::numeric_limits<data_t>::max_digits10);
   std::vector<Eigenspace> hydrogen = solveRadialHydrogen();
 
   std::cout << "Hydrogen (L=" << L << ") eigenvalues:\n\n";
@@ -68,8 +70,9 @@ void radialHydrogen() {
             << "\t" << std::setw(25) << "energy"
             << "\t" << std::setw(25) << "relative deviation" << '\n';
   for (size_t i = 0; i < hydrogen.size(); i++) {
-    const double expected = -1.0 / pow(L + i + 1.0, 2);
-    const double relativeDev = abs((hydrogen[i].energy - expected) / expected);
+    const data_t expected =
+        static_cast<data_t>(-1) / pow(static_cast<data_t>(L + i + 1), 2);
+    const data_t relativeDev = abs((hydrogen[i].energy - expected) / expected);
     std::cout << std::setw(2) << i + L + 1 << "\t" << std::setw(25)
               << hydrogen[i].energy << "\t" << std::setw(25) << relativeDev
               << '\n';
@@ -78,8 +81,10 @@ void radialHydrogen() {
 
   {
     std::ofstream out("radial-hydrogen-wavefunctions.txt");
-    out.precision(20);
-    for (double x = 0.0; x <= 1.0e3; x = x * 1.02 + 1.0e-3) {
+    out.precision(std::numeric_limits<data_t>::max_digits10);
+    for (data_t x = static_cast<data_t>(0); x <= static_cast<data_t>(1000);
+         x = x * static_cast<data_t>(102) / 100 +
+             static_cast<data_t>(1) / 1000) {
       out << x << "\t" << ((x < 0.75) ? -2.0 / 0.75 : -2.0 / x);
       for (const auto &r : hydrogen) {
         out << "\t" << r.wavefunction(x) + r.energy;
