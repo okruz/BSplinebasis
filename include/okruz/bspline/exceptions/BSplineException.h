@@ -45,8 +45,7 @@ inline std::string getErrorMessage(ErrorCode errorCode) {
   switch (errorCode) {
     case ErrorCode::DIFFERING_GRIDS:
       return "The requested operation is not implemented for splines defined "
-             "on "
-             "different grids.";
+             "on different grids.";
     case ErrorCode::INCONSISTENT_DATA:
       return "The data provided is inconsistent.";
     case ErrorCode::MISSING_DATA:

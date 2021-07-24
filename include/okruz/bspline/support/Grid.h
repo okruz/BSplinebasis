@@ -111,7 +111,7 @@ class Grid {
    */
   bool operator==(const Grid &g) const {
     if (_data == g._data)
-      [[likely]] return true;
+      return true;
     else if (_data->size() != g._data->size())
       return false;
     for (size_t i = 0; i < _data->size(); i++)

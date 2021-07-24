@@ -83,7 +83,7 @@ class ISolver {
    *
    * @param problemsize Dimension of the problem (i.e. number of coefficients).
    */
-  ISolver(size_t problemsize){};
+  ISolver(size_t){};
   virtual ~ISolver() = default;
 
   /*!
@@ -360,10 +360,11 @@ okruz::bspline::Spline<T, order> interpolate_using_eigen(
     Support<T> x, const std::vector<T> &y,
     const std::array<Boundary<T>, order - 1> boundaries =
         internal::defaultBoundaries<T, order>()) {
+  using DeMat = Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic>;
+  using DeVec = Eigen::Matrix<T, Eigen::Dynamic, 1>;
+
   class EigenSolver : public internal::ISolver<T> {
    private:
-    using DeMat = Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic>;
-    using DeVec = Eigen::Matrix<T, Eigen::Dynamic, 1>;
     DeMat _M;
     DeVec _b, _x;
 
