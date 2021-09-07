@@ -63,17 +63,6 @@ inline DeMat setUpSymmetricMatrix(
 }
 
 /**
- * @brief getIdentityPerm Returns the identity permutation for size elements.
- * @param size The number of elements.
- * @return Returns the identity permutation for size elements.
- */
-inline std::vector<size_t> getIdentityPerm(size_t size) {
-  std::vector<size_t> ret(size);
-  for (size_t i = 0; i < size; i++) ret[i] = i;
-  return ret;
-}
-
-/**
  * Turns the real Eigen vector into a std::vector.
  */
 template <typename Ev>

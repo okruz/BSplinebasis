@@ -129,22 +129,13 @@ std::vector<Eigenspace> solveRadialHydrogen() {
   const auto eigenvalues = ges.eigenvalues();
   const auto eigenvectors = ges.eigenvectors();
 
-  // Get the identity permutation.
-  std::vector<size_t> perm = getIdentityPerm(basis.size());
-
-  // Get the sorted permutation (by the value of the corresponding eigenvalues).
-  std::sort(perm.begin(), perm.end(), [&eigenvalues](size_t i, size_t j) {
-    return eigenvalues(i) < eigenvalues(j);
-  });
-
   std::vector<Eigenspace> ret;
   ret.reserve(10);
   // Return the eienvalues and eigenfunctions correspondig to the ten lowest
   // eigenvalues.
   for (size_t i = 0; i < 10; i++) {
-    size_t index = perm[i];
-    const auto eigenvalue = eigenvalues(index);
-    const auto eigenvector = toStdVector(eigenvectors.col(index));
+    const auto eigenvalue = eigenvalues(i);
+    const auto eigenvector = toStdVector(eigenvectors.col(i));
     auto wavefunction = okruz::bspline::linearCombination(eigenvector, basis);
     ret.push_back({eigenvalue, std::move(wavefunction)});
   }
