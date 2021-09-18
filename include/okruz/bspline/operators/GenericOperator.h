@@ -35,13 +35,13 @@ namespace okruz::bspline::operators {
 using namespace okruz::bspline::exceptions;
 using Spline = okruz::bspline::Spline;
 
-/**
+/*!
  * Marker interface for operators. All proper operators must derive from this
  * interface.
  */
 class Operator {};
 
-/**
+/*!
  * Helper method that applies an operator to a spline based on the
  * transformation of the coefficients on a single interval.
  *
@@ -56,15 +56,53 @@ template <typename T, size_t order, typename O,
 decltype(auto) transformSpline(O op, const Spline<T, order> &spline) {
   using OutputArray = decltype(op * spline.getCoefficients().front());
 
-  std::vector<OutputArray> newCoefficients;
-  newCoefficients.reserve(spline.getCoefficients().size());
+  const auto &oldCoefficients = spline.getCoefficients();
 
-  for (const auto &oldCoeffs : spline.getCoefficients()) {
-    newCoefficients.push_back(op * oldCoeffs);
+  std::vector<OutputArray> newCoefficients;
+  newCoefficients.reserve(oldCoefficients.size());
+
+  for (size_t i = 0; i < oldCoefficients.size(); i++) {
+    const T xm = (spline.getSupport().at(i) + spline.getSupport().at(i + 1)) /
+                 static_cast<T>(2);
+    newCoefficients.push_back(op.transform(oldCoefficients.at(i), xm);
   }
 
   return Spline(spline.getSupport(), std::move(newCoefficients));
 }
+
+/*!
+ * Represents the unity operator.
+ */
+class UnityOperator : public Operator {
+ public:
+  /*!
+   * Applies the operator to a spline.
+   *
+   * @param spline The spline to apply the operator to.
+   * @tparam T The datatype of the spline.
+   * @tparam order The order of the spline.
+   */
+  template <typename T, size_t order>
+  Spline<T, order> operator*(const Spline<T, order> &spline) {
+    return spline;
+  }
+
+  /*!
+   * Applies the operator to a set of coefficients (representing a polynomial on
+   * one interval).
+   *
+   * @param input The polynomial coefficients.
+   * @param xm The middlepoint of the interval, with respect to wich the
+   * polynomial is defined.
+   * @tparam T The datatype of the coefficients.
+   * @tparam size The size of the array, i. e. the number of coefficients.
+   */
+  template <typename T, size_t size>
+  std::array<T, size> transform(const std::array<T, size> &input,
+                                [[maybe_unused]] const T &xm) {
+    return input;
+  }
+};
 
 }  // namespace okruz::bspline::operators
 #endif  // OKRUZ_BSPLINE_OPERATORS_GENERICOPERATOR_H
