@@ -19,9 +19,6 @@
 
 #include <okruz/bspline/operators/GenericOperator.h>
 
-/*!
- * Operator definitions.
- */
 namespace okruz::bspline::operators {
 
 /*!
@@ -46,7 +43,7 @@ struct are_operators {
  */
 template <typename O1, typename O2,
           typename = std::enable_if_t<are_operators<O1, O2>::value>>
-class CompoundOperator public Operator {
+class CompoundOperator : public Operator {
  private:
   /*! The first (left) operator.*/
   O1 _o1;
