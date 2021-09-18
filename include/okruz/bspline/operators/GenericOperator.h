@@ -1,14 +1,6 @@
 #ifndef OKRUZ_BSPLINE_OPERATORS_GENERICOPERATOR_H
 #define OKRUZ_BSPLINE_OPERATORS_GENERICOPERATOR_H
 /*
- * This file contains additional numerical interpolation routines for the
- * splines defined in spline-template.h. The linear algebra routines can
- * be supplied via the implementation of a Solver class (a subclass of
- * internal::ISolver<T>. Implementations based on armadillo and eigen are
- * provided and can be used by defining
- * OKRUZ_BSPLINE_INTERPOLATION_USE_ARMADILLO or
- * OKRUZ_BSPLINE_INTERPOLATION_USE_EIGEN , respectively.
- *
  * ########################################################################
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
