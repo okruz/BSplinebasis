@@ -22,18 +22,15 @@
 namespace okruz::bspline::operators {
 
 /*!
- * Convenience struct, to determine if both template parameters are operator
+ * Indicates whether both template parameters are operator
  * types.
  *
  * @tparam O1 First template parameter.
  * @tparam O2 Second template parameter.
  */
 template <typename O1, typename O2>
-struct are_operators {
-  /*! Indicates whether both template parameter types are operator types.*/
-  static constexpr bool value = std::is_base_of<Operator, O1>::value &&
-                                std::is_base_of<Operator, O2>::value;
-};
+inline constexpr bool are_operators_v =
+    std::is_base_of_v<Operator, O1> &&std::is_base_of_v<Operator, O2>;
 
 /*!
  * A compound operator represents the product of two operators.
@@ -42,7 +39,7 @@ struct are_operators {
  * @tparam O2 The type of the second (right) operator.
  */
 template <typename O1, typename O2,
-          typename = std::enable_if_t<are_operators<O1, O2>::value>>
+          typename = std::enable_if_t<are_operators_v<O1, O2>>>
 class CompoundOperator : public Operator {
  private:
   /*! The first (left) operator.*/
@@ -83,7 +80,7 @@ class CompoundOperator : public Operator {
    */
   template <typename T, size_t size>
   decltype(auto) transform(const std::array<T, size> &input, const T &xm) {
-    return _o1.transform(_o2.transform(input), xm), xm);
+    return _o1.transform(_o2.transform(input, xm), xm);
   }
 };
 
@@ -94,7 +91,7 @@ class CompoundOperator : public Operator {
  * @tparam O2 The type of the second (right) operator.
  */
 template <typename O1, typename O2,
-          typename = std::enable_if_t<are_operators<O1, O2>::value>>
+          typename = std::enable_if_t<are_operators_v<O1, O2>>>
 CompoundOperator<O1, O2> operator*(const O1 &o1, const O2 &o2) {
   return CompoundOperator(o1, o2);
 };
