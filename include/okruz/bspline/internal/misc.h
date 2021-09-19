@@ -87,15 +87,22 @@ std::array<T, sizeout> changearraysize(const std::array<T, sizein> &in) {
   }
 }
 
-/*
+/*!
  * Normally, for every evaluation of a spline, a binary search for the correct
  * interval is necessary. This method is defined in order to integrate every
  * interval separately during the 1D integration, omitting the necessity for the
  * binary search.
+ *
+ * @param x The point at which to evaluate the polynomial.
+ * @param coeffs The coefficients of the polynomial.
+ * @param xm The middlepoint of the interval with respect to which the
+ * polynomial coefficients are defined.
+ * @tparam T The datatype of the polynomial.
+ * @tparam size The size of the coefficient array (i.e. the order of the
+ * polynomial plus one).
  */
-template <typename T, size_t ARRAY_SIZE>
-T evaluateInterval(const T &x, const std::array<T, ARRAY_SIZE> &coeffs,
-                   const T &xm) {
+template <typename T, size_t size>
+T evaluateInterval(const T &x, const std::array<T, size> &coeffs, const T &xm) {
   T result = static_cast<T>(0), xpot = static_cast<T>(1);
   const T dx = x - xm;
   for (const T &c : coeffs) {

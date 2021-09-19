@@ -55,9 +55,12 @@ enum class Node { FIRST, LAST };
  */
 template <typename T>
 struct Boundary {
-  Node node = Node::FIRST;     /*! Node to apply the boundary condition to. */
-  size_t derivative = 1;       /*! Order of the derivative to fix. */
-  T value = static_cast<T>(0); /*! Value of the derivative. */
+  /*! Node to apply the boundary condition to. */
+  Node node = Node::FIRST;
+  /*! Order of the derivative to fix. */
+  size_t derivative = 1;
+  /*! Value of the derivative. */
+  T value = static_cast<T>(0);
 };
 
 namespace internal {
@@ -83,7 +86,7 @@ class ISolver {
    *
    * @param problemsize Dimension of the problem (i.e. number of coefficients).
    */
-  ISolver(size_t){};
+  ISolver([[maybe_unused]] size_t problemsize){};
   virtual ~ISolver() = default;
 
   /*!
@@ -163,7 +166,7 @@ using okruz::bspline::support::Support;
  * additional conditions are needed for a well defined problem. These can be
  * supplied by fixing derivatives on the first and last node.
  *
- * @param support Data on the abscissa.
+ * @param x Data on the abscissa.
  * @param y Data on the ordinate.
  * @param boundaries Boundary conditions.
  * @tparam T Datatype of the spline and data.

@@ -86,7 +86,6 @@ class Grid {
   /*!
    * Constructs a grid by setting its members.
    *
-   * @param size The size of the grid.
    * @param data A shared pointer to the grid elements.
    */
   Grid(std::shared_ptr<const std::vector<T>> data) : _data(std::move(data)) {

@@ -678,7 +678,7 @@ decltype(auto) linearCombination(CoeffIter coeffsBegin, CoeffIter coeffsEnd,
  * successive scalar multiplications and spline additions.
  *
  * @param coeffs The coefficient collection.
- * @param splinesThe spline collection.
+ * @param splines The spline collection.
  * @tparam CoeffCollection A collection of coefficients of type T. Must provide
  * begin() and end() iterators.
  * @tparam SplineCollection A collection of splines of type Spline<T, order>.

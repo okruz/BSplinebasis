@@ -83,7 +83,7 @@ class Support {
    * Constructs an empty support relative to the global grid grid.
    *
    * @param grid The global grid.
-   * @param con The construction. If this parameter is not provided, an empty
+   * @param constr The construction. If this parameter is not provided, an empty
    * support will be constructed, if it is set to Construction::WHOLE_GRID a
    * support representing the extend of the whole grid will be constructed.
    */

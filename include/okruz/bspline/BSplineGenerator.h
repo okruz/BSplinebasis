@@ -64,6 +64,13 @@ class BSplineGenerator {
   BSplineGenerator(std::vector<T> knots)
       : _grid(generateGrid(knots)), _knots(std::move(knots)){};
 
+  /*!
+   * Constructor generating the grid from the knots vector.
+   *
+   * @param knots The knots, the BSplines shall be generated on.
+   * @param grid The Grid instance to use. Must be logically equivalent to the
+   * Grid generated from knots. If that is not the case, an exception is thrown.
+   */
   BSplineGenerator(std::vector<T> knots, Grid<T> grid)
       : _grid(std::move(grid)), _knots(std::move(knots)) {
     // Check, whether the given knots vector and grid are consistent.
