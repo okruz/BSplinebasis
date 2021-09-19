@@ -33,14 +33,14 @@ inline constexpr bool are_operators_v =
     std::is_base_of_v<Operator, O1> &&std::is_base_of_v<Operator, O2>;
 
 /*!
- * A compound operator represents the product of two operators.
+ * Represents the product of two operators.
  *
  * @tparam O1 The type of the first (left) operator.
  * @tparam O2 The type of the second (right) operator.
  */
 template <typename O1, typename O2,
           typename = std::enable_if_t<are_operators_v<O1, O2>>>
-class CompoundOperator : public Operator {
+class OperatorProduct : public Operator {
  private:
   /*! The first (left) operator.*/
   O1 _o1;
@@ -49,12 +49,12 @@ class CompoundOperator : public Operator {
 
  public:
   /*!
-   * Creates a compound operator as a product of two operators.
+   * Creates an OperatorProduct from two operators.
    *
    * @param o1 The first (left) operator.
    * @param o2 The second (right) ooperator.
    */
-  CompoundOperator(O1 o1, O2 o2) : m_o1(o1), m_o2(o2){};
+  OperatorProduct(O1 o1, O2 o2) : m_o1(o1), m_o2(o2){};
 
   /*!
    * Applies the operator to a spline.
@@ -85,15 +85,110 @@ class CompoundOperator : public Operator {
 };
 
 /*!
- * The multiplication operator for two operators, returning a CompoundOperator.
+ * The multiplication operator for two operators, returning an OperatorProduct.
  *
  * @tparam O1 The type of the first (left) operator.
  * @tparam O2 The type of the second (right) operator.
  */
 template <typename O1, typename O2,
           typename = std::enable_if_t<are_operators_v<O1, O2>>>
-CompoundOperator<O1, O2> operator*(const O1 &o1, const O2 &o2) {
-  return CompoundOperator(o1, o2);
+OperatorProduct<O1, O2> operator*(const O1 &o1, const O2 &o2) {
+  return OperatorProduct(o1, o2);
+};
+
+// ######################### OperatorProduct #############################
+// #######################################################################
+
+// #######################################################################
+// ########################### OperatorSum ###############################
+
+/*!
+ * Represents the sum of two operators.
+ *
+ * @tparam O1 The type of the first operator.
+ * @tparam O2 The type of the second operator.
+ */
+template <typename O1, typename O2,
+          typename = std::enable_if_t<are_operators_v<O1, O2>>>
+class OperatorSum : public Operator {
+ private:
+  /*! The first operator.*/
+  O1 _o1;
+  /*! The second operator.*/
+  O2 _o2;
+
+  /*!
+   * Adds the smaller array to the larger array in place and returns the larger
+   * array.
+   *
+   * @param a The first array.
+   * @param b The second array.
+   * @tparam T The datatype of the arrays.
+   * @tparam sizea The size of a.
+   * @tparam sizeb The size of b.
+   */
+  template <typename T, size_t sizea, size_t sizeb>
+  std::array<T, std::max(sizea, sizeb)> add(std::array<T, sizea> &a,
+                                            std::array<T, sizeb> &b) {
+    if constexpr (sizeb > sizea) {
+      return add(b, a);
+    } else {
+      for (size_t i = 0; i < sizeb; i++) {
+        a[i] += b[i];
+      }
+      return a;
+    }
+  }
+
+ public:
+  /*!
+   * Creates an OperatorSum from two operators.
+   *
+   * @param o1 The first operator.
+   * @param o2 The second ooperator.
+   */
+  OperatorSum(O1 o1, O2 o2) : m_o1(o1), m_o2(o2){};
+
+  /*!
+   * Applies the operator to a spline.
+   *
+   * @param spline The spline to apply the operator to.
+   * @tparam T The datatype of the splines.
+   * @tparam order The order of the input spline.
+   */
+  template <typename T, size_t order>
+  decltype(auto) operator*(const Spline<T, order> &spline) {
+    return transformSpline(*this, spline);
+  }
+
+  /*!
+   * Applies the operator to a set of coefficients (representing a polynomial on
+   * one interval).
+   *
+   * @param input The polynomial coefficients.
+   * @param xm The middlepoint of the interval, with respect to wich the
+   * polynomial is defined.
+   * @tparam T The datatype of the coefficients.
+   * @tparam size The size of the input array, i. e. the number of coefficients.
+   */
+  template <typename T, size_t size>
+  decltype(auto) transform(const std::array<T, size> &input, const T &xm) {
+    auto a = _o1.transform(input, xm);
+    auto b = _o2.transform(input, xm);
+    return add(a, b);
+  }
+};
+
+/*!
+ * The addition operator for two operators, returning an OperatorSum.
+ *
+ * @tparam O1 The type of the first (left) operator.
+ * @tparam O2 The type of the second (right) operator.
+ */
+template <typename O1, typename O2,
+          typename = std::enable_if_t<are_operators_v<O1, O2>>>
+OperatorSum<O1, O2> operator+(const O1 &o1, const O2 &o2) {
+  return OperatorSum(o1, o2);
 };
 
 }  // namespace okruz::bspline::operators
