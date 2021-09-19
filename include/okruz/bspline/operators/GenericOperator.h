@@ -34,6 +34,25 @@ using Spline = okruz::bspline::Spline;
 class Operator {};
 
 /*!
+ * Indicates whether the template parameter is an operator
+ * type.
+ *
+ * @tparam O Template parameter.
+ */
+template <typename O>
+inline constexpr bool is_operator_v = std::is_base_of_v<Operator, O>;
+
+/*!
+ * Indicates whether both template parameters are operator
+ * types.
+ *
+ * @tparam O1 First template parameter.
+ * @tparam O2 Second template parameter.
+ */
+template <typename O1, typename O2>
+inline constexpr bool are_operators_v = is_operator_v<O1> &&is_operator_v<O2>;
+
+/*!
  * Helper method that applies an operator to a spline based on the
  * transformation of the coefficients on a single interval.
  *
@@ -44,9 +63,10 @@ class Operator {};
  * @tparam O The type of the operator.
  */
 template <typename T, size_t order, typename O,
-          typename = std::enable_if_t<std::is_base_of<Operator, O>::value>>
+          typename = std::enable_if_t<is_operator_v<O>>>
 decltype(auto) transformSpline(O op, const Spline<T, order> &spline) {
-  using OutputArray = decltype(op * spline.getCoefficients().front());
+  using OutputArray =
+      decltype(op.transform(spline.getCoefficients().front(), const T &));
 
   const auto &oldCoefficients = spline.getCoefficients();
 

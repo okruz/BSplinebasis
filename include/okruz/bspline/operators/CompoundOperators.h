@@ -20,18 +20,6 @@
 #include <okruz/bspline/operators/GenericOperator.h>
 
 namespace okruz::bspline::operators {
-
-/*!
- * Indicates whether both template parameters are operator
- * types.
- *
- * @tparam O1 First template parameter.
- * @tparam O2 Second template parameter.
- */
-template <typename O1, typename O2>
-inline constexpr bool are_operators_v =
-    std::is_base_of_v<Operator, O1> &&std::is_base_of_v<Operator, O2>;
-
 /*!
  * Represents the product of two operators.
  *
