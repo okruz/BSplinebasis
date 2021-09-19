@@ -540,6 +540,13 @@ class Spline {
 
 };  // class Spline
 
+/*!
+ * Deduction guide for spline constructed from array.
+ */
+template <typename T, size_t ARRAY_SIZE>
+Spline(Support<T> support, std::vector<std::array<T, ARRAY_SIZE>> coefficients)
+    -> Spline<T, ARRAY_SIZE - 1>;
+
 //################### End of defintion of Spline class ###################
 //########################################################################
 

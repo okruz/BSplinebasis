@@ -45,6 +45,15 @@ class OperatorProduct : public Operator {
   OperatorProduct(O1 o1, O2 o2) : _o1(o1), _o2(o2){};
 
   /*!
+   * Returns the order of the output spline for a given input order.
+   *
+   * @param inputOrder the order of the input spline.
+   */
+  static constexpr size_t outputOrder(size_t inputOrder) {
+    return O1::outputOrder(O2::outputOrder(inputOrder));
+  }
+
+  /*!
    * Applies the operator to a spline.
    *
    * @param spline The spline to apply the operator to.
@@ -52,7 +61,7 @@ class OperatorProduct : public Operator {
    * @tparam order The order of the input spline.
    */
   template <typename T, size_t order>
-  decltype(auto) operator*(const Spline<T, order> &spline) {
+  Spline<T, outputOrder(order)> operator*(const Spline<T, order> &spline) {
     return transformSpline(*this, spline);
   }
 
@@ -67,7 +76,8 @@ class OperatorProduct : public Operator {
    * @tparam size The size of the input array, i. e. the number of coefficients.
    */
   template <typename T, size_t size>
-  decltype(auto) transform(const std::array<T, size> &input, const T &xm) {
+  std::array<T, outputOrder(size - 1) + 1> transform(
+      const std::array<T, size> &input, const T &xm) {
     return _o1.transform(_o2.transform(input, xm), xm);
   }
 };
@@ -82,7 +92,7 @@ template <typename O1, typename O2,
           typename = std::enable_if_t<are_operators_v<O1, O2>>>
 OperatorProduct<O1, O2> operator*(const O1 &o1, const O2 &o2) {
   return OperatorProduct(o1, o2);
-};
+}
 
 // ######################### OperatorProduct #############################
 // #######################################################################
@@ -116,8 +126,8 @@ class OperatorSum : public Operator {
    * @tparam sizeb The size of b.
    */
   template <typename T, size_t sizea, size_t sizeb>
-  std::array<T, std::max(sizea, sizeb)> add(std::array<T, sizea> &a,
-                                            std::array<T, sizeb> &b) {
+  std::array<T, std::max(sizea, sizeb)> &add(std::array<T, sizea> &a,
+                                             std::array<T, sizeb> &b) {
     if constexpr (sizeb > sizea) {
       return add(b, a);
     } else {
@@ -138,6 +148,15 @@ class OperatorSum : public Operator {
   OperatorSum(O1 o1, O2 o2) : _o1(o1), _o2(o2){};
 
   /*!
+   * Returns the order of the output spline for a given input order.
+   *
+   * @param inputOrder the order of the input spline.
+   */
+  static constexpr size_t outputOrder(size_t inputOrder) {
+    return std::max(O1::outputOrder(inputOrder), O2::outputOrder(inputOrder));
+  }
+
+  /*!
    * Applies the operator to a spline.
    *
    * @param spline The spline to apply the operator to.
@@ -145,7 +164,7 @@ class OperatorSum : public Operator {
    * @tparam order The order of the input spline.
    */
   template <typename T, size_t order>
-  decltype(auto) operator*(const Spline<T, order> &spline) {
+  Spline<T, outputOrder(order)> operator*(const Spline<T, order> &spline) {
     return transformSpline(*this, spline);
   }
 
@@ -160,7 +179,8 @@ class OperatorSum : public Operator {
    * @tparam size The size of the input array, i. e. the number of coefficients.
    */
   template <typename T, size_t size>
-  decltype(auto) transform(const std::array<T, size> &input, const T &xm) {
+  std::array<T, outputOrder(size - 1) + 1> transform(
+      const std::array<T, size> &input, const T &xm) {
     auto a = _o1.transform(input, xm);
     auto b = _o2.transform(input, xm);
     return add(a, b);
@@ -177,7 +197,7 @@ template <typename O1, typename O2,
           typename = std::enable_if_t<are_operators_v<O1, O2>>>
 OperatorSum<O1, O2> operator+(const O1 &o1, const O2 &o2) {
   return OperatorSum(o1, o2);
-};
+}
 
 }  // namespace okruz::bspline::operators
 #endif  // OKRUZ_BSPLINE_OPERATORS_COMPOUNDOPERATORS_H

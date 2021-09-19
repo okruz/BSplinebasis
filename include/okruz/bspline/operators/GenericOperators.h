@@ -64,12 +64,11 @@ inline constexpr bool are_operators_v = is_operator_v<O1> &&is_operator_v<O2>;
 template <typename T, size_t order, typename O,
           typename = std::enable_if_t<is_operator_v<O>>>
 decltype(auto) transformSpline(O op, const Spline<T, order> &spline) {
-  using OutputArray = std::remove_reference_t<std::result_of_t<decltype (
-      &O::transform)(const std::array<T, order + 1> &, const T &)>>;
+  constexpr size_t OUTPUT_SIZE = O::outputOrder(order) + 1;
 
   const auto &oldCoefficients = spline.getCoefficients();
 
-  std::vector<OutputArray> newCoefficients;
+  std::vector<std::array<T, OUTPUT_SIZE>> newCoefficients;
   newCoefficients.reserve(oldCoefficients.size());
 
   for (size_t i = 0; i < oldCoefficients.size(); i++) {
@@ -86,6 +85,13 @@ decltype(auto) transformSpline(O op, const Spline<T, order> &spline) {
  */
 class UnityOperator : public Operator {
  public:
+  /*!
+   * Returns the order of the output spline for a given input order.
+   *
+   * @param inputOrder the order of the input spline.
+   */
+  static constexpr size_t outputOrder(size_t inputOrder) { return inputOrder; }
+
   /*!
    * Applies the operator to a spline.
    *
