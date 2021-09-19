@@ -1,5 +1,5 @@
-#ifndef OKRUZ_BSPLINE_OPERATORS_GENERICOPERATOR_H
-#define OKRUZ_BSPLINE_OPERATORS_GENERICOPERATOR_H
+#ifndef OKRUZ_BSPLINE_OPERATORS_GENERICOPERATORS_H
+#define OKRUZ_BSPLINE_OPERATORS_GENERICOPERATORS_H
 /*
  * ########################################################################
  *  This program is free software: you can redistribute it and/or modify
@@ -117,4 +117,4 @@ class UnityOperator : public Operator {
 };
 
 }  // namespace okruz::bspline::operators
-#endif  // OKRUZ_BSPLINE_OPERATORS_GENERICOPERATOR_H
+#endif  // OKRUZ_BSPLINE_OPERATORS_GENERICOPERATORS_H

@@ -1,5 +1,5 @@
-#ifndef OKRUZ_BSPLINE_OPERATORS_COMPOUNDOPERATOR_H
-#define OKRUZ_BSPLINE_OPERATORS_COMPOUNDOPERATOR_H
+#ifndef OKRUZ_BSPLINE_OPERATORS_COMPOUNDOPERATORS_H
+#define OKRUZ_BSPLINE_OPERATORS_COMPOUNDOPERATORS_H
 /*
  * ########################################################################
  *  This program is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
  * ########################################################################
  */
 
-#include <okruz/bspline/operators/GenericOperator.h>
+#include <okruz/bspline/operators/GenericOperators.h>
 
 namespace okruz::bspline::operators {
 /*!
@@ -42,7 +42,7 @@ class OperatorProduct : public Operator {
    * @param o1 The first (left) operator.
    * @param o2 The second (right) ooperator.
    */
-  OperatorProduct(O1 o1, O2 o2) : m_o1(o1), m_o2(o2){};
+  OperatorProduct(O1 o1, O2 o2) : _o1(o1), _o2(o2){};
 
   /*!
    * Applies the operator to a spline.
@@ -135,7 +135,7 @@ class OperatorSum : public Operator {
    * @param o1 The first operator.
    * @param o2 The second ooperator.
    */
-  OperatorSum(O1 o1, O2 o2) : m_o1(o1), m_o2(o2){};
+  OperatorSum(O1 o1, O2 o2) : _o1(o1), _o2(o2){};
 
   /*!
    * Applies the operator to a spline.
@@ -180,4 +180,4 @@ OperatorSum<O1, O2> operator+(const O1 &o1, const O2 &o2) {
 };
 
 }  // namespace okruz::bspline::operators
-#endif  // OKRUZ_BSPLINE_OPERATORS_COMPOUNDOPERATOR_H
+#endif  // OKRUZ_BSPLINE_OPERATORS_COMPOUNDOPERATORS_H
