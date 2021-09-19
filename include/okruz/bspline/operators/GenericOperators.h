@@ -25,7 +25,6 @@
  */
 namespace okruz::bspline::operators {
 using namespace okruz::bspline::exceptions;
-using Spline = okruz::bspline::Spline;
 
 /*!
  * Marker interface for operators. All proper operators must derive from this
@@ -65,8 +64,8 @@ inline constexpr bool are_operators_v = is_operator_v<O1> &&is_operator_v<O2>;
 template <typename T, size_t order, typename O,
           typename = std::enable_if_t<is_operator_v<O>>>
 decltype(auto) transformSpline(O op, const Spline<T, order> &spline) {
-  using OutputArray =
-      decltype(op.transform(spline.getCoefficients().front(), const T &));
+  using OutputArray = std::remove_reference_t<std::result_of_t<decltype (
+      &O::transform)(const std::array<T, order + 1> &, const T &)>>;
 
   const auto &oldCoefficients = spline.getCoefficients();
 
@@ -76,7 +75,7 @@ decltype(auto) transformSpline(O op, const Spline<T, order> &spline) {
   for (size_t i = 0; i < oldCoefficients.size(); i++) {
     const T xm = (spline.getSupport().at(i) + spline.getSupport().at(i + 1)) /
                  static_cast<T>(2);
-    newCoefficients.push_back(op.transform(oldCoefficients.at(i), xm);
+    newCoefficients.push_back(op.transform(oldCoefficients.at(i), xm));
   }
 
   return Spline(spline.getSupport(), std::move(newCoefficients));
