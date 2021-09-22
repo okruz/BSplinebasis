@@ -18,13 +18,11 @@
  */
 
 #include <okruz/bspline/Spline.h>
-#include <okruz/bspline/exceptions/BSplineException.h>
 
 /*!
  * Operator definitions.
  */
 namespace okruz::bspline::operators {
-using namespace okruz::bspline::exceptions;
 
 /*!
  * Marker interface for operators. All proper operators must derive from this
@@ -62,7 +60,7 @@ inline constexpr bool are_operators_v = is_operator_v<O1> &&is_operator_v<O2>;
  * @tparam O The type of the operator.
  */
 template <typename T, size_t order, typename O,
-          typename = std::enable_if_t<is_operator_v<O>>>
+          std::enable_if_t<is_operator_v<O>, bool> = true>
 decltype(auto) transformSpline(O op, const Spline<T, order> &spline) {
   constexpr size_t OUTPUT_SIZE = O::outputOrder(order) + 1;
 
@@ -109,7 +107,7 @@ class UnityOperator : public Operator {
    * one interval).
    *
    * @param input The polynomial coefficients.
-   * @param xm The middlepoint of the interval, with respect to wich the
+   * @param xm The middlepoint of the interval, with respect to which the
    * polynomial is defined.
    * @tparam T The datatype of the coefficients.
    * @tparam size The size of the array, i. e. the number of coefficients.

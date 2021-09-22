@@ -27,7 +27,7 @@ namespace okruz::bspline::operators {
  * @tparam O2 The type of the second (right) operator.
  */
 template <typename O1, typename O2,
-          typename = std::enable_if_t<are_operators_v<O1, O2>>>
+          std::enable_if_t<are_operators_v<O1, O2>, bool> = true>
 class OperatorProduct : public Operator {
  private:
   /*! The first (left) operator.*/
@@ -70,7 +70,7 @@ class OperatorProduct : public Operator {
    * one interval).
    *
    * @param input The polynomial coefficients.
-   * @param xm The middlepoint of the interval, with respect to wich the
+   * @param xm The middlepoint of the interval, with respect to which the
    * polynomial is defined.
    * @tparam T The datatype of the coefficients.
    * @tparam size The size of the input array, i. e. the number of coefficients.
@@ -85,11 +85,13 @@ class OperatorProduct : public Operator {
 /*!
  * The multiplication operator for two operators, returning an OperatorProduct.
  *
+ * @param o1 The first (left) operator.
+ * @param o2 The second (right) operator.
  * @tparam O1 The type of the first (left) operator.
  * @tparam O2 The type of the second (right) operator.
  */
 template <typename O1, typename O2,
-          typename = std::enable_if_t<are_operators_v<O1, O2>>>
+          std::enable_if_t<are_operators_v<O1, O2>, bool> = true>
 OperatorProduct<O1, O2> operator*(const O1 &o1, const O2 &o2) {
   return OperatorProduct(o1, o2);
 }
@@ -107,7 +109,7 @@ OperatorProduct<O1, O2> operator*(const O1 &o1, const O2 &o2) {
  * @tparam O2 The type of the second operator.
  */
 template <typename O1, typename O2,
-          typename = std::enable_if_t<are_operators_v<O1, O2>>>
+          std::enable_if_t<are_operators_v<O1, O2>, bool> = true>
 class OperatorSum : public Operator {
  private:
   /*! The first operator.*/
@@ -173,7 +175,7 @@ class OperatorSum : public Operator {
    * one interval).
    *
    * @param input The polynomial coefficients.
-   * @param xm The middlepoint of the interval, with respect to wich the
+   * @param xm The middlepoint of the interval, with respect to which the
    * polynomial is defined.
    * @tparam T The datatype of the coefficients.
    * @tparam size The size of the input array, i. e. the number of coefficients.
@@ -190,11 +192,13 @@ class OperatorSum : public Operator {
 /*!
  * The addition operator for two operators, returning an OperatorSum.
  *
- * @tparam O1 The type of the first (left) operator.
- * @tparam O2 The type of the second (right) operator.
+ * @param o1 The first operator.
+ * @param o2 The second operator.
+ * @tparam O1 The type of the first operator.
+ * @tparam O2 The type of the second operator.
  */
 template <typename O1, typename O2,
-          typename = std::enable_if_t<are_operators_v<O1, O2>>>
+          std::enable_if_t<are_operators_v<O1, O2>, bool> = true>
 OperatorSum<O1, O2> operator+(const O1 &o1, const O2 &o2) {
   return OperatorSum(o1, o2);
 }
