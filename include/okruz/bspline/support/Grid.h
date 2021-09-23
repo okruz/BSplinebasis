@@ -84,6 +84,14 @@ class Grid {
   Grid(const std::vector<T> &v) : Grid(v.begin(), v.end()){};
 
   /*!
+   * Constructs a grid from a std::initializer_list. The elements of the vector
+   * are copied, not moved.
+   *
+   * @param v The input initializer_list.
+   */
+  Grid(const std::initializer_list<T> &v) : Grid(std::vector<T>(v)){};
+
+  /*!
    * Constructs a grid by setting its members.
    *
    * @param data A shared pointer to the grid elements.
