@@ -40,7 +40,7 @@ class Derivative : public Operator {
    * @tparam T The datatype of the return type.
    */
   template <typename T>
-  static T facultyRatio(size_t counter, size_t denominator) {
+  static constexpr T facultyRatio(size_t counter, size_t denominator) {
     if (denominator > counter) {
       return static_cast<T>(1) / facultyRatio<T>(denominator, counter);
     } else {
@@ -75,23 +75,6 @@ class Derivative : public Operator {
   }
 
   /*!
-   * Calculates the relevant faculty ratios.
-   *
-   * @tparam T The datatype of the faculty ratios.
-   * @tparam splineOrder The order of the spline for which to calculate the
-   * relevant faculty ratios.
-   */
-  template <typename T, size_t splineOrder>
-  static std::array<T, outputOrder(splineOrder) + 1> calculateFacultyRatios() {
-    constexpr size_t ARRAY_SIZE = outputOrder(splineOrder) + 1;
-    std::array<T, ARRAY_SIZE> retVal;
-    for (size_t i = 0; i < ARRAY_SIZE; i++) {
-      retVal[i] = facultyRatio<T>(i + n, i);
-    }
-    return retVal;
-  }
-
-  /*!
    * Applies the operator to a set of coefficients (representing a polynomial on
    * one interval).
    *
@@ -107,15 +90,12 @@ class Derivative : public Operator {
     static_assert(size >= 1);
     constexpr size_t SPLINE_ORDER = size - 1;
 
-    static const auto FACULTY_RATIOS =
-        calculateFacultyRatios<T, SPLINE_ORDER>();
-
     if constexpr (n > SPLINE_ORDER) {
       return {static_cast<T>(0)};
     } else {
       std::array<T, outputOrder(size - 1) + 1> retVal;
       for (size_t i = 0; i < size - n; i++) {
-        retVal[i] = FACULTY_RATIOS[i] * input[i + n];
+        retVal[i] = facultyRatio<T>(i + n, i) * input[i + n];
       }
       return retVal;
     }
