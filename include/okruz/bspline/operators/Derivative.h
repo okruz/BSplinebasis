@@ -40,7 +40,7 @@ class Derivative : public Operator {
    * @tparam T The datatype of the return type.
    */
   template <typename T>
-  static constexpr T facultyRatio(size_t counter, size_t denominator) {
+  static T facultyRatio(size_t counter, size_t denominator) {
     if (denominator > counter) {
       return static_cast<T>(1) / facultyRatio<T>(denominator, counter);
     } else {
@@ -87,14 +87,17 @@ class Derivative : public Operator {
   template <typename T, size_t size>
   std::array<T, outputOrder(size - 1) + 1> transform(
       const std::array<T, size> &input, [[maybe_unused]] const T &xm) {
-    static_assert(size >= 1);
+    static_assert(size >= 1, "Arrays of size zero not supported.");
+    // The order of the input spline.
     constexpr size_t SPLINE_ORDER = size - 1;
+    // The size of the output array.
+    constexpr size_t OUTPUT_SIZE = outputOrder(SPLINE_ORDER) + 1;
 
     if constexpr (n > SPLINE_ORDER) {
       return {static_cast<T>(0)};
     } else {
-      std::array<T, outputOrder(size - 1) + 1> retVal;
-      for (size_t i = 0; i < size - n; i++) {
+      std::array<T, OUTPUT_SIZE> retVal;
+      for (size_t i = 0; i < OUTPUT_SIZE; i++) {
         retVal[i] = facultyRatio<T>(i + n, i) * input[i + n];
       }
       return retVal;
