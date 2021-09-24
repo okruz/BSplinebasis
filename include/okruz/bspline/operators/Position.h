@@ -1,5 +1,5 @@
-#ifndef OKRUZ_BSPLINE_OPERATORS_DERIVATIVE_H
-#define OKRUZ_BSPLINE_OPERATORS_DERIVATIVE_H
+#ifndef OKRUZ_BSPLINE_OPERATORS_POSITION_H
+#define OKRUZ_BSPLINE_OPERATORS_POSITION_H
 /*
  * ########################################################################
  *  This program is free software: you can redistribute it and/or modify
@@ -27,12 +27,30 @@ namespace okruz::bspline::operators {
 namespace internal = okruz::bspline::internal;
 
 /*!
- * Represents a derivative operator of order n, i.e. d^n/dx^n.
+ * Represents a power of the position operator x^n.
  *
- * @tparam n Order of the derivative.
+ * @tparam n Order of the power.
  */
 template <size_t n>
-class Derivative : public Operator {
+class Position : public Operator {
+ private:
+  /*!
+   * Expands (x + xm)^n
+   *
+   * @param xm The middle point of the interval.
+   * @tparam T The datatype of xm and the returned coefficients.
+   */
+  template <typename T>
+  static std::array<T, n + 1> expandPower(const T &xm) {
+    std::array<T, n + 1> retVal;
+    T power_of_xm = static_cast<T>(1);
+    for (int i = 0; i < n + 1; i++) {
+      retVal[n - i] = internal::binomialCoefficient<T>(n, i) * power_of_xm;
+      power_of_xm *= xm;
+    }
+    return retVal;
+  }
+
  public:
   /*!
    * Returns the order of the output spline for a given input order.
@@ -40,7 +58,7 @@ class Derivative : public Operator {
    * @param inputOrder the order of the input spline.
    */
   static constexpr size_t outputOrder(size_t inputOrder) {
-    return std::max(n, inputOrder) - n;
+    return inputOrder + n;
   }
 
   /*!
@@ -67,32 +85,30 @@ class Derivative : public Operator {
    */
   template <typename T, size_t size>
   std::array<T, outputOrder(size - 1) + 1> transform(
-      const std::array<T, size> &input, [[maybe_unused]] const T &xm) {
-    static_assert(size >= 1, "Arrays of size zero not supported.");
-    // The order of the input spline.
-    constexpr size_t SPLINE_ORDER = size - 1;
-    // The size of the output array.
-    constexpr size_t OUTPUT_SIZE = outputOrder(SPLINE_ORDER) + 1;
+      const std::array<T, size> &input, const T &xm) {
+    constexpr size_t OUTPUT_SIZE = size + n;
 
-    if constexpr (n > SPLINE_ORDER) {
-      return {static_cast<T>(0)};
-    } else {
-      std::array<T, OUTPUT_SIZE> retVal;
-      for (size_t i = 0; i < OUTPUT_SIZE; i++) {
-        retVal[i] = internal::facultyRatio<T>(i + n, i) * input[i + n];
+    const std::array<T, n + 1> expanded = expandPower<T>(xm);
+
+    std::array<T, OUTPUT_SIZE> retVal;
+    retVal.fill(static_cast<T>(0));
+
+    for (int i = 0; i < input.size(); i++) {
+      for (int j = 0; j < expanded.size(); j++) {
+        retVal[i + j] += expanded[j] * input[i];
       }
-      return retVal;
     }
+    return retVal;
   }
 };
 
 /*!
- * Alias for the derivative opertor.
+ * Alias for the position opertor.
  *
- * @tparam n Order of the derivative.
+ * @tparam n Order of the power of the position operator.
  */
 template <size_t n>
-using Dx = Derivative<n>;
+using X = Position<n>;
 
 }  // namespace okruz::bspline::operators
-#endif  // OKRUZ_BSPLINE_OPERATORS_DERIVATIVE_H
+#endif  // OKRUZ_BSPLINE_OPERATORS_POSITION_H

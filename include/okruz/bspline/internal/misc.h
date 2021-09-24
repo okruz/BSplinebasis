@@ -112,6 +112,61 @@ T evaluateInterval(const T &x, const std::array<T, size> &coeffs, const T &xm) {
   return result;
 }
 
+/*!
+ * Returns the faculty n!.
+ *
+ * @param n The value to calculate the faculty of.
+ * @tparam T The datatype of the return type.
+ */
+template <typename T>
+T faculty(size_t n) {
+  T retVal = static_cast<T>(1);
+  for (size_t i = 2; i <= n; i++) {
+    retVal *= static_cast<T>(i);
+  }
+  return retVal;
+}
+
+/*!
+ * Returns the faculty ratio counter! / denominator!.
+ *
+ * @param counter The faculty of this value is the counter.
+ * @param denominator The faculty of this value is the denominator.
+ * @tparam T The datatype of the return type.
+ */
+template <typename T>
+T facultyRatio(size_t counter, size_t denominator) {
+  if (denominator > counter) {
+    return static_cast<T>(1) / facultyRatio<T>(denominator, counter);
+  } else {
+    T retVal = static_cast<T>(1);
+    for (size_t i = denominator + 1; i <= counter; i++) {
+      retVal *= static_cast<T>(i);
+    }
+    return retVal;
+  }
+}
+
+/*!
+ * Returns the binomial coefficient n! / (k! (n - k)!).
+ * Returns zero if k > n.
+ *
+ * @param n The first parameter.
+ * @param k The second parameter.
+ * @tparam T The datatype of the return type.
+ */
+template <typename T>
+T binomialCoefficient(size_t n, size_t k) {
+  if (k > n) {
+    return static_cast<T>(0);
+  }
+
+  const size_t smaller = std::min(k, n - k);
+  const size_t larger = std::max(k, n - k);
+
+  return facultyRatio<T>(n, larger) / faculty<T>(smaller);
+}
+
 }  // end namespace okruz::bspline::internal
 
 #endif  // OKRUZ_BSPLINE_MISC_H
