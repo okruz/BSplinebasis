@@ -40,7 +40,7 @@ target_include_directories(examples PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 target_include_directories(examples PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/examples)
 
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic -Werror")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic -Werror -Wno-deprecated-declarations")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
 
 enable_testing()

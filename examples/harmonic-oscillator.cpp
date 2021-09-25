@@ -57,26 +57,16 @@ std::vector<Eigenspace> solveHarmonicOscillator() {
   // Get the basis.
   std::vector<Spline> basis = setUpBasis();
 
-  // kinetic term -1/2 d^2/dx^2
-  DeMat hamiltonian =
-      -(static_cast<data_t>(1) / 2) *
-      setUpSymmetricMatrix(
-          okruz::bspline::integration::integrate_dx2<data_t, SPLINE_ORDER,
-                                                     SPLINE_ORDER>,
-          basis);
+  // Hamiltonian operator -1/2 d^2/dx^2 + 1/2 x^2
+  const auto hamiltonOperator =
+      (static_cast<data_t>(1) / 2) * (-operators::Dx<2>{} + operators::X<2>{});
 
-  // potential term 1/2 x^2
-  hamiltonian +=
-      (static_cast<data_t>(1) / 2) *
-      setUpSymmetricMatrix(
-          okruz::bspline::integration::integrate_x2<data_t, SPLINE_ORDER,
-                                                    SPLINE_ORDER>,
-          basis);
+  DeMat hamiltonian =
+      setUpSymmetricMatrix(integration::BilinearForm{hamiltonOperator}, basis);
 
   // overlap matrix
-  DeMat overlapMatrix = setUpSymmetricMatrix(
-      okruz::bspline::integration::overlap<data_t, SPLINE_ORDER, SPLINE_ORDER>,
-      basis);
+  DeMat overlapMatrix =
+      setUpSymmetricMatrix(integration::ScalarProduct{}, basis);
 
   // Solve the generalized eigenvalue problem A.x = lambda B.x
   Eigen::GeneralizedSelfAdjointEigenSolver<DeMat> ges;

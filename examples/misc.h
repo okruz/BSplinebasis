@@ -2,7 +2,7 @@
 #define OKRUZ_BSPLINE_EXAMPLES_MISC_H
 
 #include <assert.h>
-#include <okruz/bspline/Spline.h>
+#include <okruz/bspline/Core.h>
 
 #include <complex>
 #include <eigen3/Eigen/Dense>
@@ -44,17 +44,17 @@ struct Eigenspace {
 /**
  * @brief setUpSymmetricMatrix Sets up a symmetric matrix, where the matrix
  * elements are defined by a give function.
- * @param f The function defining the matrix elements.
+ * @param b The BilinearForm.
  * @param basis The basis functions (i.e. BSplines).
- * @return The matrix.
+ * @tparam B The type of the bilinear form.
+ * @returns The matrix.
  */
-inline DeMat setUpSymmetricMatrix(
-    const std::function<data_t(const Spline &, const Spline &)> &f,
-    const std::vector<Spline> &basis) {
+template <typename B>
+DeMat setUpSymmetricMatrix(const B &b, const std::vector<Spline> &basis) {
   DeMat ret = DeMat::Zero(basis.size(), basis.size());
   for (size_t i = 0; i < basis.size(); i++) {
     for (size_t j = i; j < basis.size(); j++) {
-      const data_t val = f(basis.at(i), basis.at(j));
+      const data_t val = b.integrate(basis.at(i), basis.at(j));
       ret(i, j) = val;
       ret(j, i) = val;
     }

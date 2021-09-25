@@ -82,44 +82,19 @@ std::vector<Eigenspace> solveRadialHydrogen() {
   // Get the basis.
   std::vector<Spline> basis = setUpBasis();
 
-  // First part of the kinetic term -d^2/dr^2 . Includes the term r^2 from the
-  // functional determinant.
-  DeMat hamiltonian = -setUpSymmetricMatrix(
-      okruz::bspline::integration::integrate_x2_dx2<data_t, SPLINE_ORDER,
-                                                    SPLINE_ORDER>,
-      basis);
+  // The radial Hamiltonian operator r^2 *(-d^2/dr^2 -2/r d/dr + L * (L + 1) /
+  // r^2 - 2/r). Includes the term r^2 from the functional determinant.
+  const auto hamiltonOperator = -operators::X<2>{} * operators::Dx<2>{} -
+                                2 * operators::X<1>{} * operators::Dx<1>{} +
+                                operators::ScalarMultiplication{L * (L + 1)} -
+                                2 * operators::X<1>{};
 
-  // Second part of the kinetic term -2/r d/dr . Includes the term r^2 from the
-  // functional determinant.
-  hamiltonian +=
-      -2 * setUpSymmetricMatrix(
-               okruz::bspline::integration::integrate_x_dx<data_t, SPLINE_ORDER,
-                                                           SPLINE_ORDER>,
-               basis);
-
-  if constexpr (L != 0) {
-    // Third part of the kinetic term L * (L + 1) / r^2 . Includes the term r^2
-    // from the functional determinant.
-    hamiltonian +=
-        L * (L + 1) *
-        setUpSymmetricMatrix(
-            okruz::bspline::integration::overlap<data_t, SPLINE_ORDER,
-                                                 SPLINE_ORDER>,
-            basis);
-  }
-
-  // potential term -2/r. Includes the term r^2 from the functional determinant.
-  hamiltonian +=
-      -2 * setUpSymmetricMatrix(
-               okruz::bspline::integration::integrate_x<data_t, SPLINE_ORDER,
-                                                        SPLINE_ORDER>,
-               basis);
+  DeMat hamiltonian =
+      setUpSymmetricMatrix(integration::BilinearForm{hamiltonOperator}, basis);
 
   // Overlap matrix. Includes the term r^2 from the functional determinant.
-  DeMat overlapMatrix = setUpSymmetricMatrix(
-      okruz::bspline::integration::integrate_x2<data_t, SPLINE_ORDER,
-                                                SPLINE_ORDER>,
-      basis);
+  DeMat overlapMatrix =
+      setUpSymmetricMatrix(integration::BilinearForm{operators::X<2>{}}, basis);
 
   // Solve the generalized eigenvalue problem A.x = lambda B.x
   Eigen::GeneralizedSelfAdjointEigenSolver<DeMat> ges;

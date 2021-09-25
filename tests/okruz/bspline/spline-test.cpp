@@ -1,5 +1,6 @@
 #define BOOST_TEST_MODULE SplineTest
 #include <okruz/bspline/BSplineGenerator.h>
+#include <okruz/bspline/Core.h>
 #include <okruz/bspline/integration/analytical.h>
 #include <okruz/bspline/integration/numerical.h>
 
@@ -10,6 +11,7 @@ using okruz::bspline::BSplineGenerator;
 using okruz::bspline::Spline;
 
 using namespace okruz::bspline::support;
+using namespace okruz::bspline;
 
 template <typename T>
 Spline<T, 0> getOne(const Grid<T> &grid) {
@@ -38,18 +40,30 @@ void testIntegration(T tol) {
   const auto f1 = [](const T & /*x*/) { return static_cast<T>(1); };
   const auto fx = [](const T &x) { return x; };
 
+  integration::ScalarProduct sp;
+  integration::BilinearForm bfx{operators::X<1>{}};
+  integration::BilinearForm bfx2{operators::X<2>{}};
+  integration::BilinearForm bfx_dx{operators::X<1>{} * operators::Dx<1>{}};
+  integration::BilinearForm bfdx{operators::Dx<1>{}};
+  integration::BilinearForm bfdx2{operators::Dx<2>{}};
+  integration::BilinearForm bfx2_dx2{operators::X<2>{} * operators::Dx<2>{}};
+
   for (const auto &s1 : splines) {
     for (const auto &s2 : splines) {
       auto s2dx2 = s2.dx2();
       BOOST_CHECK_SMALL(overlap<T>(s1, s2) - integrate<T>(s1 * s2), tol);
+      BOOST_CHECK_SMALL(overlap<T>(s1, s2) - sp.integrate(s1, s2), tol);
       BOOST_CHECK_SMALL(overlap<T>(s1, s2) - overlap<T>(one, s1 * s2), tol);
       BOOST_CHECK_SMALL(overlap<T>(s1, s2.timesx()) - integrate_x<T>(s1, s2),
                         tol);
       BOOST_CHECK_SMALL(overlap<T>(s1.timesx(), s2) - integrate_x<T>(s1, s2),
                         tol);
+      BOOST_CHECK_SMALL(bfx.integrate(s1, s2) - integrate_x<T>(s1, s2), tol);
       BOOST_CHECK_SMALL(
           overlap<T>(s1, s2.timesx().timesx()) - integrate_x2<T>(s1, s2),
           static_cast<T>(5) * tol);
+      BOOST_CHECK_SMALL(bfx2.integrate(s1, s2) - integrate_x2<T>(s1, s2),
+                        static_cast<T>(5) * tol);
       BOOST_CHECK_SMALL(
           overlap<T>(s1.timesx(), s2.timesx()) - integrate_x2<T>(s1, s2),
           static_cast<T>(5) * tol);
@@ -57,11 +71,16 @@ void testIntegration(T tol) {
           overlap<T>(s1.timesx().timesx(), s2) - integrate_x2<T>(s1, s2),
           static_cast<T>(5) * tol);
       BOOST_CHECK_SMALL(overlap<T>(s1, s2.dx()) - integrate_dx<T>(s1, s2), tol);
+      BOOST_CHECK_SMALL(bfdx.integrate(s1, s2) - integrate_dx<T>(s1, s2), tol);
       BOOST_CHECK_SMALL(
           overlap<T>(s1.timesx(), s2.dx()) - integrate_x_dx<T>(s1, s2), tol);
+      BOOST_CHECK_SMALL(bfx_dx.integrate(s1, s2) - integrate_x_dx<T>(s1, s2),
+                        static_cast<T>(2) * tol);
       BOOST_CHECK_SMALL(overlap<T>(s1, s2.dx().dx()) - integrate_dx2<T>(s1, s2),
                         tol);
       BOOST_CHECK_SMALL(overlap<T>(s1, s2dx2) - integrate_dx2<T>(s1, s2), tol);
+      BOOST_CHECK_SMALL(bfdx2.integrate(s1, s2) - integrate_dx2<T>(s1, s2),
+                        tol);
       BOOST_CHECK_SMALL(
           overlap<T>(s1.timesx(), s2.dx().dx()) - integrate_x_dx2<T>(s1, s2),
           static_cast<T>(11) * tol);
@@ -77,6 +96,9 @@ void testIntegration(T tol) {
       BOOST_CHECK_SMALL(
           overlap<T>(s1, s2dx2.timesx().timesx()) - integrate_x2_dx2<T>(s1, s2),
           static_cast<T>(60) * tol);
+      BOOST_CHECK_SMALL(
+          bfx2_dx2.integrate(s1, s2) - integrate_x2_dx2<T>(s1, s2),
+          static_cast<T>(100) * tol);
       BOOST_CHECK_SMALL(overlap<T>(s1, s2) - integrate<2 * order>(f1, s1, s2),
                         static_cast<T>(10) * tol);
       BOOST_CHECK_SMALL(

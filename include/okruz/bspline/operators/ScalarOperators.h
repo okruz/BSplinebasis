@@ -55,6 +55,13 @@ class ScalarMultiplication : public Operator {
   ScalarMultiplication(S s, O o) : _s(s), _o(o){};
 
   /*!
+   * Constructor constructing an ScalarMultiplication from a scalar alone.
+   *
+   * @param s The scalar to be multiplied.
+   */
+  ScalarMultiplication(S s) : _s(s), _o(UnityOperator{}){};
+
+  /*!
    * Returns the order of the output spline for a given input order.
    *
    * @param inputOrder the order of the input spline.
@@ -95,6 +102,14 @@ class ScalarMultiplication : public Operator {
     return a;
   }
 };
+
+/*!
+ * Deduction guide for a ScalarMultiplication constructed from a scalar alone.
+ *
+ * @tparam S The type of the scalar.
+ */
+template <typename S>
+ScalarMultiplication(S s) -> ScalarMultiplication<S, UnityOperator>;
 
 /*!
  * The scalar multiplication operator for an operator.

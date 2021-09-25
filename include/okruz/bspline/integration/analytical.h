@@ -107,7 +107,7 @@ template <typename T, typename F, size_t sizea, size_t sizeb>
  * @deprecated Obsolete.
  */
 template <typename T, typename F, size_t order1, size_t order2>
-[[dperecated]] T helperAnalyticIntegration(
+[[deprecated]] T helperAnalyticIntegration(
     F f, const okruz::bspline::Spline<T, order1> &m1,
     const okruz::bspline::Spline<T, order2> &m2) {
   if (!m1.getSupport().hasSameGrid(m2.getSupport())) {
