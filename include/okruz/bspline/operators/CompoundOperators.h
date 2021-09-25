@@ -112,6 +112,17 @@ enum class AdditionOperation {
 };
 
 /*!
+ * Checks whether the operation is a valid oeration for OperatorSum.
+ *
+ * @tparam operation The operation type to be checked.
+ */
+template <AdditionOperation operation>
+inline constexpr bool is_valid_operation_v = (operation ==
+                                              AdditionOperation::ADDITION) ||
+                                             (operation ==
+                                              AdditionOperation::SUBTRACTION);
+
+/*!
  * Represents the sum or difference of two operators.
  *
  * @tparam O1 The type of the first operator.
@@ -119,8 +130,10 @@ enum class AdditionOperation {
  * @tparam operation Indicates whether the operators shall be added or
  * subtracted.
  */
-template <typename O1, typename O2, AdditionOperation operation,
-          std::enable_if_t<are_operators_v<O1, O2>, bool> = true>
+template <
+    typename O1, typename O2, AdditionOperation operation,
+    std::enable_if_t<are_operators_v<O1, O2> && is_valid_operation_v<operation>,
+                     bool> = true>
 class OperatorSum : public Operator {
  private:
   /*! The first operator.*/
