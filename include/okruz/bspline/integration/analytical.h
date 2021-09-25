@@ -9,6 +9,8 @@
  * the same grid (i.e. that both splines have the same interval boundaries
  * within the intersection of their respective supports).
  *
+ * @deprecated All contents of this file should be considered as deprecated.
+ *
  * ########################################################################
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -44,9 +46,10 @@ namespace internal {
  * @param a Basis.
  * @param n Integer exponent.
  * @tparam T Datatype.
+ * @deprecated Obsolete.
  */
 template <typename T>
-T pow(T a, size_t n) {
+[[deprecated]] T pow(T a, size_t n) {
   size_t power_of_2 = 1;
   T ret = static_cast<T>(1);
   while (power_of_2 <= n) {
@@ -74,11 +77,12 @@ T pow(T a, size_t n) {
  * @tparam F Type of Function object f.
  * @tparam sizea Number of coefficients per interval for the first spline.
  * @tparam sizeb Number of coefficients per interval for the second spline.
+ * @deprecated Obsolete.
  */
 template <typename T, typename F, size_t sizea, size_t sizeb>
-T integrateIntervalAnalytically(F f, const std::array<T, sizea> &coeffsa,
-                                const std::array<T, sizeb> &coeffsb,
-                                const T &x0, const T &x1) {
+[[deprecated]] T integrateIntervalAnalytically(
+    F f, const std::array<T, sizea> &coeffsa,
+    const std::array<T, sizeb> &coeffsb, const T &x0, const T &x1) {
   T result = static_cast<T>(0);
   const T dxhalf = (x1 - x0) / static_cast<T>(2);
   const T xm = (x1 + x0) / static_cast<T>(2);
@@ -100,10 +104,12 @@ T integrateIntervalAnalytically(F f, const std::array<T, sizea> &coeffsa,
  * @tparam T Datatype of both splines.
  * @tparam order1 Order of the first spline.
  * @tparam order2 Order of the second spline.
+ * @deprecated Obsolete.
  */
 template <typename T, typename F, size_t order1, size_t order2>
-T helperAnalyticIntegration(F f, const okruz::bspline::Spline<T, order1> &m1,
-                            const okruz::bspline::Spline<T, order2> &m2) {
+[[dperecated]] T helperAnalyticIntegration(
+    F f, const okruz::bspline::Spline<T, order1> &m1,
+    const okruz::bspline::Spline<T, order2> &m2) {
   if (!m1.getSupport().hasSameGrid(m2.getSupport())) {
     throw BSplineException(ErrorCode::DIFFERING_GRIDS);
   }
@@ -137,9 +143,10 @@ T helperAnalyticIntegration(F f, const okruz::bspline::Spline<T, order1> &m1,
  * @param m Spline m(x) to be integrated.
  * @tparam T Datatype of the spline m.
  * @tparam order Order of the spline m.
+ * @deprecated Use okru::bspline::integration::LinearForm instead.
  */
 template <typename T, size_t order>
-T integrate(const Spline<T, order> &m) {
+[[deprecated]] T integrate(const Spline<T, order> &m) {
   T retval = static_cast<T>(0);
   const auto &ints = m.getSupport();
   for (size_t i = 0; i + 1 < ints.size(); i++) {
@@ -167,9 +174,11 @@ T integrate(const Spline<T, order> &m) {
  * @tparam T Datatype of both splines.
  * @tparam order1 Order of the first spline m1.
  * @tparam order2 Order of the second spline m2.
+ * @deprecated Use okru::bspline::integration::ScalarProduct instead.
  */
 template <typename T, size_t order1, size_t order2>
-T overlap(const Spline<T, order1> &m1, const Spline<T, order2> &m2) {
+[[deprecated]] T overlap(const Spline<T, order1> &m1,
+                         const Spline<T, order2> &m2) {
   static constexpr auto f = [](size_t i, size_t j, const T &coeffa,
                                const T &coeffb, const T &dxhalf,
                                [[maybe_unused]] const T &xm) {
@@ -189,9 +198,11 @@ T overlap(const Spline<T, order1> &m1, const Spline<T, order2> &m2) {
  * @tparam T Datatype of both splines.
  * @tparam order1 Order of the first spline m1.
  * @tparam order2 Order of the second spline m2.
+ * @deprecated Use okru::bspline::integration::BilinearForm instead.
  */
 template <typename T, size_t order1, size_t order2>
-T integrate_x(const Spline<T, order1> &m1, const Spline<T, order2> &m2) {
+[[deprecated]] T integrate_x(const Spline<T, order1> &m1,
+                             const Spline<T, order2> &m2) {
   static constexpr auto f = [](size_t i, size_t j, const T &coeffa,
                                const T &coeffb, const T &dxhalf, const T &xm) {
     if ((i + j + 1) % 2 == 1)
@@ -213,9 +224,11 @@ T integrate_x(const Spline<T, order1> &m1, const Spline<T, order2> &m2) {
  * @tparam T Datatype of both splines.
  * @tparam order1 Order of the first spline m1.
  * @tparam order2 Order of the second spline m2.
+ * @deprecated Use okru::bspline::integration::BilinearForm instead.
  */
 template <typename T, size_t order1, size_t order2>
-T integrate_x2(const Spline<T, order1> &m1, const Spline<T, order2> &m2) {
+[[deprecated]] T integrate_x2(const Spline<T, order1> &m1,
+                              const Spline<T, order2> &m2) {
   static constexpr auto f = [](size_t i, size_t j, const T &coeffa,
                                const T &coeffb, const T &dxhalf, const T &xm) {
     if ((i + j + 2) % 2 == 1)
@@ -240,9 +253,11 @@ T integrate_x2(const Spline<T, order1> &m1, const Spline<T, order2> &m2) {
  * @tparam T Datatype of both splines.
  * @tparam order1 Order of the first spline m1.
  * @tparam order2 Order of the second spline m2.
+ * @deprecated Use okru::bspline::integration::BilinearForm instead.
  */
 template <typename T, size_t order1, size_t order2>
-T integrate_dx(const Spline<T, order1> &m1, const Spline<T, order2> &m2) {
+[[deprecated]] T integrate_dx(const Spline<T, order1> &m1,
+                              const Spline<T, order2> &m2) {
   static constexpr auto f = [](size_t i, size_t j, const T &coeffa,
                                const T &coeffb, const T &dxhalf,
                                [[maybe_unused]] const T &xm) {
@@ -265,9 +280,11 @@ T integrate_dx(const Spline<T, order1> &m1, const Spline<T, order2> &m2) {
  * @tparam T Datatype of both splines.
  * @tparam order1 Order of the first spline m1.
  * @tparam order2 Order of the second spline m2.
+ * @deprecated Use okru::bspline::integration::BilinearForm instead.
  */
 template <typename T, size_t order1, size_t order2>
-T integrate_x_dx(const Spline<T, order1> &m1, const Spline<T, order2> &m2) {
+[[deprecated]] T integrate_x_dx(const Spline<T, order1> &m1,
+                                const Spline<T, order2> &m2) {
   static constexpr auto f = [](size_t i, size_t j, const T &coeffa,
                                const T &coeffb, const T &dxhalf, const T &xm) {
     if (j == 0)
@@ -292,9 +309,11 @@ T integrate_x_dx(const Spline<T, order1> &m1, const Spline<T, order2> &m2) {
  * @tparam T Datatype of both splines.
  * @tparam order1 Order of the first spline m1.
  * @tparam order2 Order of the second spline m2.
+ * @deprecated Use okru::bspline::integration::BilinearForm instead.
  */
 template <typename T, size_t order1, size_t order2>
-T integrate_dx2(const Spline<T, order1> &m1, const Spline<T, order2> &m2) {
+[[deprecated]] T integrate_dx2(const Spline<T, order1> &m1,
+                               const Spline<T, order2> &m2) {
   static constexpr auto f = [](size_t i, size_t j, const T &coeffa,
                                const T &coeffb, const T &dxhalf,
                                [[maybe_unused]] const T &xm) {
@@ -315,9 +334,11 @@ T integrate_dx2(const Spline<T, order1> &m1, const Spline<T, order2> &m2) {
  * @tparam T Datatype of both splines.
  * @tparam order1 Order of the first spline m1.
  * @tparam order2 Order of the second spline m2.
+ * @deprecated Use okru::bspline::integration::BilinearForm instead.
  */
 template <typename T, size_t order1, size_t order2>
-T integrate_x_dx2(const Spline<T, order1> &m1, const Spline<T, order2> &m2) {
+[[deprecated]] T integrate_x_dx2(const Spline<T, order1> &m1,
+                                 const Spline<T, order2> &m2) {
   static constexpr auto f = [](size_t i, size_t j, const T &coeffa,
                                const T &coeffb, const T &dxhalf, const T &xm) {
     if (j < 2)
@@ -342,9 +363,11 @@ T integrate_x_dx2(const Spline<T, order1> &m1, const Spline<T, order2> &m2) {
  * @tparam T Datatype of both splines.
  * @tparam order1 Order of the first spline m1.
  * @tparam order2 Order of the second spline m2.
+ * @deprecated Use okru::bspline::integration::BilinearForm instead.
  */
 template <typename T, size_t order1, size_t order2>
-T integrate_x2_dx2(const Spline<T, order1> &m1, const Spline<T, order2> &m2) {
+[[deprecated]] T integrate_x2_dx2(const Spline<T, order1> &m1,
+                                  const Spline<T, order2> &m2) {
   static constexpr auto f = [](size_t i, size_t j, const T &coeffa,
                                const T &coeffb, const T &dxhalf, const T &xm) {
     if (j < 2)

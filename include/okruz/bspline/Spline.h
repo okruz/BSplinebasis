@@ -465,8 +465,10 @@ class Spline {
 
   /*!
    * Returns a spline g(x) = x f(x), where f(x) is this spline.
+   *
+   * @deprecated Use okruz::bspline::operators::Position<1> instead.
    */
-  Spline<T, order + 1> timesx() const {
+  [[deprecated]] Spline<T, order + 1> timesx() const {
     std::vector<std::array<T, ARRAY_SIZE + 1>> newcoeffs(
         _coefficients.size(),
         internal::make_array<T, ARRAY_SIZE + 1>(static_cast<T>(0)));
@@ -488,9 +490,11 @@ class Spline {
    *
    * @param spline_order Order of the spline before applying the derivative.
    * @param derivative_order Order of the derivative to be applied.
+   * @deprecated Use okruz::bspline::operators::Derivative<n>::outputOrder()
+   * instead.
    */
-  static constexpr size_t orderdx(size_t spline_order,
-                                  size_t derivative_order) {
+  [[deprecated]] static constexpr size_t orderdx(size_t spline_order,
+                                                 size_t derivative_order) {
     if (derivative_order > spline_order)
       return 0;
     else
@@ -502,9 +506,10 @@ class Spline {
    * is this spline. Assumes the spline is n-1 times continously differentiable.
    *
    * @tparam n Order of the derivative.
+   * @deprecated Use okruz::bspline::operators::Derivative<n> instead.
    */
   template <size_t n = 1>
-  Spline<T, orderdx(order, n)> dx() const {
+  [[deprecated]] Spline<T, orderdx(order, n)> dx() const {
     if constexpr (n > order)
       return Spline<T, 0>(Support(_support.getGrid()), {});
     else if constexpr (n == 0)
@@ -530,13 +535,21 @@ class Spline {
 
   /*!
    * Calculates the second derivative.
+   *
+   * @deprecated Use okruz::bspline::operators::Derivative<2> instead.
    */
-  Spline<T, orderdx(order, 2)> dx2() const { return this->template dx<2>(); };
+  [[deprecated]] Spline<T, orderdx(order, 2)> dx2() const {
+    return this->template dx<2>();
+  };
 
   /*!
    * Calculates the third derivative.
+   *
+   * @deprecated Use okruz::bspline::operators::Derivative<3> instead.
    */
-  Spline<T, orderdx(order, 3)> dx3() const { return this->template dx<3>(); };
+  [[deprecated]] Spline<T, orderdx(order, 3)> dx3() const {
+    return this->template dx<3>();
+  };
 
 };  // class Spline
 
