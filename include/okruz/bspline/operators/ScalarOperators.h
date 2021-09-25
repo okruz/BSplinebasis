@@ -188,6 +188,36 @@ auto operator+(const S &s, const O &o) {
 }
 
 /*!
+ * The scalar subtraction operator for an operator.
+ *
+ * @param o The operator.
+ * @param s The scalar to be subtracted.
+ * @tparam S The type of the scalar.
+ * @tparam O The type of the operator.
+ */
+template <
+    typename S, typename O,
+    std::enable_if_t<are_scalar_multiplication_types_v<S, O>, bool> = true>
+auto operator-(const O &o, const S &s) {
+  return o - ScalarMultiplication{s};
+}
+
+/*!
+ * The scalar subtraction operator for an operator.
+ *
+ * @param s The scalar.
+ * @param o The operator to be subtracted.
+ * @tparam S The type of the scalar.
+ * @tparam O The type of the operator.
+ */
+template <
+    typename S, typename O,
+    std::enable_if_t<are_scalar_multiplication_types_v<S, O>, bool> = true>
+auto operator-(const S &s, const O &o) {
+  return ScalarMultiplication{s} - o;
+}
+
+/*!
  * The unitary minus operator for an operator. Returns an
  * ScalarMultiplication<int, O>.
  *
