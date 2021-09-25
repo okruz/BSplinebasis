@@ -31,16 +31,16 @@ inline constexpr bool are_scalar_multiplication_types_v =
 /*!
  * Represents the multiplication of an operator with a scalar.
  *
- * @tparam T type of the scalar.
+ * @tparam S type of the scalar.
  * @tparam O type of the operator to be multiplied with the scalar.
  */
-template <typename T, typename O,
-          std::enable_if_t<are_scalar_multiplication_types_v<T, O>, bool> =
+template <typename S, typename O,
+          std::enable_if_t<are_scalar_multiplication_types_v<S, O>, bool> =
               true>
 class ScalarMultiplication : public Operator {
  private:
   /*! The scalar to multiply the operator with. */
-  T _t;
+  S _s;
   /*! The operator to be multiplied. */
   O _o;
 
@@ -49,10 +49,10 @@ class ScalarMultiplication : public Operator {
    * Constructor constructing an ScalarMultiplication from a scalar and an
    * operator.
    *
-   * @param t The scalar to be multiplied.
+   * @param s The scalar to be multiplied.
    * @param o The operator to be multiplied.
    */
-  ScalarMultiplication(T t, O o) : _t(t), _o(o){};
+  ScalarMultiplication(S s, O o) : _s(s), _o(o){};
 
   /*!
    * Returns the order of the output spline for a given input order.
@@ -70,7 +70,7 @@ class ScalarMultiplication : public Operator {
    * @tparam order The order of the spline.
    */
   template <size_t order>
-  auto operator*(const Spline<T, order> &spline) {
+  auto operator*(const Spline<S, order> &spline) {
     return transformSpline(*this, spline);
   }
 
@@ -81,15 +81,16 @@ class ScalarMultiplication : public Operator {
    * @param input The polynomial coefficients.
    * @param xm The middlepoint of the interval, with respect to which the
    * polynomial is defined.
+   * @tparam T The datatype of the spline.
    * @tparam size The size of the array, i. e. the number of coefficients.
    */
-  template <size_t size>
+  template <typename T, size_t size>
   auto transform(const std::array<T, size> &input, const T &xm) {
     auto a = _o.transform(input, xm);
 
     // Negate a.
     for (T &el : a) {
-      el *= _t;
+      el *= _s;
     }
     return a;
   }
@@ -98,46 +99,46 @@ class ScalarMultiplication : public Operator {
 /*!
  * The scalar multiplication operator for an operator.
  *
- * @param t The scalar to be multiplied.
+ * @param s The scalar to be multiplied.
  * @param o The operator to be multiplied.
- * @tparam T The type of the scalar.
+ * @tparam S The type of the scalar.
  * @tparam O The type of the operator to be multiplied.
  */
 template <
-    typename T, typename O,
-    std::enable_if_t<are_scalar_multiplication_types_v<T, O>, bool> = true>
-ScalarMultiplication<T, O> operator*(const T &t, const O &o) {
-  return ScalarMultiplication(t, o);
+    typename S, typename O,
+    std::enable_if_t<are_scalar_multiplication_types_v<S, O>, bool> = true>
+ScalarMultiplication<S, O> operator*(const S &s, const O &o) {
+  return ScalarMultiplication(s, o);
 }
 
 /*!
  * The scalar multiplication operator for an operator.
  *
  * @param o The operator to be multiplied.
- * @param t The scalar to be multiplied.
- * @tparam T The type of the scalar.
+ * @param s The scalar to be multiplied.
+ * @tparam S The type of the scalar.
  * @tparam O The type of the operator to be multiplied.
  */
 template <
-    typename T, typename O,
-    std::enable_if_t<are_scalar_multiplication_types_v<T, O>, bool> = true>
-ScalarMultiplication<T, O> operator*(const O &o, const T &t) {
-  return ScalarMultiplication(t, o);
+    typename S, typename O,
+    std::enable_if_t<are_scalar_multiplication_types_v<S, O>, bool> = true>
+ScalarMultiplication<S, O> operator*(const O &o, const S &s) {
+  return ScalarMultiplication(s, o);
 }
 
 /*!
  * The scalar division operator for an operator.
  *
  * @param o The operator to be divided.
- * @param t The divisor.
- * @tparam T The type of the scalar.
+ * @param s The divisor.
+ * @tparam S The type of the scalar.
  * @tparam O The type of the operator to be divided.
  */
 template <
-    typename T, typename O,
-    std::enable_if_t<are_scalar_multiplication_types_v<T, O>, bool> = true>
-ScalarMultiplication<T, O> operator/(const O &o, const T &t) {
-  return ScalarMultiplication(static_cast<T>(1) / t, o);
+    typename S, typename O,
+    std::enable_if_t<are_scalar_multiplication_types_v<S, O>, bool> = true>
+ScalarMultiplication<S, O> operator/(const O &o, const S &s) {
+  return ScalarMultiplication(static_cast<S>(1) / s, o);
 }
 
 // ########################## UnityOperator ##############################
