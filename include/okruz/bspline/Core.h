@@ -18,6 +18,7 @@
 #include <okruz/bspline/BSplineGenerator.h>
 #include <okruz/bspline/Spline.h>
 #include <okruz/bspline/integration/BilinearForm.h>
+#include <okruz/bspline/integration/LinearForm.h>
 #include <okruz/bspline/operators/CompoundOperators.h>
 #include <okruz/bspline/operators/Derivative.h>
 #include <okruz/bspline/operators/Position.h>
