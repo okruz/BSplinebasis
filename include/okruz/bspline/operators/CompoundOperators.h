@@ -102,13 +102,23 @@ OperatorProduct<O1, O2> operator*(const O1 &o1, const O2 &o2) {
 // #######################################################################
 // ########################### OperatorSum ###############################
 
+/*! Indicates which operation the OperatorSum is supposed to perform. */
+enum class AdditionOperation {
+  /*! Perform addition. */
+  ADDITION,
+  /*! Perform subtraction. */
+  SUBTRACTION,
+};
+
 /*!
- * Represents the sum of two operators.
+ * Represents the sum or difference of two operators.
  *
  * @tparam O1 The type of the first operator.
  * @tparam O2 The type of the second operator.
+ * @tparam operation Indicates whether the operators shall be added or
+ * subtracted.
  */
-template <typename O1, typename O2,
+template <typename O1, typename O2, AdditionOperation operation,
           std::enable_if_t<are_operators_v<O1, O2>, bool> = true>
 class OperatorSum : public Operator {
  private:
@@ -185,6 +195,14 @@ class OperatorSum : public Operator {
       const std::array<T, size> &input, const T &xm) {
     auto a = _o1.transform(input, xm);
     auto b = _o2.transform(input, xm);
+
+    // Negate b if subtraction is requested.
+    if constexpr (operation == AdditionOperation::SUBTRACTION) {
+      for (T &el : b) {
+        el *= static_cast<T>(-1);
+      }
+    }
+
     return add(a, b);
   }
 };
@@ -199,8 +217,22 @@ class OperatorSum : public Operator {
  */
 template <typename O1, typename O2,
           std::enable_if_t<are_operators_v<O1, O2>, bool> = true>
-OperatorSum<O1, O2> operator+(const O1 &o1, const O2 &o2) {
-  return OperatorSum(o1, o2);
+auto operator+(const O1 &o1, const O2 &o2) {
+  return OperatorSum<O1, O2, AdditionOperation::ADDITION>(o1, o2);
+}
+
+/*!
+ * The subtraction operator for two operators, returning an OperatorSum.
+ *
+ * @param o1 The first operator.
+ * @param o2 The second operator.
+ * @tparam O1 The type of the first operator.
+ * @tparam O2 The type of the second operator.
+ */
+template <typename O1, typename O2,
+          std::enable_if_t<are_operators_v<O1, O2>, bool> = true>
+auto operator-(const O1 &o1, const O2 &o2) {
+  return OperatorSum<O1, O2, AdditionOperation::SUBTRACTION>(o1, o2);
 }
 
 }  // namespace okruz::bspline::operators

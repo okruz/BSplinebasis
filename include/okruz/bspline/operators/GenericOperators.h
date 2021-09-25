@@ -78,6 +78,12 @@ decltype(auto) transformSpline(O op, const Spline<T, order> &spline) {
   return Spline(spline.getSupport(), std::move(newCoefficients));
 }
 
+// ################## Generic Operator Definitions #######################
+// #######################################################################
+
+// #######################################################################
+// ########################## UnityOperator ##############################
+
 /*!
  * Represents the unity operator.
  */
@@ -119,5 +125,83 @@ class UnityOperator : public Operator {
   }
 };
 
+// ########################## UnityOperator ##############################
+// #######################################################################
+
+// #######################################################################
+// ######################### OperatorNegation ############################
+
+/*!
+ * Represents the negation of an operator.
+ *
+ * @tparam O type of the operator to be negated.
+ */
+template <typename O, std::enable_if_t<is_operator_v<O>, bool> = true>
+class OperatorNegation : public Operator {
+ private:
+  /*! The operator to be negated. */
+  O _o;
+
+ public:
+  /*!
+   * Constructor constructing an OperatorNegation from an operator.
+   *
+   * @param o The operator to be negated.
+   */
+  OperatorNegation(O o) : _o(o){};
+
+  /*!
+   * Returns the order of the output spline for a given input order.
+   *
+   * @param inputOrder the order of the input spline.
+   */
+  static constexpr size_t outputOrder(size_t inputOrder) {
+    return O::outputOrder(inputOrder);
+  }
+
+  /*!
+   * Applies the operator to a spline.
+   *
+   * @param spline The spline to apply the operator to.
+   * @tparam T The datatype of the spline.
+   * @tparam order The order of the spline.
+   */
+  template <typename T, size_t order>
+  auto operator*(const Spline<T, order> &spline) {
+    return transformSpline(*this, spline);
+  }
+
+  /*!
+   * Applies the operator to a set of coefficients (representing a polynomial on
+   * one interval).
+   *
+   * @param input The polynomial coefficients.
+   * @param xm The middlepoint of the interval, with respect to which the
+   * polynomial is defined.
+   * @tparam T The datatype of the coefficients.
+   * @tparam size The size of the array, i. e. the number of coefficients.
+   */
+  template <typename T, size_t size>
+  auto transform(const std::array<T, size> &input, const T &xm) {
+    auto a = _o.transform(input, xm);
+
+    // Negate a.
+    for (T &el : a) {
+      el *= static_cast<T>(-1);
+    }
+    return a;
+  }
+};
+
+/*!
+ * The unitary minus operator for an operator. Returns an OperatorNegation.
+ *
+ * @param o The operator to be negated.
+ * @tparam O The type of the operator to be negated.
+ */
+template <typename O, std::enable_if_t<is_operator_v<O>, bool> = true>
+OperatorNegation<O> operator-(const O &o) {
+  return OperatorNegation(o);
+}
 }  // namespace okruz::bspline::operators
 #endif  // OKRUZ_BSPLINE_OPERATORS_GENERICOPERATORS_H
