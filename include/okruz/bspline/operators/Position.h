@@ -69,7 +69,8 @@ class Position : public Operator {
    * @tparam order The order of the input spline.
    */
   template <typename T, size_t order>
-  Spline<T, outputOrder(order)> operator*(const Spline<T, order> &spline) {
+  Spline<T, outputOrder(order)> operator*(
+      const Spline<T, order> &spline) const {
     return transformSpline(*this, spline);
   }
 
@@ -85,7 +86,7 @@ class Position : public Operator {
    */
   template <typename T, size_t size>
   std::array<T, outputOrder(size - 1) + 1> transform(
-      const std::array<T, size> &input, const T &xm) {
+      const std::array<T, size> &input, const T &xm) const {
     constexpr size_t OUTPUT_SIZE = size + n;
 
     const std::array<T, n + 1> expanded = expandPower<T>(xm);

@@ -51,7 +51,8 @@ class Derivative : public Operator {
    * @tparam order The order of the input spline.
    */
   template <typename T, size_t order>
-  Spline<T, outputOrder(order)> operator*(const Spline<T, order> &spline) {
+  Spline<T, outputOrder(order)> operator*(
+      const Spline<T, order> &spline) const {
     return transformSpline(*this, spline);
   }
 
@@ -67,7 +68,7 @@ class Derivative : public Operator {
    */
   template <typename T, size_t size>
   std::array<T, outputOrder(size - 1) + 1> transform(
-      const std::array<T, size> &input, [[maybe_unused]] const T &xm) {
+      const std::array<T, size> &input, [[maybe_unused]] const T &xm) const {
     static_assert(size >= 1, "Arrays of size zero not supported.");
     // The order of the input spline.
     constexpr size_t SPLINE_ORDER = size - 1;

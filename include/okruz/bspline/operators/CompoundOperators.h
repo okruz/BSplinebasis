@@ -31,9 +31,9 @@ template <typename O1, typename O2,
 class OperatorProduct : public Operator {
  private:
   /*! The first (left) operator.*/
-  O1 _o1;
+  const O1 _o1;
   /*! The second (right) operator.*/
-  O2 _o2;
+  const O2 _o2;
 
  public:
   /*!
@@ -61,7 +61,8 @@ class OperatorProduct : public Operator {
    * @tparam order The order of the input spline.
    */
   template <typename T, size_t order>
-  Spline<T, outputOrder(order)> operator*(const Spline<T, order> &spline) {
+  Spline<T, outputOrder(order)> operator*(
+      const Spline<T, order> &spline) const {
     return transformSpline(*this, spline);
   }
 
@@ -77,7 +78,7 @@ class OperatorProduct : public Operator {
    */
   template <typename T, size_t size>
   std::array<T, outputOrder(size - 1) + 1> transform(
-      const std::array<T, size> &input, const T &xm) {
+      const std::array<T, size> &input, const T &xm) const {
     return _o1.transform(_o2.transform(input, xm), xm);
   }
 };
@@ -123,9 +124,9 @@ template <typename O1, typename O2, AdditionOperation operation,
 class OperatorSum : public Operator {
  private:
   /*! The first operator.*/
-  O1 _o1;
+  const O1 _o1;
   /*! The second operator.*/
-  O2 _o2;
+  const O2 _o2;
 
   /*!
    * Adds the smaller array to the larger array in place and returns the larger
@@ -138,8 +139,8 @@ class OperatorSum : public Operator {
    * @tparam sizeb The size of b.
    */
   template <typename T, size_t sizea, size_t sizeb>
-  std::array<T, std::max(sizea, sizeb)> &add(std::array<T, sizea> &a,
-                                             std::array<T, sizeb> &b) {
+  static std::array<T, std::max(sizea, sizeb)> &add(std::array<T, sizea> &a,
+                                                    std::array<T, sizeb> &b) {
     if constexpr (sizeb > sizea) {
       return add(b, a);
     } else {
@@ -176,7 +177,8 @@ class OperatorSum : public Operator {
    * @tparam order The order of the input spline.
    */
   template <typename T, size_t order>
-  Spline<T, outputOrder(order)> operator*(const Spline<T, order> &spline) {
+  Spline<T, outputOrder(order)> operator*(
+      const Spline<T, order> &spline) const {
     return transformSpline(*this, spline);
   }
 
@@ -192,7 +194,7 @@ class OperatorSum : public Operator {
    */
   template <typename T, size_t size>
   std::array<T, outputOrder(size - 1) + 1> transform(
-      const std::array<T, size> &input, const T &xm) {
+      const std::array<T, size> &input, const T &xm) const {
     auto a = _o1.transform(input, xm);
     auto b = _o2.transform(input, xm);
 

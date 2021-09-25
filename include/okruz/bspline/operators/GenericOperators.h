@@ -61,7 +61,7 @@ inline constexpr bool are_operators_v = is_operator_v<O1> &&is_operator_v<O2>;
  */
 template <typename T, size_t order, typename O,
           std::enable_if_t<is_operator_v<O>, bool> = true>
-decltype(auto) transformSpline(O op, const Spline<T, order> &spline) {
+decltype(auto) transformSpline(const O &op, const Spline<T, order> &spline) {
   constexpr size_t OUTPUT_SIZE = O::outputOrder(order) + 1;
 
   const auto &oldCoefficients = spline.getCoefficients();
@@ -104,7 +104,7 @@ class UnityOperator : public Operator {
    * @tparam order The order of the spline.
    */
   template <typename T, size_t order>
-  Spline<T, order> operator*(const Spline<T, order> &spline) {
+  Spline<T, order> operator*(const Spline<T, order> &spline) const {
     return spline;
   }
 
@@ -120,7 +120,7 @@ class UnityOperator : public Operator {
    */
   template <typename T, size_t size>
   std::array<T, size> transform(const std::array<T, size> &input,
-                                [[maybe_unused]] const T &xm) {
+                                [[maybe_unused]] const T &xm) const {
     return input;
   }
 };
