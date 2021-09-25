@@ -1,11 +1,21 @@
 #ifndef OKRUZ_BSPLINE_EXAMPLES_MISC_H
 #define OKRUZ_BSPLINE_EXAMPLES_MISC_H
 
+#ifdef OKRUZ_EXAMPLES_USE_BOOST_MULTIPRECISION
+// Just as a proof of concept.
+// Beware boost multiprecision tries to include the eigen headers from
+// <Eigen/Core>. Without additional include definitions, they may be placed
+// under <eigen3/Eigen/Core>, however, depending on your installation.
+#include <boost/multiprecision/cpp_bin_float.hpp>
+#include <boost/multiprecision/eigen.hpp>
+#else
+#include <eigen3/Eigen/Dense>
+#endif
+
 #include <assert.h>
 #include <okruz/bspline/Core.h>
 
 #include <complex>
-#include <eigen3/Eigen/Dense>
 #include <functional>
 #include <vector>
 
@@ -28,7 +38,11 @@
 
 namespace okruz::bspline::examples {
 
+#ifdef OKRUZ_EXAMPLES_USE_BOOST_MULTIPRECISION
+using data_t = boost::multiprecision::cpp_bin_float_oct;
+#else
 using data_t = double;
+#endif
 
 using DeMat = Eigen::Matrix<data_t, Eigen::Dynamic, Eigen::Dynamic>;
 

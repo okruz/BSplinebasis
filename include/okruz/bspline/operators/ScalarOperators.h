@@ -18,6 +18,7 @@
  */
 
 #include <okruz/bspline/Spline.h>
+#include <okruz/bspline/operators/CompoundOperators.h>
 
 /*!
  * Operator definitions.
@@ -154,6 +155,36 @@ template <
     std::enable_if_t<are_scalar_multiplication_types_v<S, O>, bool> = true>
 ScalarMultiplication<S, O> operator/(const O &o, const S &s) {
   return ScalarMultiplication(static_cast<S>(1) / s, o);
+}
+
+/*!
+ * The scalar addition operator for an operator.
+ *
+ * @param o The operator to be added.
+ * @param s The scalar to be added.
+ * @tparam S The type of the scalar.
+ * @tparam O The type of the operator.
+ */
+template <
+    typename S, typename O,
+    std::enable_if_t<are_scalar_multiplication_types_v<S, O>, bool> = true>
+auto operator+(const O &o, const S &s) {
+  return o + ScalarMultiplication{s};
+}
+
+/*!
+ * The scalar addition operator for an operator.
+ *
+ * @param s The scalar to be added.
+ * @param o The operator to be added.
+ * @tparam S The type of the scalar.
+ * @tparam O The type of the operator.
+ */
+template <
+    typename S, typename O,
+    std::enable_if_t<are_scalar_multiplication_types_v<S, O>, bool> = true>
+auto operator+(const S &s, const O &o) {
+  return ScalarMultiplication{s} + o;
 }
 
 /*!

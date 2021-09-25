@@ -22,6 +22,7 @@
 
 #include <algorithm>
 #include <eigen3/Eigen/Eigenvalues>
+#include <variant>
 
 namespace okruz::bspline::examples::hydrogen {
 
@@ -52,10 +53,10 @@ static std::vector<data_t> setUpKnotsVector() {
   const data_t rmin = static_cast<data_t>(1) / 100;
 
   // Last point of the logarithmic grid.
-  const data_t rmax = static_cast<data_t>(1000);
+  const data_t rmax = static_cast<data_t>(2000);
 
   // Roughly the number of grid points on the logarithmic grid.
-  const int numberOfGridPoints = 200;
+  const int numberOfGridPoints = 300;
 
   // logarithmic step
   const data_t step =
@@ -86,8 +87,7 @@ std::vector<Eigenspace> solveRadialHydrogen() {
   // r^2 - 2/r). Includes the term r^2 from the functional determinant.
   const auto hamiltonOperator = -operators::X<2>{} * operators::Dx<2>{} -
                                 2 * operators::X<1>{} * operators::Dx<1>{} +
-                                operators::ScalarMultiplication{L * (L + 1)} -
-                                2 * operators::X<1>{};
+                                L * (L + 1) - 2 * operators::X<1>{};
 
   DeMat hamiltonian =
       setUpSymmetricMatrix(integration::BilinearForm{hamiltonOperator}, basis);
