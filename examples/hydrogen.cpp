@@ -22,7 +22,6 @@
 
 #include <algorithm>
 #include <eigen3/Eigen/Eigenvalues>
-#include <variant>
 
 namespace okruz::bspline::examples::hydrogen {
 
@@ -62,7 +61,7 @@ static std::vector<data_t> setUpKnotsVector() {
   const data_t step =
       pow(rmax / rmin, 1 / static_cast<data_t>(numberOfGridPoints));
 
-  for (int i = 1; i <= numberOfGridPoints; i++) {
+  for (int i = 0; i <= numberOfGridPoints; i++) {
     ret.push_back(rmin * pow(step, i));
   }
   return ret;
