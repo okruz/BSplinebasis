@@ -1,4 +1,11 @@
 #define BOOST_TEST_MODULE SupportTest
+/*
+ * ########################################################################
+ * The contents of this file is free and unencumbered software released into the
+ * public domain. For more information, please refer to <http://unlicense.org/>
+ * ########################################################################
+ */
+
 #include <okruz/bspline/support/Support.h>
 
 #include <boost/test/included/unit_test.hpp>
