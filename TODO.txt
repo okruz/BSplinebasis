@@ -1,6 +1,10 @@
 - Look over doxygen comments.
 - Add @returns to doxygen comments.
+- Add formulas, where helpful.
 - Add @throws to doxygen comments?
+
+- Implement SplineOperator.
+- Implement dynamic spline order (comparable to Eigen::Dynamic)?
 
 
 - Unclutter unit tests.
