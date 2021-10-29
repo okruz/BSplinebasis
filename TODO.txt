@@ -5,6 +5,7 @@
 
 - Implement SplineOperator.
 - Implement dynamic spline order (comparable to Eigen::Dynamic)?
+- Rewrite BSplineGenerator::generateBSplines() in order to remove O(2^k) complexity.
 
 
 - Unclutter unit tests.
