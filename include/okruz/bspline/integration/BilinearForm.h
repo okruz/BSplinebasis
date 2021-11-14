@@ -93,11 +93,8 @@ class BilinearForm {
    */
   template <typename T, size_t ordera, size_t orderb>
   T integrate(const Spline<T, ordera> &a, const Spline<T, orderb> &b) const {
-    if (!a.getSupport().hasSameGrid(a.getSupport())) {
-      throw BSplineException(ErrorCode::DIFFERING_GRIDS);
-    }
-
-    support::Support integrandSupport =
+    // Will also check whether the two grids are equivalent.
+    const support::Support integrandSupport =
         a.getSupport().calcIntersection(b.getSupport());
     const size_t nintervals = integrandSupport.numberOfIntervals();
 

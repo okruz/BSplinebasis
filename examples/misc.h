@@ -21,7 +21,6 @@
 #include <assert.h>
 #include <okruz/bspline/Core.h>
 
-#include <complex>
 #include <functional>
 #include <vector>
 

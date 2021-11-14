@@ -133,7 +133,7 @@ template <typename T, typename F, size_t order1, size_t order2>
  * @param m Spline m(x) to be integrated.
  * @tparam T Datatype of the spline m.
  * @tparam order Order of the spline m.
- * @deprecated Use okru::bspline::integration::LinearForm instead.
+ * @deprecated Use okruz::bspline::integration::LinearForm instead.
  */
 template <typename T, size_t order>
 [[deprecated]] T integrate(const Spline<T, order> &m) {
@@ -164,7 +164,7 @@ template <typename T, size_t order>
  * @tparam T Datatype of both splines.
  * @tparam order1 Order of the first spline m1.
  * @tparam order2 Order of the second spline m2.
- * @deprecated Use okru::bspline::integration::ScalarProduct instead.
+ * @deprecated Use okruz::bspline::integration::ScalarProduct instead.
  */
 template <typename T, size_t order1, size_t order2>
 [[deprecated]] T overlap(const Spline<T, order1> &m1,
@@ -188,7 +188,7 @@ template <typename T, size_t order1, size_t order2>
  * @tparam T Datatype of both splines.
  * @tparam order1 Order of the first spline m1.
  * @tparam order2 Order of the second spline m2.
- * @deprecated Use okru::bspline::integration::BilinearForm instead.
+ * @deprecated Use okruz::bspline::integration::BilinearForm instead.
  */
 template <typename T, size_t order1, size_t order2>
 [[deprecated]] T integrate_x(const Spline<T, order1> &m1,
@@ -214,7 +214,7 @@ template <typename T, size_t order1, size_t order2>
  * @tparam T Datatype of both splines.
  * @tparam order1 Order of the first spline m1.
  * @tparam order2 Order of the second spline m2.
- * @deprecated Use okru::bspline::integration::BilinearForm instead.
+ * @deprecated Use okruz::bspline::integration::BilinearForm instead.
  */
 template <typename T, size_t order1, size_t order2>
 [[deprecated]] T integrate_x2(const Spline<T, order1> &m1,
@@ -243,7 +243,7 @@ template <typename T, size_t order1, size_t order2>
  * @tparam T Datatype of both splines.
  * @tparam order1 Order of the first spline m1.
  * @tparam order2 Order of the second spline m2.
- * @deprecated Use okru::bspline::integration::BilinearForm instead.
+ * @deprecated Use okruz::bspline::integration::BilinearForm instead.
  */
 template <typename T, size_t order1, size_t order2>
 [[deprecated]] T integrate_dx(const Spline<T, order1> &m1,
@@ -270,7 +270,7 @@ template <typename T, size_t order1, size_t order2>
  * @tparam T Datatype of both splines.
  * @tparam order1 Order of the first spline m1.
  * @tparam order2 Order of the second spline m2.
- * @deprecated Use okru::bspline::integration::BilinearForm instead.
+ * @deprecated Use okruz::bspline::integration::BilinearForm instead.
  */
 template <typename T, size_t order1, size_t order2>
 [[deprecated]] T integrate_x_dx(const Spline<T, order1> &m1,
@@ -299,7 +299,7 @@ template <typename T, size_t order1, size_t order2>
  * @tparam T Datatype of both splines.
  * @tparam order1 Order of the first spline m1.
  * @tparam order2 Order of the second spline m2.
- * @deprecated Use okru::bspline::integration::BilinearForm instead.
+ * @deprecated Use okruz::bspline::integration::BilinearForm instead.
  */
 template <typename T, size_t order1, size_t order2>
 [[deprecated]] T integrate_dx2(const Spline<T, order1> &m1,
@@ -324,7 +324,7 @@ template <typename T, size_t order1, size_t order2>
  * @tparam T Datatype of both splines.
  * @tparam order1 Order of the first spline m1.
  * @tparam order2 Order of the second spline m2.
- * @deprecated Use okru::bspline::integration::BilinearForm instead.
+ * @deprecated Use okruz::bspline::integration::BilinearForm instead.
  */
 template <typename T, size_t order1, size_t order2>
 [[deprecated]] T integrate_x_dx2(const Spline<T, order1> &m1,
@@ -353,7 +353,7 @@ template <typename T, size_t order1, size_t order2>
  * @tparam T Datatype of both splines.
  * @tparam order1 Order of the first spline m1.
  * @tparam order2 Order of the second spline m2.
- * @deprecated Use okru::bspline::integration::BilinearForm instead.
+ * @deprecated Use okruz::bspline::integration::BilinearForm instead.
  */
 template <typename T, size_t order1, size_t order2>
 [[deprecated]] T integrate_x2_dx2(const Spline<T, order1> &m1,
