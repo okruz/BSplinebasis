@@ -71,7 +71,7 @@ class Grid {
    *
    * @param v The input vector.
    */
-  Grid(const std::vector<T> &v) : Grid(v.begin(), v.end()){};
+  explicit Grid(const std::vector<T> &v) : Grid(v.begin(), v.end()){};
 
   /*!
    * Constructs a grid from a std::initializer_list. The elements of the vector
@@ -79,14 +79,14 @@ class Grid {
    *
    * @param v The input initializer_list.
    */
-  Grid(const std::initializer_list<T> &v) : Grid(std::vector<T>(v)){};
+  explicit Grid(const std::initializer_list<T> &v) : Grid(std::vector<T>(v)){};
 
   /*!
    * Constructs a grid by setting its members.
    *
    * @param data A shared pointer to the grid elements.
    */
-  Grid(std::shared_ptr<const std::vector<T>> data) : _data(std::move(data)) {
+  explicit Grid(std::shared_ptr<const std::vector<T>> data) : _data(std::move(data)) {
     if (!_data || !isSteadilyIncreasing()) {
       throw BSplineException(ErrorCode::INCONSISTENT_DATA,
                              "The grid points are not steadily increasing.");

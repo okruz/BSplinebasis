@@ -51,7 +51,7 @@ class LinearForm {
    *
    * @param o The operator acting on the spline.
    */
-  LinearForm(O o) : _o(o){};
+  explicit LinearForm(O o) : _o(o){};
 
   /*!
    * Default constructor constructing a LinearForm.
@@ -86,7 +86,7 @@ class LinearForm {
 };
 
 /*!
- * Deduction guide for a bilinear form with no operator explicitly defined.
+ * Deduction guide for a linear form with no operator explicitly defined.
  */
 LinearForm()->LinearForm<operators::UnityOperator>;
 

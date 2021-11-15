@@ -101,7 +101,7 @@ class BSplineException : public std::exception {
    *
    * @param errorCode The errorCode.
    */
-  BSplineException(ErrorCode errorCode)
+  explicit BSplineException(ErrorCode errorCode)
       : _errorCode(errorCode),
         _whatString(
             generateWhatString(errorCode, getErrorMessage(errorCode))){};

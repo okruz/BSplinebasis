@@ -51,7 +51,7 @@ class BSplineGenerator {
    *
    * @param knots The knots, the BSplines shall be generated on.
    */
-  BSplineGenerator(std::vector<T> knots)
+  explicit BSplineGenerator(std::vector<T> knots)
       : _grid(generateGrid(knots)), _knots(std::move(knots)){};
 
   /*!

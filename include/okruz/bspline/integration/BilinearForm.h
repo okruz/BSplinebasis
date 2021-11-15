@@ -75,7 +75,7 @@ class BilinearForm {
    *
    * @param o2 The operator acting on the second (right) spline.
    */
-  BilinearForm(O2 o2) : _o1(O1{}), _o2(std::move(o2)){};
+  explicit BilinearForm(O2 o2) : _o1(O1{}), _o2(std::move(o2)){};
 
   /*!
    * Default constructor constructing a BilinearForm.
