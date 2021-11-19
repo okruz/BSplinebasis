@@ -98,8 +98,6 @@ class BilinearForm {
         a.getSupport().calcIntersection(b.getSupport());
     const size_t nintervals = integrandSupport.numberOfIntervals();
 
-    if (nintervals == 0) return static_cast<T>(0);  // no overlap
-
     T result = static_cast<T>(0);
 
     for (size_t interv = 0; interv < nintervals; interv++) {

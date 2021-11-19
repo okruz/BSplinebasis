@@ -39,30 +39,28 @@ using namespace okruz::bspline::exceptions;
 template <size_t ordergl, typename T, typename F, size_t order1, size_t order2>
 T integrate(const F &f, const okruz::bspline::Spline<T, order1> &m1,
             const okruz::bspline::Spline<T, order2> &m2) {
-  if (!m1.getSupport().hasSameGrid(m2.getSupport())) {
-    throw BSplineException(ErrorCode::DIFFERING_GRIDS);
-  }
-
-  Support newSupport = m1.getSupport().calcIntersection(m2.getSupport());
+  // Will also check whether the two grids are equivalent.
+  const Support newSupport = m1.getSupport().calcIntersection(m2.getSupport());
   const size_t nintervals = newSupport.numberOfIntervals();
-  if (nintervals == 0) return static_cast<T>(0);  // no overlap
 
   T result = static_cast<T>(0);
   for (size_t interv = 0; interv < nintervals; interv++) {
     const auto ai = newSupport.absoluteFromRelative(interv);
-    const auto m1Index = m1.getSupport().relativeFromAbsolute(ai).value();
-    const auto m2Index = m2.getSupport().relativeFromAbsolute(ai).value();
+    const auto m1Index = m1.getSupport().intervalIndexFromAbsolute(ai).value();
+    const auto m2Index = m2.getSupport().intervalIndexFromAbsolute(ai).value();
 
     const T &xstart = m1.getSupport().at(m1Index);
     const T &xend = m1.getSupport().at(m1Index + 1);
     const T xm = (xstart + xend) / static_cast<T>(2);
     const auto &c1 = m1.getCoefficients().at(m1Index);
     const auto &c2 = m2.getCoefficients().at(m2Index);
-    const auto fwrap = [&c1, &c2, &xm, &f](const T &x) {
-      using namespace okruz::bspline::internal;
-      return f(x) * evaluateInterval(x, c1, xm) * evaluateInterval(x, c2, xm);
-    };
-    result += gauss<T, ordergl>::integrate(fwrap, xstart, xend);
+    result += gauss<T, ordergl>::integrate(
+        [&c1, &c2, &xm, &f](const T &x) {
+          using namespace okruz::bspline::internal;
+          return f(x) * evaluateInterval(x, c1, xm) *
+                 evaluateInterval(x, c2, xm);
+        },
+        xstart, xend);
   }
   return result;
 }
