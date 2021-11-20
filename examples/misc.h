@@ -18,10 +18,8 @@
 #include <eigen3/Eigen/Dense>
 #endif
 
-#include <assert.h>
 #include <okruz/bspline/Core.h>
 
-#include <functional>
 #include <vector>
 
 namespace okruz::bspline::examples {
@@ -65,7 +63,14 @@ DeMat setUpSymmetricMatrix(const B &b, const std::vector<Spline> &basis) {
 }
 
 /**
- * Turns the real Eigen vector into a std::vector.
+ * Turns the real Eigen vector into a std::vector. This method is purely a
+ * convenience function to transfer the vector data into a collection which
+ * provides iterators (needed for okruz::bspline::linearCombination()). As of
+ * Eigen 4.3, the Eigen collections are supposed to provide iterators themselves
+ * and this method should be obsolete.
+ *
+ * @param d The real Eigen vector.
+ * @tparam Ev Type of d.
  */
 template <typename Ev>
 std::vector<data_t> toStdVector(const Ev &d) {

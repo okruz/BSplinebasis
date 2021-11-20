@@ -46,9 +46,7 @@ class Grid {
   Grid() = delete;
 
   /*!
-   * Constructs a grid from two iterators. The first element of the grid will be
-   * the element referenced by begin. The last element of the grid will be the
-   * one before the element pointed to by end;
+   * Constructs a grid from a set of begin and end iterators.
    *
    * @param begin The iterator referencing the first element to be copied into
    * the grid.
@@ -58,35 +56,30 @@ class Grid {
    */
   template <typename Iter>
   Grid(Iter begin, Iter end)
-      : _data(std::make_shared<const std::vector<T>>(begin, end)) {
-    if (!_data || !isSteadilyIncreasing()) {
-      throw BSplineException(ErrorCode::INCONSISTENT_DATA,
-                             "The grid points are not steadily increasing.");
-    }
-  }
+      : Grid(std::make_shared<const std::vector<T>>(begin, end)) {}
 
   /*!
-   * Constructs a grid from a std::vector. The elements of the vector are
-   * copied, not moved.
+   * Constructs a grid from a std::vector.
    *
    * @param v The input vector.
    */
-  explicit Grid(const std::vector<T> &v) : Grid(v.begin(), v.end()){};
+  explicit Grid(std::vector<T> v)
+      : Grid(std::make_shared<const std::vector<T>>(std::move(v))){};
 
   /*!
-   * Constructs a grid from a std::initializer_list. The elements of the vector
-   * are copied, not moved.
+   * Constructs a grid from a std::initializer_list.
    *
    * @param v The input initializer_list.
    */
-  explicit Grid(const std::initializer_list<T> &v) : Grid(std::vector<T>(v)){};
+  explicit Grid(const std::initializer_list<T> &v) : Grid(v.begin(), v.end()){};
 
   /*!
-   * Constructs a grid by setting its members.
+   * Constructs a grid from a std::shared_ptr<const std::vector<T>>.
    *
    * @param data A shared pointer to the grid elements.
    */
-  explicit Grid(std::shared_ptr<const std::vector<T>> data) : _data(std::move(data)) {
+  explicit Grid(std::shared_ptr<const std::vector<T>> data)
+      : _data(std::move(data)) {
     if (!_data || !isSteadilyIncreasing()) {
       throw BSplineException(ErrorCode::INCONSISTENT_DATA,
                              "The grid points are not steadily increasing.");

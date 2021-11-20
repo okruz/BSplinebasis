@@ -331,7 +331,8 @@ okruz::bspline::Spline<double, order> interpolate_using_armadillo(
     virtual double &x(size_t i) override { return _x(i); };
   };
 
-  return interpolate<double, order, ArmadilloSolver>(x, y, boundaries);
+  return interpolate<double, order, ArmadilloSolver>(std::move(x), y,
+                                                     boundaries);
 }
 #endif
 
@@ -372,7 +373,7 @@ okruz::bspline::Spline<T, order> interpolate_using_eigen(
     virtual T &x(size_t i) override { return _x(i); };
   };
 
-  return interpolate<T, order, EigenSolver>(x, y, boundaries);
+  return interpolate<T, order, EigenSolver>(std::move(x), y, boundaries);
 }
 
 #endif

@@ -41,8 +41,9 @@ class BSplineGenerator {
    * @param knots The vector of knots.
    */
   Grid<T> generateGrid(std::vector<T> knots) {
-    auto endIterator = std::unique(knots.begin(), knots.end());
-    return Grid<T>(knots.begin(), endIterator);
+    const auto endIterator = std::unique(knots.begin(), knots.end());
+    knots.erase(endIterator, knots.end());
+    return Grid<T>(std::move(knots));
   }
 
  public:
