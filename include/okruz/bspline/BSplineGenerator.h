@@ -2,6 +2,9 @@
 #define OKRUZ_BSPLINE_BSPLINEGENERATOR_H
 #include <okruz/bspline/Spline.h>
 #include <okruz/bspline/exceptions/BSplineException.h>
+#include <okruz/bspline/operators/CompoundOperators.h>
+#include <okruz/bspline/operators/Position.h>
+#include <okruz/bspline/operators/ScalarOperators.h>
 
 #include <algorithm>
 
@@ -118,16 +121,16 @@ class BSplineGenerator {
       const T &xipkm1 = _knots.at(i + k - 1);
       if (xipkm1 > xi) {
         const T prefac = static_cast<T>(1) / (xipkm1 - xi);
-        const Spline<T, k - 2> spline1 = prefac * generateBSpline<k - 1>(i);
-        ret += spline1.timesx() - xi * spline1;
+        const auto op = prefac * (operators::X<1>{} - xi);
+        ret += op * generateBSpline<k - 1>(i);
       }
 
       const T &xip1 = _knots.at(i + 1);
       const T &xipk = _knots.at(i + k);
       if (xipk > xip1) {
         const T prefac = static_cast<T>(1) / (xipk - xip1);
-        const Spline<T, k - 2> spline2 = prefac * generateBSpline<k - 1>(i + 1);
-        ret += xipk * spline2 - spline2.timesx();
+        const auto op = prefac * (xipk - operators::X<1>{});
+        ret += op * generateBSpline<k - 1>(i + 1);
       }
 
       return ret;
