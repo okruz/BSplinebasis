@@ -57,23 +57,20 @@ void testIntegration(T tol) {
 
   for (const auto &s1 : splines) {
     for (const auto &s2 : splines) {
-      BOOST_CHECK_SMALL(overlap<T>(s1, s2) - sp.integrate(s1, s2), tol);
-      BOOST_CHECK_SMALL(bfx.integrate(s1, s2) - integrate_x<T>(s1, s2), tol);
-      BOOST_CHECK_SMALL(bfx2.integrate(s1, s2) - integrate_x2<T>(s1, s2),
+      BOOST_CHECK_SMALL(overlap<T>(s1, s2) - sp.evaluate(s1, s2), tol);
+      BOOST_CHECK_SMALL(bfx.evaluate(s1, s2) - integrate_x<T>(s1, s2), tol);
+      BOOST_CHECK_SMALL(bfx2.evaluate(s1, s2) - integrate_x2<T>(s1, s2),
                         static_cast<T>(5) * tol);
-      BOOST_CHECK_SMALL(bfdx.integrate(s1, s2) - integrate_dx<T>(s1, s2), tol);
-      BOOST_CHECK_SMALL(bfx_dx.integrate(s1, s2) - integrate_x_dx<T>(s1, s2),
+      BOOST_CHECK_SMALL(bfdx.evaluate(s1, s2) - integrate_dx<T>(s1, s2), tol);
+      BOOST_CHECK_SMALL(bfx_dx.evaluate(s1, s2) - integrate_x_dx<T>(s1, s2),
                         static_cast<T>(2) * tol);
-      BOOST_CHECK_SMALL(bfdx2.integrate(s1, s2) - integrate_dx2<T>(s1, s2),
-                        tol);
-      BOOST_CHECK_SMALL(
-          bfx2_dx2.integrate(s1, s2) - integrate_x2_dx2<T>(s1, s2),
-          static_cast<T>(150) * tol);
-      BOOST_CHECK_SMALL(sp.integrate(s1, s2) - integrate<2 * order>(f1, s1, s2),
+      BOOST_CHECK_SMALL(bfdx2.evaluate(s1, s2) - integrate_dx2<T>(s1, s2), tol);
+      BOOST_CHECK_SMALL(bfx2_dx2.evaluate(s1, s2) - integrate_x2_dx2<T>(s1, s2),
+                        static_cast<T>(150) * tol);
+      BOOST_CHECK_SMALL(sp.evaluate(s1, s2) - integrate<2 * order>(f1, s1, s2),
                         static_cast<T>(10) * tol);
-      BOOST_CHECK_SMALL(
-          bfx.integrate(s1, s2) - integrate<2 * order>(fx, s1, s2),
-          static_cast<T>(10) * tol);
+      BOOST_CHECK_SMALL(bfx.evaluate(s1, s2) - integrate<2 * order>(fx, s1, s2),
+                        static_cast<T>(10) * tol);
     }
   }
 }

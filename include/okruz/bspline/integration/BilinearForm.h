@@ -92,7 +92,7 @@ class BilinearForm {
    * @tparam orderb The order of the second (right) spline.
    */
   template <typename T, size_t ordera, size_t orderb>
-  T integrate(const Spline<T, ordera> &a, const Spline<T, orderb> &b) const {
+  T evaluate(const Spline<T, ordera> &a, const Spline<T, orderb> &b) const {
     // Will also check whether the two grids are equivalent.
     const support::Support integrandSupport =
         a.getSupport().calcIntersection(b.getSupport());

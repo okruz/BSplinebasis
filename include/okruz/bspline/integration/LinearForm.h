@@ -66,7 +66,7 @@ class LinearForm {
    * @tparam order The order of the spline.
    */
   template <typename T, size_t order>
-  T integrate(const Spline<T, order> &a) const {
+  T evaluate(const Spline<T, order> &a) const {
     const size_t nintervals = a.getSupport().numberOfIntervals();
 
     if (nintervals == 0) return static_cast<T>(0);  // no overlap

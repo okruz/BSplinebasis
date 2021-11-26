@@ -54,7 +54,7 @@ DeMat setUpSymmetricMatrix(const B &b, const std::vector<Spline> &basis) {
   DeMat ret = DeMat::Zero(basis.size(), basis.size());
   for (size_t i = 0; i < basis.size(); i++) {
     for (size_t j = i; j < basis.size(); j++) {
-      const data_t val = b.integrate(basis.at(i), basis.at(j));
+      const data_t val = b.evaluate(basis.at(i), basis.at(j));
       ret(i, j) = val;
       ret(j, i) = val;
     }
