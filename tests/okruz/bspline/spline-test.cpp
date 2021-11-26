@@ -57,7 +57,6 @@ void testIntegration(T tol) {
 
   for (const auto &s1 : splines) {
     for (const auto &s2 : splines) {
-      auto s2dx2 = s2.dx2();
       BOOST_CHECK_SMALL(overlap<T>(s1, s2) - sp.integrate(s1, s2), tol);
       BOOST_CHECK_SMALL(bfx.integrate(s1, s2) - integrate_x<T>(s1, s2), tol);
       BOOST_CHECK_SMALL(bfx2.integrate(s1, s2) - integrate_x2<T>(s1, s2),
@@ -76,17 +75,6 @@ void testIntegration(T tol) {
           bfx.integrate(s1, s2) - integrate<2 * order>(fx, s1, s2),
           static_cast<T>(10) * tol);
     }
-
-    auto s1_d_order = s1.template dx<order>();
-    BOOST_TEST(!s1_d_order.isZero());
-
-    auto s1_d_orderp1 = s1.template dx<order + 1>();
-    BOOST_CHECK_SMALL(integrate<T>(s1_d_orderp1), tol);
-    BOOST_TEST(s1_d_orderp1.isZero());
-
-    auto s1_d_orderp2 = s1.template dx<order + 2>();
-    BOOST_CHECK_SMALL(integrate<T>(s1_d_orderp2), tol);
-    BOOST_TEST(s1_d_orderp2.isZero());
   }
 }
 
@@ -133,7 +121,6 @@ void testArithmetic(T tol) {
   using Spline = okruz::bspline::Spline<T, order>;
   using Spline6 = okruz::bspline::Spline<T, 2 * order>;
   using Spline0 = okruz::bspline::Spline<T, 0>;
-  using Spline1 = okruz::bspline::Spline<T, order - 2>;
 
   BSplineGenerator<T> generator(std::vector<T>{
       -7.0l,  -6.85l, -6.55l, -6.3l, -6.0l, -5.75l, -5.53l, -5.2l,
@@ -173,9 +160,6 @@ void testArithmetic(T tol) {
     Spline s3half2 = s2;
     s3half2 -= shalf;
     Spline splusone = s + one;
-    Spline1 sdx2 = s.dx().dx();
-    Spline1 sdx22 = s.dx2();
-    Spline sdx0 = s.template dx<0>();
 
     for (T x = s.front(); x <= s.back(); x += 0.01L) {
       BOOST_CHECK_SMALL(sm(x) + s(x), tol);
@@ -199,9 +183,7 @@ void testArithmetic(T tol) {
           s3half2(x) - static_cast<T>(3) * s(x) / static_cast<T>(2),
           tol);  // Tests -= operator
       BOOST_CHECK_SMALL(splusone(x) - s(x) - static_cast<T>(1),
-                        tol);                      // Tests + operator
-      BOOST_CHECK_SMALL(sdx2(x) - sdx22(x), tol);  // Tests dx method
-      BOOST_CHECK_SMALL(s(x) - sdx0(x), tol);      // Tests dx method
+                        tol);  // Tests + operator
     }
   }
   BOOST_TEST(static_cast<T>(1) == one(one.front()));
