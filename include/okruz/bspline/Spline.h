@@ -322,13 +322,10 @@ class Spline {
    */
   template <size_t ordera>
   Spline<T, order + ordera> operator*(const Spline<T, ordera> &a) const {
-    if (!_support.hasSameGrid(a.getSupport())) {
-      throw BSplineException(ErrorCode::DIFFERING_GRIDS);
-    }
-
     static constexpr size_t NEW_ORDER = order + ordera;
     static constexpr size_t NEW_ARRAY_SIZE = NEW_ORDER + 1;
 
+    // Will also check whether the two grids are equivalent.
     Support newSupport = _support.calcIntersection(a.getSupport());
     const size_t nintervals = newSupport.numberOfIntervals();
 
@@ -367,15 +364,11 @@ class Spline {
   template <size_t ordera>
   Spline<T, std::max(order, ordera)> operator+(
       const Spline<T, ordera> &a) const {
-    if (!_support.hasSameGrid(a.getSupport())) {
-      throw BSplineException(ErrorCode::DIFFERING_GRIDS);
-    }
-
     static constexpr size_t NEW_ORDER = std::max(order, ordera);
     static constexpr size_t NEW_ARRAY_SIZE = NEW_ORDER + 1;
 
+    // Will also check whether the two grids are equivalent.
     Support newSupport = _support.calcUnion(a.getSupport());
-
     const size_t nintervals = newSupport.numberOfIntervals();
 
     std::vector<std::array<T, NEW_ARRAY_SIZE>> ncoefficients(nintervals);
