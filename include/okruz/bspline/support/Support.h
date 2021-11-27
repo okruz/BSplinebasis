@@ -37,7 +37,7 @@ enum class Construction { EMPTY, WHOLE_GRID };
  */
 template <typename T>
 class Support {
- public:
+ public:  // Type definitions.
   /*!
    * Represents an interval relative to the global grid represented by _grid.
    */
@@ -53,6 +53,18 @@ class Support {
    */
   using const_iterator = typename std::vector<T>::const_iterator;
 
+ private:
+  /*! Represents the global grid. */
+  Grid<T> _grid;
+  /*! Represents the begin of the Support. */
+  AbsoluteIndex _startIndex;
+  /*!
+   * Represents the end of the Support. Points to the element behind the last
+   * element of the Support.
+   */
+  AbsoluteIndex _endIndex;
+
+ public:
   /*!
    * Constructs a support relative to the global grid grid.
    *
@@ -294,12 +306,6 @@ class Support {
     else
       return Support(_grid, newStartIndex, newEndIndex);
   };
-
- private:
-  Grid<T> _grid;             /*! Represents the global grid. */
-  AbsoluteIndex _startIndex; /*! Represents the begin of the Support. */
-  AbsoluteIndex _endIndex; /*! Represents the end of the Support. Points to the
-                       element behind the last element of the Support. */
-};                         // end class Support
+};  // end class Support
 }  // namespace okruz::bspline::support
 #endif  // OKRUZ_BSPLINE_SUPPORT_SUPPORT_H
