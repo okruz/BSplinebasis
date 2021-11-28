@@ -2,10 +2,9 @@
 #define OKRUZ_BSPLINE_INTERPOLATION_INTERPOLATION_H
 /*
  * This file contains additional numerical interpolation routines for the
- * splines defined in spline-template.h. The linear algebra routines can
- * be supplied via the implementation of a Solver class (a subclass of
- * internal::ISolver<T>. Implementations based on armadillo and eigen are
- * provided and can be used by defining
+ * splines. The linear algebra routines can be supplied via the implementation
+ * of a Solver class (a subclass of internal::ISolver<T>. Implementations based
+ * on armadillo and eigen are provided and can be used by defining
  * OKRUZ_BSPLINE_INTERPOLATION_USE_ARMADILLO or
  * OKRUZ_BSPLINE_INTERPOLATION_USE_EIGEN , respectively.
  *
@@ -17,6 +16,7 @@
 
 #include <okruz/bspline/Spline.h>
 #include <okruz/bspline/exceptions/BSplineException.h>
+#include <okruz/bspline/internal/misc.h>
 #include <okruz/bspline/support/Support.h>
 
 #ifdef OKRUZ_BSPLINE_INTERPOLATION_USE_EIGEN
@@ -131,22 +131,6 @@ std::array<Boundary<T>, order - 1> defaultBoundaries() {
   }
   return ret;
 }
-
-/*!
- * Computes exponent! / (exponent - deriv)!.
- *
- * @param exponent Exponent of the monomial.
- * @param deriv Order of the derivative.
- */
-template <typename T>
-T faculty_ratio(size_t exponent, size_t deriv) {
-  if (deriv > exponent) {
-    throw BSplineException(ErrorCode::UNDETERMINED);
-  }
-  T ret = static_cast<T>(exponent);
-  for (size_t j = 1; j < deriv; j++) ret *= static_cast<T>(exponent - j);
-  return ret;
-}
 }  // end namespace internal
 
 using okruz::bspline::support::Support;
@@ -208,7 +192,8 @@ okruz::bspline::Spline<T, order> interpolate(
         T power_of_dx1 = static_cast<T>(1);
         for (size_t i = bo.derivative; i <= order; i++) {
           s.M(row_counter, i) =
-              internal::faculty_ratio<T>(i, bo.derivative) * power_of_dx1;
+              bspline::internal::facultyRatio<T>(i, i - bo.derivative) *
+              power_of_dx1;
           power_of_dx1 *= dx1;
         }
         s.b(row_counter) = bo.value;
@@ -246,9 +231,9 @@ okruz::bspline::Spline<T, order> interpolate(
       T power_of_dx2 = static_cast<T>(1);
       for (size_t i = deriv; i <= order; i++) {
         s.M(row_counter, NUM_COEFFS * (c - 1) + i) =
-            internal::faculty_ratio<T>(i, deriv) * power_of_dx1;
+            bspline::internal::facultyRatio<T>(i, i - deriv) * power_of_dx1;
         s.M(row_counter, NUM_COEFFS * c + i) =
-            -internal::faculty_ratio<T>(i, deriv) * power_of_dx2;
+            -bspline::internal::facultyRatio<T>(i, i - deriv) * power_of_dx2;
         power_of_dx1 *= dx1;
         power_of_dx2 *= dx2;
       }
@@ -273,7 +258,8 @@ okruz::bspline::Spline<T, order> interpolate(
         T power_of_dx2 = static_cast<T>(1);
         for (size_t i = bo.derivative; i <= order; i++) {
           s.M(row_counter, NUM_COEFFS * (x.size() - 2) + i) =
-              internal::faculty_ratio<T>(i, bo.derivative) * power_of_dx2;
+              bspline::internal::facultyRatio<T>(i, i - bo.derivative) *
+              power_of_dx2;
           power_of_dx2 *= dx2;
         }
         s.b(row_counter) = bo.value;
