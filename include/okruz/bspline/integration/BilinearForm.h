@@ -39,8 +39,8 @@ class BilinearForm {
    * @tparam sizeb The number of coefficients of the second polynomial.
    */
   template <typename T, size_t sizea, size_t sizeb>
-  static T integrate(const std::array<T, sizea> &a,
-                     const std::array<T, sizeb> &b, const T &dxhalf) {
+  static T evaluateInterval(const std::array<T, sizea> &a,
+                            const std::array<T, sizeb> &b, const T &dxhalf) {
     std::array<T, (sizea + sizeb) / 2> coefficients;
     coefficients.fill(static_cast<T>(0));
     for (size_t i = 0; i < sizea; i++) {
@@ -113,9 +113,9 @@ class BilinearForm {
       const T dxhalf = (a.getSupport()[aIndex + 1] - a.getSupport()[aIndex]) /
                        static_cast<T>(2);
 
-      result +=
-          integrate(_o1.transform(a.getCoefficients()[aIndex], xm),
-                    _o2.transform(b.getCoefficients()[bIndex], xm), dxhalf);
+      result += evaluateInterval(_o1.transform(a.getCoefficients()[aIndex], xm),
+                                 _o2.transform(b.getCoefficients()[bIndex], xm),
+                                 dxhalf);
     }
     return result;
   }

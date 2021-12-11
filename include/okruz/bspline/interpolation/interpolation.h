@@ -56,10 +56,10 @@ struct Boundary {
 namespace internal {
 /*!
  * Interface for a solver of linear equation system (LES) used to decouple the
- * interpolation code from the linear algebra frameworks. The LES is defined by
- * M.x = b, where M and b have to be supplied and x is calculated during the
- * execution of the method solve(). All elements of M and b must be zero if not
- * explicitly set.
+ * interpolation code from the linear algebra frameworks. The LES M.x = b is
+ * defined by the matrix M and the vector b, which have to be supplied. The
+ * vector x is calculated during the execution of the method solve(). All
+ * elements of M and b must be zero if not explicitly set.
  *
  * @tparam T Datatype of the linear system of equations to be solved.
  */

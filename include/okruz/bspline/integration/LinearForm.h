@@ -33,7 +33,7 @@ class LinearForm {
    * @tparam size The number of coefficients of the polynomial.
    */
   template <typename T, size_t size>
-  static T integrate(const std::array<T, size> &a, const T &dxhalf) {
+  static T evaluateInterval(const std::array<T, size> &a, const T &dxhalf) {
     T result = static_cast<T>(0);
     T power_of_dxhalf = static_cast<T>(2) * dxhalf;
     const T dxhalf_squared = dxhalf * dxhalf;
@@ -79,7 +79,8 @@ class LinearForm {
       const T dxhalf =
           (a.getSupport()[i + 1] - a.getSupport()[i]) / static_cast<T>(2);
 
-      result += integrate(_o.transform(a.getCoefficients()[i], xm), dxhalf);
+      result +=
+          evaluateInterval(_o.transform(a.getCoefficients()[i], xm), dxhalf);
     }
     return result;
   }

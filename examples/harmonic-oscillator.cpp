@@ -17,6 +17,10 @@ namespace okruz::bspline::examples::harmonic_oscillator {
 
 using namespace okruz::bspline;
 
+// Hamiltonian operator -1/2 d^2/dx^2 + 1/2 x^2
+static const auto hamiltonOperator =
+    (static_cast<data_t>(1) / 2) * (-operators::Dx<2>{} + operators::X<2>{});
+
 /**
  * @brief setUpKnotsVector Sets up the knots vector on which the basis splines
  * are defined.
@@ -47,10 +51,6 @@ std::vector<Eigenspace> solveHarmonicOscillator() {
   // Get the basis.
   std::vector<Spline> basis = setUpBasis();
 
-  // Hamiltonian operator -1/2 d^2/dx^2 + 1/2 x^2
-  const auto hamiltonOperator =
-      (static_cast<data_t>(1) / 2) * (-operators::Dx<2>{} + operators::X<2>{});
-
   DeMat hamiltonian =
       setUpSymmetricMatrix(integration::BilinearForm{hamiltonOperator}, basis);
 
@@ -59,12 +59,12 @@ std::vector<Eigenspace> solveHarmonicOscillator() {
       setUpSymmetricMatrix(integration::ScalarProduct{}, basis);
 
   // Solve the generalized eigenvalue problem A.x = lambda B.x
-  Eigen::GeneralizedSelfAdjointEigenSolver<DeMat> ges;
-  ges.compute(hamiltonian, overlapMatrix);
+  Eigen::GeneralizedSelfAdjointEigenSolver<DeMat> ges{hamiltonian,
+                                                      overlapMatrix};
 
   // Retrieve the (real) eigenvalues and eigenvectors.
-  const auto eigenvalues = ges.eigenvalues();
-  const auto eigenvectors = ges.eigenvectors();
+  const auto &eigenvalues = ges.eigenvalues();
+  const auto &eigenvectors = ges.eigenvectors();
 
   std::vector<Eigenspace> ret;
   ret.reserve(10);

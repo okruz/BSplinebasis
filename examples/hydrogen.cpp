@@ -17,6 +17,13 @@ namespace okruz::bspline::examples::hydrogen {
 
 using namespace okruz::bspline;
 
+// The radial Hamiltonian operator r^2 *(-d^2/dr^2 -2/r d/dr + L * (L + 1) /
+// r^2 - 2/r). Includes the term r^2 from the functional determinant.
+static const auto hamiltonOperator =
+    -operators::X<2>{} * operators::Dx<2>{} -
+    2 * operators::X<1>{} * operators::Dx<1>{} + L * (L + 1) -
+    2 * operators::X<1>{};
+
 /**
  * @brief setUpKnotsVector Sets up the knots vector on which the basis splines
  * are defined.
@@ -72,12 +79,6 @@ std::vector<Eigenspace> solveRadialHydrogen() {
   // Get the basis.
   std::vector<Spline> basis = setUpBasis();
 
-  // The radial Hamiltonian operator r^2 *(-d^2/dr^2 -2/r d/dr + L * (L + 1) /
-  // r^2 - 2/r). Includes the term r^2 from the functional determinant.
-  const auto hamiltonOperator = -operators::X<2>{} * operators::Dx<2>{} -
-                                2 * operators::X<1>{} * operators::Dx<1>{} +
-                                L * (L + 1) - 2 * operators::X<1>{};
-
   DeMat hamiltonian =
       setUpSymmetricMatrix(integration::BilinearForm{hamiltonOperator}, basis);
 
@@ -86,12 +87,12 @@ std::vector<Eigenspace> solveRadialHydrogen() {
       setUpSymmetricMatrix(integration::BilinearForm{operators::X<2>{}}, basis);
 
   // Solve the generalized eigenvalue problem A.x = lambda B.x
-  Eigen::GeneralizedSelfAdjointEigenSolver<DeMat> ges;
-  ges.compute(hamiltonian, overlapMatrix);
+  Eigen::GeneralizedSelfAdjointEigenSolver<DeMat> ges{hamiltonian,
+                                                      overlapMatrix};
 
   // Retrieve the eigenvalues and eigenvectors.
-  const auto eigenvalues = ges.eigenvalues();
-  const auto eigenvectors = ges.eigenvectors();
+  const auto &eigenvalues = ges.eigenvalues();
+  const auto &eigenvectors = ges.eigenvectors();
 
   std::vector<Eigenspace> ret;
   ret.reserve(10);

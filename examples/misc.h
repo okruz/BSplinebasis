@@ -43,7 +43,7 @@ struct Eigenspace {
 
 /**
  * @brief setUpSymmetricMatrix Sets up a symmetric matrix, where the matrix
- * elements are defined by a give function.
+ * elements are defined by the bilinear form.
  * @param b The BilinearForm.
  * @param basis The basis functions (i.e. BSplines).
  * @tparam B The type of the bilinear form.
