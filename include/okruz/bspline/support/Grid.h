@@ -80,7 +80,10 @@ class Grid {
    */
   explicit Grid(std::shared_ptr<const std::vector<T>> data)
       : _data(std::move(data)) {
-    if (!_data || !isSteadilyIncreasing()) {
+    // Check the validity of the provided data.
+    if (!_data || _data->size() < 2) {
+      throw BSplineException(ErrorCode::MISSING_DATA);
+    } else if (!isSteadilyIncreasing()) {
       throw BSplineException(ErrorCode::INCONSISTENT_DATA,
                              "The grid points are not steadily increasing.");
     }
