@@ -93,13 +93,13 @@ class Grid {
    * @returns Returns true if the grids represent the same logical grid.
    */
   bool operator==(const Grid &g) const {
-    if (_data == g._data)
+    if (_data == g._data) {
+      // Fast path: Compare pointers.
       return true;
-    else if (_data->size() != g._data->size())
-      return false;
-    for (size_t i = 0; i < _data->size(); i++)
-      if ((*_data)[i] != (*g._data)[i]) return false;
-    return true;
+    }
+
+    // Slow path: Compare logically.
+    return (*_data) == (*g._data);
   }
 
   /*!
@@ -185,13 +185,15 @@ class Grid {
    * @param x The element to be searched for.
    */
   size_t findElement(const T &x) const {
-    auto it = std::lower_bound(begin(), end(), x);
+    const auto beginIt = begin();
+    const auto endIt = end();
+    const auto elementIt = std::lower_bound(beginIt, endIt, x);
 
-    if (it == end() || *it != x) {
+    if (elementIt == endIt || *elementIt != x) {
       // Element was not found
       throw BSplineException(ErrorCode::INCONSISTENT_DATA);
     } else {
-      return std::distance(_data->begin(), it);
+      return std::distance(beginIt, elementIt);
     }
   };
 };
