@@ -64,6 +64,13 @@ void testSupport() {
   Support s4(grid2, 0, grid2.size());
   Support s5(grid3);
 
+  for (const Support &support : {s1, s11, s12, s2, s3, s32, spl, s3i, s3u}) {
+    if (!support.empty()) {
+      BOOST_REQUIRE_NO_THROW(support.at(support.size() - 1));
+      BOOST_REQUIRE_THROW(support.at(support.size()), BSplineException);
+    }
+  }
+
   BOOST_CHECK_SMALL(s1.front() - grid1.front(), tol);
   BOOST_CHECK_SMALL(s1.back() - grid1.back(), tol);
   BOOST_CHECK_SMALL(spl.front() - grid1.at(1), tol);
