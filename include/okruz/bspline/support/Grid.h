@@ -138,10 +138,11 @@ class Grid {
    * @returns A reference to the ith element.
    */
   const T &at(size_t i) const {
-    if (i > size()) {
-      throw BSplineException(ErrorCode::INVALID_ACCESS);
+    try {
+      return _data->at(i);
+    } catch (const std::out_of_range &e) {
+      throw BSplineException(ErrorCode::INVALID_ACCESS, e.what());
     }
-    return (*_data)[i];
   };
 
   /*!

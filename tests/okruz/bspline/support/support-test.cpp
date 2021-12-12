@@ -15,6 +15,7 @@ template <typename T>
 void testSupport() {
   using Support = okruz::bspline::support::Support<T>;
   using Construction = okruz::bspline::support::Construction;
+  using BSplineException = okruz::bspline::exceptions::BSplineException;
   using Grid = okruz::bspline::support::Grid<T>;
   const T tol = static_cast<T>(1.0e-15l);
 
@@ -44,6 +45,11 @@ void testSupport() {
                             0.0l,  0.5l,   1.5l,   2.5l,  3.5l,  4.0l,   4.35l,
                             4.55l, 4.95l,  5.4l,   5.7l,  6.1l,  6.35l,  6.5l,
                             6.85l, 7.0l,   8.0l});
+
+  for (const Grid &grid : {grid1, grid11, grid2, grid3}) {
+    BOOST_REQUIRE_NO_THROW(grid.at(grid.size() - 1));
+    BOOST_REQUIRE_THROW(grid.at(grid.size()), BSplineException);
+  }
 
   Support s1(grid1, 0, grid1.size());
   Support s11(grid11, 0, grid11.size());
