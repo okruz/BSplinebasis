@@ -529,12 +529,13 @@ decltype(auto) linearCombination(CoeffIter coeffsBegin, CoeffIter coeffsEnd,
 
     const size_t si = it->getSupport().getStartIndex();
     const size_t ei = it->getSupport().getEndIndex();
+    const bool isEmpty = it->getSupport().empty();
 
-    if (si < startIndex) {
+    if (!isEmpty && si < startIndex) {
       startIndex = si;
     }
 
-    if (ei > endIndex) {
+    if (!isEmpty && ei > endIndex) {
       endIndex = ei;
     }
   }
