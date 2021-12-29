@@ -27,7 +27,8 @@ class Operator {};
  * @tparam O Template parameter.
  */
 template <typename O>
-inline constexpr bool is_operator_v = std::is_base_of_v<Operator, O>;
+inline constexpr bool is_operator_v =
+    std::is_base_of_v<Operator, std::remove_cv_t<std::remove_reference_t<O>>>;
 
 /*!
  * Indicates whether both template parameters are operator

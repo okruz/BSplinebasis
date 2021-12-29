@@ -43,7 +43,7 @@ class ScalarMultiplication : public Operator {
    * @param s The scalar to be multiplied.
    * @param o The operator to be multiplied.
    */
-  ScalarMultiplication(S s, O o) : _s(s), _o(o){};
+  ScalarMultiplication(S s, O o) : _s(std::move(s)), _o(std::move(o)){};
 
   /*!
    * Constructor constructing an ScalarMultiplication from a scalar alone.
@@ -113,8 +113,8 @@ ScalarMultiplication(S s) -> ScalarMultiplication<S, UnityOperator>;
 template <
     typename S, typename O,
     std::enable_if_t<are_scalar_multiplication_types_v<S, O>, bool> = true>
-ScalarMultiplication<S, O> operator*(const S &s, const O &o) {
-  return ScalarMultiplication(s, o);
+ScalarMultiplication<S, O> operator*(const S &s, O &&o) {
+  return ScalarMultiplication(s, std::forward<O>(o));
 }
 
 /*!
@@ -128,8 +128,8 @@ ScalarMultiplication<S, O> operator*(const S &s, const O &o) {
 template <
     typename S, typename O,
     std::enable_if_t<are_scalar_multiplication_types_v<S, O>, bool> = true>
-ScalarMultiplication<S, O> operator*(const O &o, const S &s) {
-  return ScalarMultiplication(s, o);
+ScalarMultiplication<S, O> operator*(O &&o, const S &s) {
+  return ScalarMultiplication(s, std::forward<O>(o));
 }
 
 /*!
@@ -143,8 +143,8 @@ ScalarMultiplication<S, O> operator*(const O &o, const S &s) {
 template <
     typename S, typename O,
     std::enable_if_t<are_scalar_multiplication_types_v<S, O>, bool> = true>
-ScalarMultiplication<S, O> operator/(const O &o, const S &s) {
-  return ScalarMultiplication(static_cast<S>(1) / s, o);
+ScalarMultiplication<S, O> operator/(O &&o, const S &s) {
+  return ScalarMultiplication(static_cast<S>(1) / s, std::forward<O>(o));
 }
 
 /*!
@@ -158,8 +158,8 @@ ScalarMultiplication<S, O> operator/(const O &o, const S &s) {
 template <
     typename S, typename O,
     std::enable_if_t<are_scalar_multiplication_types_v<S, O>, bool> = true>
-auto operator+(const O &o, const S &s) {
-  return o + ScalarMultiplication{s};
+auto operator+(O &&o, const S &s) {
+  return std::forward<O>(o) + ScalarMultiplication{s};
 }
 
 /*!
@@ -173,8 +173,8 @@ auto operator+(const O &o, const S &s) {
 template <
     typename S, typename O,
     std::enable_if_t<are_scalar_multiplication_types_v<S, O>, bool> = true>
-auto operator+(const S &s, const O &o) {
-  return ScalarMultiplication{s} + o;
+auto operator+(const S &s, O &&o) {
+  return ScalarMultiplication{s} + std::forward<O>(o);
 }
 
 /*!
@@ -188,8 +188,8 @@ auto operator+(const S &s, const O &o) {
 template <
     typename S, typename O,
     std::enable_if_t<are_scalar_multiplication_types_v<S, O>, bool> = true>
-auto operator-(const O &o, const S &s) {
-  return o - ScalarMultiplication{s};
+auto operator-(O &&o, const S &s) {
+  return std::forward<O>(o) - ScalarMultiplication{s};
 }
 
 /*!
@@ -203,8 +203,8 @@ auto operator-(const O &o, const S &s) {
 template <
     typename S, typename O,
     std::enable_if_t<are_scalar_multiplication_types_v<S, O>, bool> = true>
-auto operator-(const S &s, const O &o) {
-  return ScalarMultiplication{s} - o;
+auto operator-(const S &s, O &&o) {
+  return ScalarMultiplication{s} - std::forward<O>(o);
 }
 
 /*!
@@ -215,8 +215,8 @@ auto operator-(const S &s, const O &o) {
  * @tparam O The type of the operator to be negated.
  */
 template <typename O, std::enable_if_t<is_operator_v<O>, bool> = true>
-ScalarMultiplication<int, O> operator-(const O &o) {
-  return ScalarMultiplication<int, O>(-1, o);
+ScalarMultiplication<int, O> operator-(O &&o) {
+  return ScalarMultiplication<int, O>(-1, std::forward<O>(o));
 }
 }  // namespace okruz::bspline::operators
 #endif  // OKRUZ_BSPLINE_OPERATORS_SCALAROPERATORS_H

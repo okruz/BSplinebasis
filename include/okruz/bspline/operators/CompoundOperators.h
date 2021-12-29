@@ -32,7 +32,7 @@ class OperatorProduct : public Operator {
    * @param o1 The first (left) operator.
    * @param o2 The second (right) ooperator.
    */
-  OperatorProduct(O1 o1, O2 o2) : _o1(o1), _o2(o2){};
+  OperatorProduct(O1 o1, O2 o2) : _o1(std::move(o1)), _o2(std::move(o2)){};
 
   /*!
    * Returns the order of the output spline for a given input order.
@@ -83,8 +83,8 @@ class OperatorProduct : public Operator {
  */
 template <typename O1, typename O2,
           std::enable_if_t<are_operators_v<O1, O2>, bool> = true>
-OperatorProduct<O1, O2> operator*(const O1 &o1, const O2 &o2) {
-  return OperatorProduct(o1, o2);
+OperatorProduct<O1, O2> operator*(O1 &&o1, O2 &&o2) {
+  return OperatorProduct(std::forward<O1>(o1), std::forward<O2>(o2));
 }
 
 // ######################### OperatorProduct #############################
@@ -161,7 +161,7 @@ class OperatorSum : public Operator {
    * @param o1 The first operator.
    * @param o2 The second ooperator.
    */
-  OperatorSum(O1 o1, O2 o2) : _o1(o1), _o2(o2){};
+  OperatorSum(O1 o1, O2 o2) : _o1(std::move(o1)), _o2(std::move(o2)){};
 
   /*!
    * Returns the order of the output spline for a given input order.
@@ -222,8 +222,9 @@ class OperatorSum : public Operator {
  */
 template <typename O1, typename O2,
           std::enable_if_t<are_operators_v<O1, O2>, bool> = true>
-auto operator+(const O1 &o1, const O2 &o2) {
-  return OperatorSum<O1, O2, AdditionOperation::ADDITION>(o1, o2);
+auto operator+(O1 &&o1, O2 &&o2) {
+  return OperatorSum<O1, O2, AdditionOperation::ADDITION>(std::forward<O1>(o1),
+                                                          std::forward<O2>(o2));
 }
 
 /*!
@@ -236,8 +237,9 @@ auto operator+(const O1 &o1, const O2 &o2) {
  */
 template <typename O1, typename O2,
           std::enable_if_t<are_operators_v<O1, O2>, bool> = true>
-auto operator-(const O1 &o1, const O2 &o2) {
-  return OperatorSum<O1, O2, AdditionOperation::SUBTRACTION>(o1, o2);
+auto operator-(O1 &&o1, O2 &&o2) {
+  return OperatorSum<O1, O2, AdditionOperation::SUBTRACTION>(
+      std::forward<O1>(o1), std::forward<O2>(o2));
 }
 
 }  // namespace okruz::bspline::operators
