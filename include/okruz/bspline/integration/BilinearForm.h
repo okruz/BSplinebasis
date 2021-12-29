@@ -13,8 +13,10 @@
 namespace okruz::bspline::integration {
 
 /*!
- * Represents a bilinear form of two BSplines with two different operators
- * applied to the splines.
+ * Represents the bilinear form \f[\left\langle a,\, b\right\rangle =
+ * \int\limits_{-\infty}^{\infty} \mathrm{d}x~\left[\hat{O}_1\,a(x)\right]
+ * \,\,\left[\hat{O}_2\,b(x)\right] \f] with the operators
+ * \f$\hat{O}_1,\,\hat{O}_2\f$ applied to the two splines.
  *
  * @tparam O1 The type of the operator applied to the first spline.
  * @tparam O2 The type of the operator applied to the second spline.
@@ -63,22 +65,22 @@ class BilinearForm {
 
  public:
   /*!
-   * Constructor constructing a BilinearForm from two operators.
-   *
+   * Constructor constructing a BilinearForm from the two operatos.
    * @param o1 The operator acting on the first (left) spline.
    * @param o2 The operator acting on the second (right) spline.
    */
   BilinearForm(O1 o1, O2 o2) : _o1(std::move(o1)), _o2(std::move(o2)){};
 
   /*!
-   * Constructor constructing a BilinearForm from one operators.
+   * Constructor constructing a BilinearForm from only the \f$\hat{O}_2\f$
+   * operator. The \f$\hat{O}_1\f$-operator is default constructed.
    *
    * @param o2 The operator acting on the second (right) spline.
    */
   explicit BilinearForm(O2 o2) : _o1(O1{}), _o2(std::move(o2)){};
 
   /*!
-   * Default constructor constructing a BilinearForm.
+   * Default constructor which default constructs both operators.
    */
   BilinearForm() : _o1(O1{}), _o2(O2{}){};
 
@@ -123,7 +125,9 @@ class BilinearForm {
 
 /*!
  * Deduction guide for a bilinear form with only one operator to be applied to
- * the second (right) spline.
+ * the second (right) spline. The \f$\hat{O}_1\f$-operator defaults to the
+ * okruz::bspline::operators::UnityOperator.\f[\left\langle a,\, b\right\rangle
+ * = \int\limits_{-\infty}^{\infty} \mathrm{d}x~a(x) \,\,\hat{O}_2\,\,b(x)\ \f].
  *
  * @tparam O2 Type of the operator applied to the second spline.
  */
@@ -131,13 +135,17 @@ template <typename O2>
 BilinearForm(O2 o2) -> BilinearForm<operators::UnityOperator, O2>;
 
 /*!
- * Deduction guide for a bilinear form with no operator explicitly defined.
+ * Deduction guide for a bilinear form with no operator explicitly defined. Both
+ * operators default to the okruz::bspline::operators::UnityOperator.
+ * \f[\left\langle a,\, b\right\rangle = \int\limits_{-\infty}^{\infty}
+ * \mathrm{d}x~a(x) \,\,b(x)\ \f]
  */
 BilinearForm()
     ->BilinearForm<operators::UnityOperator, operators::UnityOperator>;
 
 /*!
- * Short hand for a scalar product.
+ * Short hand for a scalar product \f[\left\langle a,\, b\right\rangle =
+ * \int\limits_{-\infty}^{\infty} \mathrm{d}x~a(x) \,\,b(x).\ \f]
  */
 using ScalarProduct =
     BilinearForm<operators::UnityOperator, operators::UnityOperator>;
