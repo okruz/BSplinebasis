@@ -28,10 +28,9 @@ using namespace okruz::bspline::exceptions;
 enum class Construction { EMPTY, WHOLE_GRID };
 
 /*!
- * Represents the support of a spline as a number of gridpoints.
- * It is hence essentially a view onto the global grid. The pointer to the
- * global grid allows for a speedy comparison whether splines are defined on the
- * same global grid and methods that assume they are can be used.
+ * Represents the support of a spline as a set of intervals, represented by the
+ * the corresponding grid points. number of gridpoints. It is essentially a view
+ * onto the global grid.
  *
  * @tparam T Datatype of the grid and spline.
  */
