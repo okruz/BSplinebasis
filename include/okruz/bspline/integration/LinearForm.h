@@ -13,7 +13,9 @@
 namespace okruz::bspline::integration {
 
 /*!
- * Represents a linear form of a BSpline with an operator applied to the spline.
+ * Represents the linear form \f[\left\langle
+ * a\right\rangle=\int\limits_{-\infty}^{\infty}\mathrm{d}x~\left[\hat{O}\,\,
+ * a(x)\right]\f] with the operator \f$\hat{O}\f$ applied to the spline.
  *
  * @tparam O The type of the operator applied to the spline.
  */
@@ -87,7 +89,9 @@ class LinearForm {
 };
 
 /*!
- * Deduction guide for a linear form with no operator explicitly defined.
+ * Deduction guide for a linear form which represents the integral over the
+ * spline \f[\left\langle
+ * a\right\rangle=\int\limits_{-\infty}^{\infty}\mathrm{d}x~a(x).\f]
  */
 LinearForm()->LinearForm<operators::UnityOperator>;
 
