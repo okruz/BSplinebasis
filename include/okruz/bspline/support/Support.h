@@ -29,8 +29,7 @@ enum class Construction { EMPTY, WHOLE_GRID };
 
 /*!
  * Represents the support of a spline as a set of intervals, represented by the
- * the corresponding grid points. number of gridpoints. It is essentially a view
- * onto the global grid.
+ * the corresponding grid points. It is essentially a view onto the global grid.
  *
  * @tparam T Datatype of the grid and spline.
  */

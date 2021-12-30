@@ -26,14 +26,15 @@ using namespace okruz::bspline::exceptions;
  * m_1(x)\, f(x)\, m_2(x).\f] The integral is evaluated numerically on each
  * interval using boost's Gauss-Legendre scheme of order ordergl.
  *
- * @param f Function f(x) to be multiplied to the integrand.
- * @param m1 First spline m1(x).
- * @param m2 Second spline m2(x).
+ * @param f Callable \f$f(x)\f$ to be multiplied to the integrand.
+ * @param m1 First spline \f$m_1(x)\f$.
+ * @param m2 Second spline \f$m_2(x)\f$.
  * @tparam ordergl Order of the Gauss-Legendre integration scheme provided by
  * the boost library.
  * @tparam T Datatype of the calculation.
- * @tparam order1 Order of the spline m1(x).
- * @tparam order2 Order of the spline m2(x).
+ * @tparam F Type of the callable \f$f(x)\f$.
+ * @tparam order1 Order of the spline \f$m_1(x)\f$.
+ * @tparam order2 Order of the spline \f$m_2(x)\f$.
  */
 template <size_t ordergl, typename T, typename F, size_t order1, size_t order2>
 T integrate(const F &f, const okruz::bspline::Spline<T, order1> &m1,
