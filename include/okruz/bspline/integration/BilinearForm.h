@@ -10,6 +10,11 @@
 #include <okruz/bspline/Spline.h>
 #include <okruz/bspline/operators/GenericOperators.h>
 
+/*!
+ * Nampespace containing the integration routines. Analytical integration is
+ * represented by the linear and bilinear forms. There is also code for
+ * numerical integration using the boost fixed poind Gauss-Legendre scheme.
+ */
 namespace okruz::bspline::integration {
 
 /*!

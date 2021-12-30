@@ -22,10 +22,9 @@ using okruz::bspline::support::Support;
 using namespace okruz::bspline::exceptions;
 
 /*!
- * Calculates the 1D integral \\int\\limits_{-\\infty}^{\\infty} dx m1(x) f(x)
- * m2(x). Calcualted numerically with each interval of the common support of the
- * two splines being integrated separately using a Gauss-Legendre scheme of
- * order ordergl. Uses the boost Gauss-Legendre fixed point integration scheme.
+ * Calculates the 1D integral \f[I=\int\limits_{-\infty}^{\infty} \mathrm{d}x~
+ * m_1(x)\, f(x)\, m_2(x).\f] The integral is evaluated numerically on each
+ * interval using boost's Gauss-Legendre scheme of order ordergl.
  *
  * @param f Function f(x) to be multiplied to the integrand.
  * @param m1 First spline m1(x).
