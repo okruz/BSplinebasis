@@ -8,7 +8,6 @@
 #include "hydrogen.h"
 
 #include <okruz/bspline/BSplineGenerator.h>
-#include <okruz/bspline/integration/analytical.h>
 
 #include <algorithm>
 #include <eigen3/Eigen/Eigenvalues>
