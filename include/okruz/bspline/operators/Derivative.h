@@ -17,7 +17,7 @@ namespace okruz::bspline::operators {
 namespace internal = okruz::bspline::internal;
 
 /*!
- * Represents a derivative operator of order n, i.e. d^n/dx^n.
+ * Represents the derivative operator \f$\mathrm{d}^n/\mathrm{d}x^n\f$.
  *
  * @tparam n Order of the derivative.
  */
@@ -78,7 +78,7 @@ class Derivative : public Operator {
 };
 
 /*!
- * Alias for the derivative opertor.
+ * Alias for the derivative operator \f$\mathrm{d}^n/\mathrm{d}x^n\f$.
  *
  * @tparam n Order of the derivative.
  */

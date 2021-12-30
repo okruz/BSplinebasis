@@ -17,7 +17,7 @@ namespace okruz::bspline::operators {
 namespace internal = okruz::bspline::internal;
 
 /*!
- * Represents a power of the position operator x^n.
+ * Represents a power of the position operator \f$x^n\f$.
  *
  * @tparam n Order of the power.
  */
@@ -25,7 +25,7 @@ template <size_t n>
 class Position : public Operator {
  private:
   /*!
-   * Expands (x + xm)^n
+   * Expands \f$(x + x_m)^n\f$.
    *
    * @param xm The middle point of the interval.
    * @tparam T The datatype of xm and the returned coefficients.
@@ -94,7 +94,7 @@ class Position : public Operator {
 };
 
 /*!
- * Alias for the position opertor.
+ * Alias for the power \f$x^n\f$ of the position operator.
  *
  * @tparam n Order of the power of the position operator.
  */
