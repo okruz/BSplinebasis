@@ -19,6 +19,7 @@ namespace okruz::bspline::integration {
 
 /*!
  * Represents the bilinear form \f[\left\langle a,\, b\right\rangle =
+ * \left\langle \hat{O}_1\,a\,\middle|\,\hat{O}_2\,b\right\rangle =
  * \int\limits_{-\infty}^{\infty} \mathrm{d}x~\left[\hat{O}_1\,a(x)\right]
  * \,\,\left[\hat{O}_2\,b(x)\right] \f] with the operators
  * \f$\hat{O}_1,\,\hat{O}_2\f$ applied to the two splines.
@@ -129,10 +130,10 @@ class BilinearForm {
 };
 
 /*!
- * Deduction guide for a bilinear form with only one operator to be applied to
- * the second (right) spline. The \f$\hat{O}_1\f$-operator defaults to the
- * okruz::bspline::operators::UnityOperator.\f[\left\langle a,\, b\right\rangle
- * = \int\limits_{-\infty}^{\infty} \mathrm{d}x~a(x) \,\,\hat{O}_2\,\,b(x)\ \f].
+ * Deduction guide for a bilinear form which corresponds to the matrix element
+ * of the operator \f$\hat{O}_2\f$. \f[\left\langle a,\, b\right\rangle  =
+ * \left\langle a\,\middle|\,\hat{O}_2\,\middle|\,b\right\rangle =
+ * \int\limits_{-\infty}^{\infty} \mathrm{d}x~a(x) \,\,\hat{O}_2\,\,b(x)\ \f].
  *
  * @tparam O2 Type of the operator applied to the second spline.
  */
@@ -140,17 +141,18 @@ template <typename O2>
 BilinearForm(O2 o2) -> BilinearForm<operators::UnityOperator, O2>;
 
 /*!
- * Deduction guide for a bilinear form with no operator explicitly defined. Both
- * operators default to the okruz::bspline::operators::UnityOperator.
- * \f[\left\langle a,\, b\right\rangle = \int\limits_{-\infty}^{\infty}
- * \mathrm{d}x~a(x) \,\,b(x)\ \f]
+ * Deduction guide for a bilinear form which corresponds to the scalar product.
+ * \f[\left\langle a,\, b\right\rangle = \left\langle
+ * a\,\middle|\,b\right\rangle = \int\limits_{-\infty}^{\infty} \mathrm{d}x~a(x)
+ * \,\,b(x)\ \f]
  */
 BilinearForm()
     ->BilinearForm<operators::UnityOperator, operators::UnityOperator>;
 
 /*!
  * Short hand for a scalar product \f[\left\langle a,\, b\right\rangle =
- * \int\limits_{-\infty}^{\infty} \mathrm{d}x~a(x) \,\,b(x).\ \f]
+ * \left\langle a\,\middle|\,b\right\rangle =  \int\limits_{-\infty}^{\infty}
+ * \mathrm{d}x~a(x) \,\,b(x).\ \f]
  */
 using ScalarProduct =
     BilinearForm<operators::UnityOperator, operators::UnityOperator>;
