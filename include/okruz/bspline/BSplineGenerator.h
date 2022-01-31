@@ -80,72 +80,96 @@ class BSplineGenerator {
   Grid<T> getGrid() const { return _grid; };
 
   /*!
-   * Generates a Bspline of order k-1 at knot i relative to the grid given by
-   * knots.
-   *
-   * @param i Index of the knot at which to generate the BSpline.
-   * @tparam k Number of the coefficients per interval for the spline (i.e.
-   * order of the spline plus one).
-   */
-  template <size_t k>
-  Spline<T, k - 1> generateBSpline(size_t i) const {
-    using Support = okruz::bspline::support::Support<T>;
-    static_assert(k >= 1, "k has to be at least 1.");
-
-    if constexpr (k == 1) {
-      const T &xi = _knots.at(i);
-      const T &xip1 = _knots.at(i + 1);
-
-      if (xi >= xip1) {
-        throw BSplineException(ErrorCode::UNDETERMINED);
-      }
-
-      std::vector<std::array<T, 1>> coefficients{{static_cast<T>(1)}};
-
-      const size_t gridIndex = _grid.findElement(xi);
-
-      return Spline<T, 0>(Support(_grid, gridIndex, gridIndex + 2),
-                          std::move(coefficients));
-    } else {
-      Spline<T, k - 1> ret(_grid);
-
-      const T &xi = _knots.at(i);
-      const T &xipkm1 = _knots.at(i + k - 1);
-      if (xipkm1 > xi) {
-        const T prefac = static_cast<T>(1) / (xipkm1 - xi);
-        const auto op = prefac * (operators::X<1>{} - xi);
-        ret += op * generateBSpline<k - 1>(i);
-      }
-
-      const T &xip1 = _knots.at(i + 1);
-      const T &xipk = _knots.at(i + k);
-      if (xipk > xip1) {
-        const T prefac = static_cast<T>(1) / (xipk - xip1);
-        const auto op = prefac * (xipk - operators::X<1>{});
-        ret += op * generateBSpline<k - 1>(i + 1);
-      }
-
-      return ret;
-    }
-  }
-
-  /*!
    * Generates all BSplines with respect to the knots vector.
    * @tparam k Number of the coefficients per interval for the spline (i.e.
    * order of the spline plus one).
    */
   template <size_t k>
   std::vector<Spline<T, k - 1>> generateBSplines() const {
+    static_assert(k >= 1, "k has to be at least 1.");
     if (_knots.size() < k) {
       throw BSplineException(ErrorCode::UNDETERMINED,
                              "The knots vector contains too few elements to "
                              "generate BSplines of the requested order.");
     }
 
-    std::vector<Spline<T, k - 1>> ret;
-    ret.reserve(_knots.size() - k);
-    for (size_t i = 0; i < _knots.size() - k; i++) {
-      ret.push_back(generateBSpline<k>(i));
+    if constexpr (k == 1) {
+      return generateZerothOrderSplines();
+    } else {
+      const auto nextLowerOrderSplines = generateBSplines<k - 1>();
+      std::vector<Spline<T, k - 1>> ret;
+      ret.reserve(_knots.size() - k);
+      for (size_t i = 0; i < _knots.size() - k; i++) {
+        ret.push_back(applyRecursionRelation<k>(
+            i, nextLowerOrderSplines.at(i), nextLowerOrderSplines.at(i + 1)));
+      }
+      return ret;
+    }
+  }
+
+ private:
+  /*!
+   * Generates a Bspline of order k-1 at knot i by application of the recursion
+   * relation \f[B_{i,k}(x) = \frac{x - x_i}{x_{i + k -1} - x_i}\ B_{i, k-1}(x)
+   * + \frac{x_{i+k}-x}{x_{i+k}-x_{i+1}}\,B_{i+1,k-1}(x)\f].
+   *
+   * @param i Index of the knot at which to generate the BSpline.
+   * @param splinei The spline of the next lower order at index i.
+   * @param splineip1 The spline of the next lower order at index i + 1.
+   * @tparam k Number of the coefficients per interval for the spline (i.e.
+   * order of the spline plus one).
+   */
+  template <size_t k>
+  Spline<T, k - 1> applyRecursionRelation(
+      size_t i, const Spline<T, k - 2> &splinei,
+      const Spline<T, k - 2> &splineip1) const {
+    static_assert(k >= 2, "k has to be at least 2.");
+
+    Spline<T, k - 1> ret(_grid);
+
+    const T &xi = _knots.at(i);
+    const T &xipkm1 = _knots.at(i + k - 1);
+    if (xipkm1 > xi) {
+      const T prefac = static_cast<T>(1) / (xipkm1 - xi);
+      const auto op = prefac * (operators::X<1>{} - xi);
+      ret += op * splinei;
+    }
+
+    const T &xip1 = _knots.at(i + 1);
+    const T &xipk = _knots.at(i + k);
+    if (xipk > xip1) {
+      const T prefac = static_cast<T>(1) / (xipk - xip1);
+      const auto op = prefac * (xipk - operators::X<1>{});
+      ret += op * splineip1;
+    }
+
+    return ret;
+  }
+
+  /*!
+   * Generates all zeroth order splines.
+   */
+  std::vector<Spline<T, 0>> generateZerothOrderSplines() const {
+    std::vector<Spline<T, 0>> ret;
+    const size_t numberOfSplines = (_knots.empty()) ? 0 : _knots.size() - 1;
+    ret.reserve(numberOfSplines);
+
+    for (size_t i = 0; i < numberOfSplines; i++) {
+      const T &xi = _knots.at(i);
+      const T &xip1 = _knots.at(i + 1);
+
+      if (xi > xip1) {
+        throw BSplineException(ErrorCode::UNDETERMINED);
+      } else if (xi == xip1) {
+        ret.push_back(Spline<T, 0>{_grid});
+      } else {
+        std::vector<std::array<T, 1>> coefficients{{static_cast<T>(1)}};
+
+        const size_t gridIndex = _grid.findElement(xi);
+
+        ret.push_back(Spline<T, 0>{Support(_grid, gridIndex, gridIndex + 2),
+                                   std::move(coefficients)});
+      }
     }
     return ret;
   }
