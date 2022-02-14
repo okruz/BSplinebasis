@@ -3,7 +3,7 @@ project(BSplinebasis)
 find_package(Boost COMPONENTS unit_test_framework REQUIRED)
 
 #Add support test
-add_executable(supportTest tests/okruz/bspline/support/support-test.cpp)
+add_executable(supportTest tests/bspline/support/support-test.cpp)
 set_property(TARGET supportTest PROPERTY CXX_STANDARD 17)
 target_include_directories(supportTest PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 target_include_directories(supportTest PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/tests)
@@ -11,7 +11,7 @@ target_link_libraries(supportTest ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
 add_test(supportTest supportTest)
 
 #Add spline test
-add_executable(splineTest tests/okruz/bspline/spline-test.cpp)
+add_executable(splineTest tests/bspline/spline-test.cpp)
 set_property(TARGET splineTest PROPERTY CXX_STANDARD 17)
 target_include_directories(splineTest PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 target_include_directories(splineTest PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/tests)
@@ -19,7 +19,7 @@ target_link_libraries(splineTest ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
 add_test(splineTest splineTest)
 
 #Add spline-interpolation test
-add_executable(splineInterpolationTest tests/okruz/bspline/interpolation/interpolation-test.cpp)
+add_executable(splineInterpolationTest tests/bspline/interpolation/interpolation-test.cpp)
 set_property(TARGET splineInterpolationTest PROPERTY CXX_STANDARD 17)
 target_include_directories(splineInterpolationTest PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 target_include_directories(splineInterpolationTest PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/tests)
@@ -28,8 +28,8 @@ add_test(splineInterpolationTest splineInterpolationTest)
 
 # TODO: Check whether armadillo and eigen are installed and set MYSPLINE_INTERPOLATION_USE_* accordingly
 target_compile_definitions(splineInterpolationTest PUBLIC 
-                                          OKRUZ_BSPLINE_INTERPOLATION_USE_ARMADILLO
-                                          OKRUZ_BSPLINE_INTERPOLATION_USE_EIGEN)
+                                          BSPLINE_INTERPOLATION_USE_ARMADILLO
+                                          BSPLINE_INTERPOLATION_USE_EIGEN)
 target_link_libraries(splineInterpolationTest armadillo)
 
 

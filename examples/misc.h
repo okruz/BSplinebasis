@@ -1,5 +1,5 @@
-#ifndef OKRUZ_BSPLINE_EXAMPLES_MISC_H
-#define OKRUZ_BSPLINE_EXAMPLES_MISC_H
+#ifndef BSPLINE_EXAMPLES_MISC_H
+#define BSPLINE_EXAMPLES_MISC_H
 /*
  * ########################################################################
  * The contents of this file is free and unencumbered software released into the
@@ -7,7 +7,7 @@
  * ########################################################################
  */
 
-#ifdef OKRUZ_EXAMPLES_USE_BOOST_MULTIPRECISION
+#ifdef EXAMPLES_USE_BOOST_MULTIPRECISION
 // Just as a proof of concept.
 // Beware boost multiprecision tries to include the eigen headers from
 // <Eigen/Core>. Without additional include definitions, they may be placed
@@ -18,13 +18,13 @@
 #include <eigen3/Eigen/Dense>
 #endif
 
-#include <okruz/bspline/Core.h>
+#include <bspline/Core.h>
 
 #include <vector>
 
-namespace okruz::bspline::examples {
+namespace bspline::examples {
 
-#ifdef OKRUZ_EXAMPLES_USE_BOOST_MULTIPRECISION
+#ifdef EXAMPLES_USE_BOOST_MULTIPRECISION
 using data_t = boost::multiprecision::cpp_bin_float_oct;
 #else
 using data_t = double;
@@ -34,7 +34,7 @@ using DeMat = Eigen::Matrix<data_t, Eigen::Dynamic, Eigen::Dynamic>;
 
 constexpr size_t SPLINE_ORDER = 5;
 
-using Spline = okruz::bspline::Spline<data_t, SPLINE_ORDER>;
+using Spline = bspline::Spline<data_t, SPLINE_ORDER>;
 
 struct Eigenspace {
   data_t energy;
@@ -65,7 +65,7 @@ DeMat setUpSymmetricMatrix(const B &b, const std::vector<Spline> &basis) {
 /**
  * Turns the real Eigen vector into a std::vector. This method is purely a
  * convenience function to transfer the vector data into a collection which
- * provides iterators (needed for okruz::bspline::linearCombination()). As of
+ * provides iterators (needed for bspline::linearCombination()). As of
  * Eigen 4.3, the Eigen collections are supposed to provide iterators themselves
  * and this method should be obsolete.
  *
@@ -82,5 +82,5 @@ std::vector<data_t> toStdVector(const Ev &d) {
   return ret;
 }
 
-}  // namespace okruz::bspline::examples
-#endif  // OKRUZ_BSPLINE_EXAMPLES_MISC_H
+}  // namespace bspline::examples
+#endif  // BSPLINE_EXAMPLES_MISC_H

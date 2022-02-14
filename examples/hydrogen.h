@@ -1,5 +1,5 @@
-#ifndef OKRUZ_BSPLINE_EXAMPLES_HYDROGEN_H
-#define OKRUZ_BSPLINE_EXAMPLES_HYDROGEN_H
+#ifndef BSPLINE_EXAMPLES_HYDROGEN_H
+#define BSPLINE_EXAMPLES_HYDROGEN_H
 /*
  * ########################################################################
  * The contents of this file is free and unencumbered software released into the
@@ -7,13 +7,13 @@
  * ########################################################################
  */
 
-#include <okruz/bspline/Spline.h>
+#include <bspline/Spline.h>
 
 #include <vector>
 
 #include "misc.h"
 
-namespace okruz::bspline::examples::hydrogen {
+namespace bspline::examples::hydrogen {
 
 /**
  * The orbital quantum number.
@@ -27,5 +27,5 @@ static constexpr int L = 1;
  */
 std::vector<Eigenspace> solveRadialHydrogen();
 
-}  // namespace okruz::bspline::examples::hydrogen
-#endif  // OKRUZ_BSPLINE_EXAMPLES_HYDROGEN_H
+}  // namespace bspline::examples::hydrogen
+#endif  // BSPLINE_EXAMPLES_HYDROGEN_H

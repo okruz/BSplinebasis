@@ -14,9 +14,9 @@
 #include "harmonic-oscillator.h"
 #include "hydrogen.h"
 
-using namespace okruz::bspline::examples::hydrogen;
-using namespace okruz::bspline::examples::harmonic_oscillator;
-using namespace okruz::bspline::examples;
+using namespace bspline::examples::hydrogen;
+using namespace bspline::examples::harmonic_oscillator;
+using namespace bspline::examples;
 
 void harmonicOscillator() {
   std::cout.precision(std::numeric_limits<data_t>::max_digits10);

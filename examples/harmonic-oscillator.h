@@ -1,5 +1,5 @@
-#ifndef OKRUZ_BSPLINE_EXAMPLES_HARMONICOSCILLATOR_H
-#define OKRUZ_BSPLINE_EXAMPLES_HARMONICOSCILLATOR_H
+#ifndef BSPLINE_EXAMPLES_HARMONICOSCILLATOR_H
+#define BSPLINE_EXAMPLES_HARMONICOSCILLATOR_H
 /*
  * ########################################################################
  * The contents of this file is free and unencumbered software released into the
@@ -7,13 +7,13 @@
  * ########################################################################
  */
 
-#include <okruz/bspline/Spline.h>
+#include <bspline/Spline.h>
 
 #include <vector>
 
 #include "misc.h"
 
-namespace okruz::bspline::examples::harmonic_oscillator {
+namespace bspline::examples::harmonic_oscillator {
 /**
  * Solves the quantum mechanical harmonic oscillator problem with a BSpline
  * basis.
@@ -21,5 +21,5 @@ namespace okruz::bspline::examples::harmonic_oscillator {
  */
 std::vector<Eigenspace> solveHarmonicOscillator();
 
-}  // namespace okruz::bspline::examples::harmonic_oscillator
-#endif  // OKRUZ_BSPLINE_EXAMPLES_HARMONICOSCILLATOR_H
+}  // namespace bspline::examples::harmonic_oscillator
+#endif  // BSPLINE_EXAMPLES_HARMONICOSCILLATOR_H

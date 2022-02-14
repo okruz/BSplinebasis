@@ -7,14 +7,14 @@
 
 #include "harmonic-oscillator.h"
 
-#include <okruz/bspline/BSplineGenerator.h>
+#include <bspline/BSplineGenerator.h>
 
 #include <algorithm>
 #include <eigen3/Eigen/Eigenvalues>
 
-namespace okruz::bspline::examples::harmonic_oscillator {
+namespace bspline::examples::harmonic_oscillator {
 
-using namespace okruz::bspline;
+using namespace bspline;
 
 // Hamiltonian operator -1/2 d^2/dx^2 + 1/2 x^2
 static const auto hamiltonOperator =
@@ -72,11 +72,11 @@ std::vector<Eigenspace> solveHarmonicOscillator() {
   for (size_t i = 0; i < 10; i++) {
     const auto eigenvalue = eigenvalues(i);
     const auto eigenvector = toStdVector(eigenvectors.col(i));
-    auto wavefunction = okruz::bspline::linearCombination(eigenvector, basis);
+    auto wavefunction = bspline::linearCombination(eigenvector, basis);
 
     ret.push_back({eigenvalue, std::move(wavefunction)});
   }
   return ret;
 }
 
-}  // namespace okruz::bspline::examples::harmonic_oscillator
+}  // namespace bspline::examples::harmonic_oscillator

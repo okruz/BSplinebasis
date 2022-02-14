@@ -7,14 +7,14 @@
 
 #include "hydrogen.h"
 
-#include <okruz/bspline/BSplineGenerator.h>
+#include <bspline/BSplineGenerator.h>
 
 #include <algorithm>
 #include <eigen3/Eigen/Eigenvalues>
 
-namespace okruz::bspline::examples::hydrogen {
+namespace bspline::examples::hydrogen {
 
-using namespace okruz::bspline;
+using namespace bspline;
 
 // The radial Hamiltonian operator r^2 *(-d^2/dr^2 -2/r d/dr + L * (L + 1) /
 // r^2 - 2/r). Includes the term r^2 from the functional determinant.
@@ -100,10 +100,10 @@ std::vector<Eigenspace> solveRadialHydrogen() {
   for (size_t i = 0; i < 10; i++) {
     const auto eigenvalue = eigenvalues(i);
     const auto eigenvector = toStdVector(eigenvectors.col(i));
-    auto wavefunction = okruz::bspline::linearCombination(eigenvector, basis);
+    auto wavefunction = bspline::linearCombination(eigenvector, basis);
     ret.push_back({eigenvalue, std::move(wavefunction)});
   }
   return ret;
 }
 
-}  // namespace okruz::bspline::examples::hydrogen
+}  // namespace bspline::examples::hydrogen
