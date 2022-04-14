@@ -13,3 +13,4 @@
 #include <bspline/operators/Derivative.h>
 #include <bspline/operators/Position.h>
 #include <bspline/operators/ScalarOperators.h>
+#include <bspline/operators/SplineOperator.h>

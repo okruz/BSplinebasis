@@ -114,6 +114,14 @@ class Grid {
   }
 
   /*!
+   * Negated comparison operator.
+   *
+   * @param g The grid to compare this grid with.
+   * @returns Returns false if the grids represent the same logical grid.
+   */
+  bool operator!=(const Grid &g) const { return !(*this == g); }
+
+  /*!
    * Returns the number of elements of the grid.
    */
   size_t size() const { return _data->size(); };

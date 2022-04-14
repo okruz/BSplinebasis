@@ -87,7 +87,7 @@ class Support {
    * support will be constructed, if it is set to Construction::WHOLE_GRID a
    * support representing the extend of the whole grid will be constructed.
    */
-  Support(Grid<T> grid, Construction constr = Construction::EMPTY)
+  explicit Support(Grid<T> grid, Construction constr = Construction::EMPTY)
       : _grid(std::move(grid)),
         _startIndex(0),
         _endIndex((constr == Construction::EMPTY) ? 0 : _grid.size()){};
@@ -166,7 +166,7 @@ class Support {
   /*!
    * Returns the global grid.
    */
-  Grid<T> getGrid() const { return _grid; };
+  const Grid<T> &getGrid() const { return _grid; };
 
   /*!
    * Returns the _startIndex.

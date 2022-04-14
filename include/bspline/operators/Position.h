@@ -81,8 +81,8 @@ class Position : public Operator {
       size_t intervalIndex) const {
     constexpr size_t OUTPUT_SIZE = size + n;
 
-    const T xm = (grid.at(intervalIndex) + grid.at(intervalIndex + 1)) /
-                 static_cast<T>(2);
+    const T xm =
+        (grid[intervalIndex] + grid[intervalIndex + 1]) / static_cast<T>(2);
 
     const std::array<T, n + 1> expanded = expandPower<T>(xm);
 

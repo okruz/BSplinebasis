@@ -24,7 +24,7 @@ namespace bspline::operators {
  */
 template <typename T, typename O>
 inline constexpr bool are_scalar_multiplication_types_v =
-    !is_operator_v<T> && is_operator_v<O>;
+    !is_spline_v<T> && !is_operator_v<T> && is_operator_v<O>;
 
 /*!
  * Represents the multiplication of an operator with a scalar.

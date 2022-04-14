@@ -599,5 +599,18 @@ decltype(auto) linearCombination(const CoeffCollection &coeffs,
                            splines.end());
 }
 
+template <typename>
+struct is_spline : std::false_type {};
+
+template <typename T, size_t order>
+struct is_spline<Spline<T, order>> : std::true_type {};
+
+/*!
+ * Indicates whether the type is a spline.
+ * @tparam S The type to check against the Spline class.
+ */
+template <typename S>
+inline constexpr bool is_spline_v = is_spline<S>::value;
+
 }  // namespace bspline
 #endif  // BSPLINE_SPLINE_H
