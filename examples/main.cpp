@@ -11,6 +11,7 @@
 #include <limits>
 #include <vector>
 
+#include "harmonic-oscillator-spline.h"
 #include "harmonic-oscillator.h"
 #include "hydrogen.h"
 
@@ -18,9 +19,16 @@ using namespace bspline::examples::hydrogen;
 using namespace bspline::examples::harmonic_oscillator;
 using namespace bspline::examples;
 
-void harmonicOscillator() {
+void harmonicOscillator(bool useSpline) {
   std::cout.precision(std::numeric_limits<data_t>::max_digits10);
-  std::vector<Eigenspace> harmonicOscillator = solveHarmonicOscillator();
+  std::vector<Eigenspace> harmonicOscillator;
+
+  if (useSpline) {
+    harmonicOscillator = harmonic_oscillator_spline::solveHarmonicOscillator();
+
+  } else {
+    harmonicOscillator = solveHarmonicOscillator();
+  }
 
   std::cout << "Harmonic Oscillator eigenvalues:\n\n";
   std::cout << std::setw(2) << "n"
@@ -86,10 +94,12 @@ void radialHydrogen() {
 
 int main(int argc, char **argv) {
   if (argc != 2 || (std::string(argv[1]) != "harmonic_oscillator" &&
+                    std::string(argv[1]) != "harmonic_oscillator_spline" &&
                     std::string(argv[1]) != "hydrogen")) {
     std::cout << "Usage:\n\t" << argv[0]
               << " <example>\n\tWhere <example> is either "
-                 "\"harmonic_oscillator\" or \"hydrogen\"."
+                 "\"harmonic_oscillator\", \"harmonic_oscillator_spline\" or "
+                 "\"hydrogen\"."
               << std::endl;
     return 1;
   }
@@ -97,7 +107,9 @@ int main(int argc, char **argv) {
   const std::string example(argv[1]);
 
   if (example == "harmonic_oscillator") {
-    harmonicOscillator();
+    harmonicOscillator(false);
+  } else if (example == "harmonic_oscillator_spline") {
+    harmonicOscillator(true);
   } else if (example == "hydrogen") {
     radialHydrogen();
   }
