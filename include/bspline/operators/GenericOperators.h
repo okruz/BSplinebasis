@@ -60,10 +60,12 @@ decltype(auto) transformSpline(const O &op, const Spline<T, order> &spline) {
   std::vector<std::array<T, OUTPUT_SIZE>> newCoefficients;
   newCoefficients.reserve(oldCoefficients.size());
 
+  const auto &support = spline.getSupport();
+
   for (size_t i = 0; i < oldCoefficients.size(); i++) {
-    const T xm = (spline.getSupport().at(i) + spline.getSupport().at(i + 1)) /
-                 static_cast<T>(2);
-    newCoefficients.push_back(op.transform(oldCoefficients.at(i), xm));
+    const size_t absIndex = support.absoluteFromRelative(i);
+    newCoefficients.push_back(
+        op.transform(oldCoefficients.at(i), support.getGrid(), absIndex));
   }
 
   return Spline(spline.getSupport(), std::move(newCoefficients));
@@ -104,14 +106,16 @@ class UnityOperator : public Operator {
    * one interval).
    *
    * @param input The polynomial coefficients.
-   * @param xm The middlepoint of the interval, with respect to which the
-   * polynomial is defined.
+   * @param grid The global grid with respect to which the splines are defined.
+   * @param intervalIndex The index of the begin of the interval with respect to
+   * the global grid.
    * @tparam T The datatype of the coefficients.
    * @tparam size The size of the array, i. e. the number of coefficients.
    */
   template <typename T, size_t size>
   std::array<T, size> transform(const std::array<T, size> &input,
-                                [[maybe_unused]] const T &xm) const {
+                                [[maybe_unused]] const support::Grid<T> &grid,
+                                [[maybe_unused]] size_t intervalIndex) const {
     return input;
   }
 };

@@ -51,14 +51,17 @@ class Derivative : public Operator {
    * one interval).
    *
    * @param input The polynomial coefficients.
-   * @param xm The middlepoint of the interval, with respect to which the
-   * polynomial is defined.
+   * @param grid The global grid with respect to which the splines are defined.
+   * @param intervalIndex The index of the begin of the interval with respect to
+   * the global grid.
    * @tparam T The datatype of the coefficients.
    * @tparam size The size of the input array, i. e. the number of coefficients.
    */
   template <typename T, size_t size>
   std::array<T, outputOrder(size - 1) + 1> transform(
-      const std::array<T, size> &input, [[maybe_unused]] const T &xm) const {
+      const std::array<T, size> &input,
+      [[maybe_unused]] const support::Grid<T> &grid,
+      [[maybe_unused]] size_t intervalIndex) const {
     static_assert(size >= 1, "Arrays of size zero not supported.");
     // The order of the input spline.
     constexpr size_t SPLINE_ORDER = size - 1;

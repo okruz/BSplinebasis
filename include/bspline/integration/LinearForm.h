@@ -76,13 +76,14 @@ class LinearForm {
     T result = static_cast<T>(0);
 
     for (size_t i = 0; i < nintervals; i++) {
-      const T xm =
-          (a.getSupport()[i + 1] + a.getSupport()[i]) / static_cast<T>(2);
+      const size_t absIndex = a.getSupport().absoulteFromRelative(i);
       const T dxhalf =
           (a.getSupport()[i + 1] - a.getSupport()[i]) / static_cast<T>(2);
 
       result +=
-          evaluateInterval(_o.transform(a.getCoefficients()[i], xm), dxhalf);
+          evaluateInterval(_o.transform(a.getCoefficients()[i],
+                                        a.getSupport().getGrid(), absIndex),
+                           dxhalf);
     }
     return result;
   }

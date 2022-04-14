@@ -61,15 +61,18 @@ class OperatorProduct : public Operator {
    * one interval).
    *
    * @param input The polynomial coefficients.
-   * @param xm The middlepoint of the interval, with respect to which the
-   * polynomial is defined.
+   * @param grid The global grid with respect to which the splines are defined.
+   * @param intervalIndex The index of the begin of the interval with respect to
+   * the global grid.
    * @tparam T The datatype of the coefficients.
    * @tparam size The size of the input array, i. e. the number of coefficients.
    */
   template <typename T, size_t size>
   std::array<T, outputOrder(size - 1) + 1> transform(
-      const std::array<T, size> &input, const T &xm) const {
-    return _o1.transform(_o2.transform(input, xm), xm);
+      const std::array<T, size> &input, const support::Grid<T> &grid,
+      size_t intervalIndex) const {
+    return _o1.transform(_o2.transform(input, grid, intervalIndex), grid,
+                         intervalIndex);
   }
 };
 
@@ -190,16 +193,18 @@ class OperatorSum : public Operator {
    * one interval).
    *
    * @param input The polynomial coefficients.
-   * @param xm The middlepoint of the interval, with respect to which the
-   * polynomial is defined.
+   * @param grid The global grid with respect to which the splines are defined.
+   * @param intervalIndex The index of the begin of the interval with respect to
+   * the global grid.
    * @tparam T The datatype of the coefficients.
    * @tparam size The size of the input array, i. e. the number of coefficients.
    */
   template <typename T, size_t size>
   std::array<T, outputOrder(size - 1) + 1> transform(
-      const std::array<T, size> &input, const T &xm) const {
-    auto a = _o1.transform(input, xm);
-    auto b = _o2.transform(input, xm);
+      const std::array<T, size> &input, const support::Grid<T> &grid,
+      size_t intervalIndex) const {
+    auto a = _o1.transform(input, grid, intervalIndex);
+    auto b = _o2.transform(input, grid, intervalIndex);
 
     // Negate b if subtraction is requested.
     if constexpr (operation == AdditionOperation::SUBTRACTION) {

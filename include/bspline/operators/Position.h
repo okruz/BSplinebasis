@@ -69,15 +69,20 @@ class Position : public Operator {
    * one interval).
    *
    * @param input The polynomial coefficients.
-   * @param xm The middlepoint of the interval, with respect to which the
-   * polynomial is defined.
+   * @param grid The global grid with respect to which the splines are defined.
+   * @param intervalIndex The index of the begin of the interval with respect to
+   * the global grid.
    * @tparam T The datatype of the coefficients.
    * @tparam size The size of the input array, i. e. the number of coefficients.
    */
   template <typename T, size_t size>
   std::array<T, outputOrder(size - 1) + 1> transform(
-      const std::array<T, size> &input, const T &xm) const {
+      const std::array<T, size> &input, const support::Grid<T> &grid,
+      size_t intervalIndex) const {
     constexpr size_t OUTPUT_SIZE = size + n;
+
+    const T xm = (grid.at(intervalIndex) + grid.at(intervalIndex + 1)) /
+                 static_cast<T>(2);
 
     const std::array<T, n + 1> expanded = expandPower<T>(xm);
 

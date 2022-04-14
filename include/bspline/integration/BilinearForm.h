@@ -106,6 +106,8 @@ class BilinearForm {
         a.getSupport().calcIntersection(b.getSupport());
     const size_t nintervals = integrandSupport.numberOfIntervals();
 
+    const auto &grid = integrandSupport.getGrid();
+
     T result = static_cast<T>(0);
 
     for (size_t interv = 0; interv < nintervals; interv++) {
@@ -116,14 +118,12 @@ class BilinearForm {
       const auto bIndex =
           b.getSupport().intervalIndexFromAbsolute(absIndex).value();
 
-      const T xm = (a.getSupport()[aIndex + 1] + a.getSupport()[aIndex]) /
-                   static_cast<T>(2);
       const T dxhalf = (a.getSupport()[aIndex + 1] - a.getSupport()[aIndex]) /
                        static_cast<T>(2);
 
-      result += evaluateInterval(_o1.transform(a.getCoefficients()[aIndex], xm),
-                                 _o2.transform(b.getCoefficients()[bIndex], xm),
-                                 dxhalf);
+      result += evaluateInterval(
+          _o1.transform(a.getCoefficients()[aIndex], grid, absIndex),
+          _o2.transform(b.getCoefficients()[bIndex], grid, absIndex), dxhalf);
     }
     return result;
   }

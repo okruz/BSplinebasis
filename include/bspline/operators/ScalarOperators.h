@@ -84,14 +84,16 @@ class ScalarMultiplication : public Operator {
    * one interval).
    *
    * @param input The polynomial coefficients.
-   * @param xm The middlepoint of the interval, with respect to which the
-   * polynomial is defined.
+   * @param grid The global grid with respect to which the splines are defined.
+   * @param intervalIndex The index of the begin of the interval with respect to
+   * the global grid.
    * @tparam T The datatype of the spline.
    * @tparam size The size of the array, i. e. the number of coefficients.
    */
   template <typename T, size_t size>
-  auto transform(const std::array<T, size> &input, const T &xm) const {
-    auto a = _o.transform(input, xm);
+  auto transform(const std::array<T, size> &input, const support::Grid<T> &grid,
+                 size_t intervalIndex) const {
+    auto a = _o.transform(input, grid, intervalIndex);
 
     // Multiply a.
     for (T &el : a) {
