@@ -5,67 +5,51 @@
  * ########################################################################
  */
 
-#include "harmonic-oscillator-spline.h"
+#include "spline-potential.h"
 
 #include <bspline/BSplineGenerator.h>
+#define BSPLINE_INTERPOLATION_USE_EIGEN
+#include <bspline/interpolation/interpolation.h>
 
 #include <algorithm>
 #include <eigen3/Eigen/Eigenvalues>
 
-namespace bspline::examples::harmonic_oscillator_spline {
+namespace bspline::examples::spline_potential {
 
 using namespace bspline;
 
-/**
- * @brief setUpKnotsVector Sets up the knots vector on which the basis splines
- * are defined.
- * @return A vector of data_t representing the knots.
- */
-static std::vector<data_t> setUpKnotsVector() {
-  std::vector<data_t> ret{0};
-
-  for (int i = 1; i < 100; i++) {
-    const data_t val = static_cast<data_t>(i * i) / 1000;
-    ret.push_back(val);
-    ret.push_back(-val);
+Spline interpolateFunction(std::vector<data_t> gridPoints,
+                           const std::function<data_t(data_t)> &func) {
+  support::Support<data_t> support{Grid<data_t>{std::move(gridPoints)},
+                                   support::Construction::WHOLE_GRID};
+  std::vector<data_t> y;
+  y.reserve(support.size());
+  for (const auto x : support) {
+    y.push_back(func(x));
   }
-  std::sort(ret.begin(), ret.end());
-  return ret;
+  return interpolation::interpolate_using_eigen<data_t, SPLINE_ORDER>(
+      std::move(support), y);
 }
 
 /**
  * @brief setUpBasis Sets up the BSpline basis.
+ * @param[in] grid The global grid on which to generate the splines.
  * @return A vector of BSplines representing the basis.
  */
-static std::vector<Spline> setUpBasis() {
-  BSplineGenerator gen(setUpKnotsVector());
+static std::vector<Spline> setUpBasis(const support::Grid<data_t> &grid) {
+  const std::vector<data_t> knotsVector{grid.begin(), grid.end()};
+  BSplineGenerator gen(knotsVector, grid);
   return gen.template generateBSplines<SPLINE_ORDER + 1>();
 }
 
-static bspline::Spline<data_t, 0> generateOneSpline(
-    const support::Grid<data_t> &grid) {
-  std::vector<std::array<data_t, 1>> coeffs(grid.size() - 1,
-                                            {static_cast<data_t>(1)});
-  return bspline::Spline<data_t, 0>(
-      support::Support(grid, support::Construction::WHOLE_GRID),
-      std::move(coeffs));
-}
-
-static bspline::Spline<data_t, 2> generatePotentialSpline(
-    const support::Grid<data_t> &grid) {
-  return operators::X<2>{} * generateOneSpline(grid);
-}
-
-std::vector<Eigenspace> solveHarmonicOscillator() {
+std::vector<Eigenspace> solveSEWithSplinePotential(Spline v) {
   // Get the basis.
-  std::vector<Spline> basis = setUpBasis();
-  const auto &grid = basis.front().getSupport().getGrid();
+  std::vector<Spline> basis = setUpBasis(v.getSupport().getGrid());
 
-  // Hamiltonian operator -1/2 d^2/dx^2 + 1/2 x^2
-  static const auto hamiltonOperator =
-      (static_cast<data_t>(1) / 2) *
-      (-operators::Dx<2>{} +
-       operators::SplineOperator(generatePotentialSpline(grid)));
+  // Hamiltonian operator -1/2 d^2/dx^2 + v(x)
+  const auto hamiltonOperator =
+      (static_cast<data_t>(-1) / 2) * operators::Dx<2>{} +
+      operators::SplineOperator{std::move(v)};
 
   DeMat hamiltonian =
       setUpSymmetricMatrix(integration::BilinearForm{hamiltonOperator}, basis);
@@ -96,4 +80,4 @@ std::vector<Eigenspace> solveHarmonicOscillator() {
   return ret;
 }
 
-}  // namespace bspline::examples::harmonic_oscillator_spline
+}  // namespace bspline::examples::spline_potential

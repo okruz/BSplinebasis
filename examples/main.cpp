@@ -11,24 +11,18 @@
 #include <limits>
 #include <vector>
 
-#include "harmonic-oscillator-spline.h"
 #include "harmonic-oscillator.h"
 #include "hydrogen.h"
+#include "spline-potential.h"
 
 using namespace bspline::examples::hydrogen;
 using namespace bspline::examples::harmonic_oscillator;
+using namespace bspline::examples::spline_potential;
 using namespace bspline::examples;
 
-void harmonicOscillator(bool useSpline) {
+void harmonicOscillator() {
   std::cout.precision(std::numeric_limits<data_t>::max_digits10);
-  std::vector<Eigenspace> harmonicOscillator;
-
-  if (useSpline) {
-    harmonicOscillator = harmonic_oscillator_spline::solveHarmonicOscillator();
-
-  } else {
-    harmonicOscillator = solveHarmonicOscillator();
-  }
+  std::vector<Eigenspace> harmonicOscillator = solveHarmonicOscillator();
 
   std::cout << "Harmonic Oscillator eigenvalues:\n\n";
   std::cout << std::setw(2) << "n"
@@ -52,6 +46,43 @@ void harmonicOscillator(bool useSpline) {
          x += static_cast<data_t>(1) / 100) {
       out << x << "\t" << 0.5 * x * x;
       for (const auto &r : harmonicOscillator) {
+        out << "\t" << r.wavefunction(x) + r.energy;
+      }
+      out << "\n";
+    }
+  }
+}
+
+void splinePotential() {
+  std::cout.precision(std::numeric_limits<data_t>::max_digits10);
+  std::vector<data_t> gridPoints;
+  for (int i = -100; i <= 100; i++) {
+    gridPoints.push_back(static_cast<data_t>(i) / 10);
+  }
+
+  const auto v = interpolateFunction(std::move(gridPoints), [](data_t x) {
+    return (exp(x) + exp(-x)) / static_cast<data_t>(2) - static_cast<data_t>(1);
+  });
+
+  std::vector<Eigenspace> eigenSpaces = solveSEWithSplinePotential(v);
+
+  std::cout << "Spline potential eigenvalues:\n\n";
+  std::cout << std::setw(2) << "n"
+            << "\t" << std::setw(20) << "energy" << '\n';
+  for (size_t i = 0; i < eigenSpaces.size(); i++) {
+    std::cout << std::setw(2) << i << "\t" << std::setw(20)
+              << eigenSpaces[i].energy << '\n';
+  }
+  std::cout << '\n' << std::endl;
+
+  {
+    std::ofstream out("spline-potential-wavefunctions.txt");
+    out.precision(std::numeric_limits<data_t>::max_digits10);
+    for (data_t x = static_cast<data_t>(-101) / 10;
+         x <= static_cast<data_t>(101) / 10;
+         x += static_cast<data_t>(1) / 100) {
+      out << x << "\t" << v(x);
+      for (const auto &r : eigenSpaces) {
         out << "\t" << r.wavefunction(x) + r.energy;
       }
       out << "\n";
@@ -92,26 +123,30 @@ void radialHydrogen() {
   }
 }
 
+static void printUsage(const std::string &command) {
+  std::cout << "Usage:\n\t" << command
+            << " <example>\n\tWhere <example> is either "
+               "\"harmonic_oscillator\", \"hydrogen\" or \"spline_potential\"."
+            << std::endl;
+}
+
 int main(int argc, char **argv) {
-  if (argc != 2 || (std::string(argv[1]) != "harmonic_oscillator" &&
-                    std::string(argv[1]) != "harmonic_oscillator_spline" &&
-                    std::string(argv[1]) != "hydrogen")) {
-    std::cout << "Usage:\n\t" << argv[0]
-              << " <example>\n\tWhere <example> is either "
-                 "\"harmonic_oscillator\", \"harmonic_oscillator_spline\" or "
-                 "\"hydrogen\"."
-              << std::endl;
+  if (argc != 2) {
+    printUsage(argv[0]);
     return 1;
   }
 
   const std::string example(argv[1]);
 
   if (example == "harmonic_oscillator") {
-    harmonicOscillator(false);
-  } else if (example == "harmonic_oscillator_spline") {
-    harmonicOscillator(true);
+    harmonicOscillator();
   } else if (example == "hydrogen") {
     radialHydrogen();
+  } else if (example == "spline_potential") {
+    splinePotential();
+  } else {
+    printUsage(argv[0]);
+    return 1;
   }
 
   return 0;
