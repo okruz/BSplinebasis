@@ -36,6 +36,7 @@ target_link_libraries(splineInterpolationTest armadillo)
 
 add_executable(examples examples/main.cpp 
                         examples/harmonic-oscillator.cpp
+                        examples/spline-potential.cpp
                         examples/hydrogen.cpp)
 
 set_property(TARGET examples PROPERTY CXX_STANDARD 17)
