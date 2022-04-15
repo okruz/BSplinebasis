@@ -15,7 +15,8 @@
 namespace bspline::operators {
 
 /*!
- * Implements an operator that is itself a spline.
+ * Implements the operator representation of a Spline.
+ *
  * @tparam T The data type of the spline.
  * @tparam order The order of the spline.
  */
