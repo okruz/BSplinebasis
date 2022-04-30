@@ -599,11 +599,26 @@ decltype(auto) linearCombination(const CoeffCollection &coeffs,
                            splines.end());
 }
 
-template <typename>
+#ifndef BSPLINE_DOXYGEN_IGNORE
+/*!
+ * Struct to check wether type is a spline. Implementation for all types that
+ * are not a Spline.
+ *
+ * @tparam S Type to check.
+ */
+template <typename S>
 struct is_spline : std::false_type {};
+
+/*!
+ * Struct to check wether type is a spline. Implementation for all Splines.
+ *
+ * @tparam T Data type of the spline.
+ * @tparam order Order of the spline.
+ */
 
 template <typename T, size_t order>
 struct is_spline<Spline<T, order>> : std::true_type {};
+#endif  // BSPLINE_DOXYGEN_IGNORE
 
 /*!
  * Indicates whether the type is a spline.
