@@ -76,18 +76,18 @@ std::vector<Eigenspace> solveRadialHydrogen() {
   static_assert(L >= 0, "L may not be below zero.");
 
   // Get the basis.
-  std::vector<Spline> basis = setUpBasis();
+  const std::vector<Spline> basis = setUpBasis();
 
-  DeMat hamiltonian =
+  const DeMat hamiltonian =
       setUpSymmetricMatrix(integration::BilinearForm{hamiltonOperator}, basis);
 
   // Overlap matrix. Includes the term r^2 from the functional determinant.
-  DeMat overlapMatrix =
+  const DeMat overlapMatrix =
       setUpSymmetricMatrix(integration::BilinearForm{operators::X<2>{}}, basis);
 
   // Solve the generalized eigenvalue problem A.x = lambda B.x
-  Eigen::GeneralizedSelfAdjointEigenSolver<DeMat> ges{hamiltonian,
-                                                      overlapMatrix};
+  const Eigen::GeneralizedSelfAdjointEigenSolver<DeMat> ges{hamiltonian,
+                                                            overlapMatrix};
 
   // Retrieve the eigenvalues and eigenvectors.
   const auto &eigenvalues = ges.eigenvalues();

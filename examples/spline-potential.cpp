@@ -44,23 +44,22 @@ static std::vector<Spline> setUpBasis(const support::Grid<data_t> &grid) {
 
 std::vector<Eigenspace> solveSEWithSplinePotential(Spline v) {
   // Get the basis.
-  std::vector<Spline> basis = setUpBasis(v.getSupport().getGrid());
+  const std::vector<Spline> basis = setUpBasis(v.getSupport().getGrid());
 
   // Hamiltonian operator -1/2 d^2/dx^2 + v(x)
-  const auto hamiltonOperator =
-      (static_cast<data_t>(-1) / 2) * operators::Dx<2>{} +
-      operators::SplineOperator{std::move(v)};
+  auto hamiltonOperator = (static_cast<data_t>(-1) / 2) * operators::Dx<2>{} +
+                          operators::SplineOperator{std::move(v)};
 
-  DeMat hamiltonian =
-      setUpSymmetricMatrix(integration::BilinearForm{hamiltonOperator}, basis);
+  const DeMat hamiltonian = setUpSymmetricMatrix(
+      integration::BilinearForm{std::move(hamiltonOperator)}, basis);
 
   // overlap matrix
-  DeMat overlapMatrix =
+  const DeMat overlapMatrix =
       setUpSymmetricMatrix(integration::ScalarProduct{}, basis);
 
   // Solve the generalized eigenvalue problem A.x = lambda B.x
-  Eigen::GeneralizedSelfAdjointEigenSolver<DeMat> ges{hamiltonian,
-                                                      overlapMatrix};
+  const Eigen::GeneralizedSelfAdjointEigenSolver<DeMat> ges{hamiltonian,
+                                                            overlapMatrix};
 
   // Retrieve the (real) eigenvalues and eigenvectors.
   const auto &eigenvalues = ges.eigenvalues();

@@ -48,18 +48,18 @@ static std::vector<Spline> setUpBasis() {
 
 std::vector<Eigenspace> solveHarmonicOscillator() {
   // Get the basis.
-  std::vector<Spline> basis = setUpBasis();
+  const std::vector<Spline> basis = setUpBasis();
 
-  DeMat hamiltonian =
+  const DeMat hamiltonian =
       setUpSymmetricMatrix(integration::BilinearForm{hamiltonOperator}, basis);
 
   // overlap matrix
-  DeMat overlapMatrix =
+  const DeMat overlapMatrix =
       setUpSymmetricMatrix(integration::ScalarProduct{}, basis);
 
   // Solve the generalized eigenvalue problem A.x = lambda B.x
-  Eigen::GeneralizedSelfAdjointEigenSolver<DeMat> ges{hamiltonian,
-                                                      overlapMatrix};
+  const Eigen::GeneralizedSelfAdjointEigenSolver<DeMat> ges{hamiltonian,
+                                                            overlapMatrix};
 
   // Retrieve the (real) eigenvalues and eigenvectors.
   const auto &eigenvalues = ges.eigenvalues();
