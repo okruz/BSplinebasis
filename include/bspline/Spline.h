@@ -77,15 +77,15 @@ class Spline {
     const auto begin = _support.begin();
     const auto it = std::lower_bound(begin, _support.end(), x);
 
-    int retval = std::distance(begin, it);
-    return std::max(0, retval - 1);
+    const int intervalEndIndex = std::distance(begin, it);
+    return std::max(0, intervalEndIndex - 1);
   };
 
   /**
    * Performs consistency checks on the internal data.
    */
   void checkValidity() const {
-    bool isValid =
+    const bool isValid =
         (!_support.containsIntervals() && _coefficients.size() == 0) ||
         (_support.size() >= 2 &&
          _coefficients.size() == _support.numberOfIntervals());
