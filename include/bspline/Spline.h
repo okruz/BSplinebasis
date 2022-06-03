@@ -6,6 +6,7 @@
 
 #include <algorithm>
 #include <array>
+#include <optional>
 #include <type_traits>
 #include <vector>
 
@@ -62,6 +63,9 @@ class Spline {
   /*! Coefficients of the polynomials on each interval. */
   std::vector<std::array<T, ARRAY_SIZE>> _coefficients;
 
+  using diff_t =
+      typename std::vector<std::array<T, ARRAY_SIZE>>::difference_type;
+
   /*!
    * Finds the interval in which x lies by binary search. Used during the
    * evaluation of the spline.
@@ -70,15 +74,20 @@ class Spline {
    * @return The index corresponding to the beginning of the interval which
    * contains x or -1 if x is not part of the spline's support.
    */
-  int findInterval(const T &x) const {
+  std::optional<diff_t> findInterval(const T &x) const {
     if (_support.size() < 2 || x > _support.back() || x < _support.front())
-      return -1;  // x is not part of the spline's support
+      return std::nullopt;  // x is not part of the spline's support
 
     const auto begin = _support.begin();
     const auto it = std::lower_bound(begin, _support.end(), x);
 
-    const int intervalEndIndex = std::distance(begin, it);
-    return std::max(0, intervalEndIndex - 1);
+    const diff_t intervalEndIndex = std::distance(begin, it);
+
+    if (intervalEndIndex > 0) {
+      return intervalEndIndex - 1;
+    } else {
+      return 0;
+    }
   };
 
   /**
@@ -156,19 +165,13 @@ class Spline {
    * support of the spline, zero is returned.
    */
   T operator()(const T &x) const {
-    int index = findInterval(x);
-    if (index < 0) return static_cast<T>(0);
-    const auto &coeffs = _coefficients[index];
-
-    // distance between x and the middlepoint of the interval
-    const T dx =
-        x - (_support[index + 1] + _support[index]) / static_cast<T>(2);
-    T xpot = static_cast<T>(1), result = static_cast<T>(0);
-    for (const T &c : coeffs) {
-      result += xpot * c;
-      xpot *= dx;
-    }
-    return result;
+    const auto intervalIndex = findInterval(x);
+    if (!intervalIndex) return static_cast<T>(0);
+    const T xm = (_support[intervalIndex.value() + 1] +
+                  _support[intervalIndex.value()]) /
+                 static_cast<T>(2);
+    return internal::evaluateInterval(x, _coefficients[intervalIndex.value()],
+                                      xm);
   };
 
   /*!

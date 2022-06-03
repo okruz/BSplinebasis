@@ -9,6 +9,7 @@
  * ########################################################################
  */
 
+#ifndef BSPLINE_DOXYGEN_IGNORE
 /*!
  * The methods in the internal namespace are internal helper method for this
  * library.
@@ -159,4 +160,5 @@ T binomialCoefficient(size_t n, size_t k) {
 
 }  // end namespace bspline::internal
 
+#endif  // BSPLINE_DOXYGEN_IGNORE
 #endif  // BSPLINE_MISC_H
