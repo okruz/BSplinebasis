@@ -53,6 +53,7 @@ struct Boundary {
   T value = static_cast<T>(0);
 };
 
+#ifndef BSPLINE_DOXYGEN_IGNORE
 namespace internal {
 /*!
  * Interface for a solver of linear equation system (LES) used to decouple the
@@ -134,6 +135,7 @@ std::array<Boundary<T>, order - 1> defaultBoundaries() {
 }  // end namespace internal
 
 using bspline::support::Support;
+#endif  // BSPLINE_DOXYGEN_IGNORE
 
 /*!
  * Interpolates the data given by x and y with a spline of order order. order-1
