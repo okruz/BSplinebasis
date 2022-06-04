@@ -86,11 +86,13 @@ class Spline {
   /**
    * Performs consistency checks on the internal data.
    */
-  void checkValidity() const {
+  void checkValidity(
+      const Support<T> &support,
+      const std::vector<std::array<T, ARRAY_SIZE>> &coefficients) const {
     const bool isValid =
-        (!_support.containsIntervals() && _coefficients.size() == 0) ||
-        (_support.size() >= 2 &&
-         _coefficients.size() == _support.numberOfIntervals());
+        (!support.containsIntervals() && coefficients.size() == 0) ||
+        (support.size() >= 2 &&
+         coefficients.size() == support.numberOfIntervals());
     if (!isValid) throw BSplineException(ErrorCode::INCONSISTENT_DATA);
   };
 
@@ -103,9 +105,9 @@ class Spline {
    */
   void setData(Support<T> support,
                std::vector<std::array<T, ARRAY_SIZE>> coefficients) {
+    checkValidity(support, coefficients);
     _support = std::move(support);
     _coefficients = std::move(coefficients);
-    checkValidity();
   };
 
  public:
@@ -128,7 +130,7 @@ class Spline {
   Spline(Support<T> support,
          std::vector<std::array<T, ARRAY_SIZE>> coefficients)
       : _support(std::move(support)), _coefficients(std::move(coefficients)) {
-    checkValidity();
+    checkValidity(_support, _coefficients);
   };
 
   /**
