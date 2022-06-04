@@ -44,11 +44,10 @@ std::array<T, size> make_array(T val) {
 template <typename T, size_t sizea, size_t sizeb>
 std::array<T, std::max(sizea, sizeb)> add(const std::array<T, sizea> &a,
                                           const std::array<T, sizeb> &b) {
-  static constexpr size_t NEW_ARRAY_SIZE = std::max(sizea, sizeb);
   if constexpr (sizeb > sizea) {
     return add(b, a);
   } else {
-    std::array<T, NEW_ARRAY_SIZE> ret = a;
+    std::array<T, sizea> ret = a;
     for (size_t i = 0; i < sizeb; i++) {
       ret[i] += b[i];
     }
@@ -72,8 +71,9 @@ std::array<T, sizeout> changearraysize(const std::array<T, sizein> &in) {
   if constexpr (sizeout == sizein)
     return in;
   else {
-    std::array<T, sizeout> ret = make_array<T, sizeout>(static_cast<T>(0));
+    std::array<T, sizeout> ret;
     for (size_t i = 0; i < sizein; i++) ret[i] = in[i];
+    for (size_t i = sizein; i < sizeout; i++) ret[i] = static_cast<T>(0);
     return ret;
   }
 }
