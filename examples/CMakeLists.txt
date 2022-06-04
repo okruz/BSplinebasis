@@ -20,4 +20,6 @@ if (Eigen3_FOUND)
   
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic -Werror")
   set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
+else()
+  message(WARNING "Eigen3 framework not found. Not building examples.")
 endif (Eigen3_FOUND)

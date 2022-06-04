@@ -1,4 +1,3 @@
-#define BOOST_TEST_MODULE SupportTest
 /*
  * ########################################################################
  * The contents of this file is free and unencumbered software released into the
@@ -8,7 +7,7 @@
 
 #include <bspline/support/Support.h>
 
-#include <boost/test/included/unit_test.hpp>
+#include <boost/test/unit_test.hpp>
 #include <boost/test/tools/floating_point_comparison.hpp>
 
 template <typename T>
@@ -107,8 +106,11 @@ void testSupport() {
   BOOST_TEST(s3.absoluteFromRelative(1) == 4);
 }
 
+
+BOOST_AUTO_TEST_SUITE(SupportTestSuite)
 BOOST_AUTO_TEST_CASE(TestSupport) {
   testSupport<float>();
   testSupport<double>();
   testSupport<long double>();
 }
+BOOST_AUTO_TEST_SUITE_END()

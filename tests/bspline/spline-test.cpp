@@ -1,4 +1,3 @@
-#define BOOST_TEST_MODULE SplineTest
 /*
  * ########################################################################
  * The contents of this file is free and unencumbered software released into the
@@ -11,7 +10,7 @@
 #include <bspline/integration/analytical.h>
 #include <bspline/integration/numerical.h>
 
-#include <boost/test/included/unit_test.hpp>
+#include <boost/test/unit_test.hpp>
 #include <boost/test/tools/floating_point_comparison.hpp>
 
 using bspline::BSplineGenerator;
@@ -75,31 +74,6 @@ void testIntegration(T tol) {
   }
 }
 
-BOOST_AUTO_TEST_CASE(TestIntegration) {
-  constexpr double TOL = 1.0e-15;
-  testIntegration<double, 2>(TOL);
-  testIntegration<double, 3>(TOL);
-  testIntegration<double, 4>(TOL);
-  testIntegration<double, 5>(TOL);
-  testIntegration<double, 6>(TOL);
-  testIntegration<double, 7>(TOL);
-  testIntegration<double, 8>(TOL);
-  testIntegration<double, 9>(TOL);
-  testIntegration<double, 10>(TOL);
-
-  if constexpr (sizeof(long double) != sizeof(double)) {
-    constexpr long double TOLL = 1.0e-18l;
-    testIntegration<long double, 2>(TOLL);
-    testIntegration<long double, 3>(TOLL);
-    testIntegration<long double, 4>(TOLL);
-    testIntegration<long double, 5>(TOLL);
-    testIntegration<long double, 6>(TOLL);
-    testIntegration<long double, 7>(TOLL);
-    testIntegration<long double, 8>(TOLL);
-    testIntegration<long double, 9>(TOLL);
-    testIntegration<long double, 10>(TOLL);
-  }
-}
 
 template <typename T, size_t order>
 T lc(T x, const std::vector<T> &coeffs,
@@ -187,6 +161,33 @@ void testArithmetic(T tol) {
   BOOST_TEST(static_cast<T>(1) == one(one.back()));
 }
 
+BOOST_AUTO_TEST_SUITE(SplineArithmeticTestSuite)
+BOOST_AUTO_TEST_CASE(TestIntegration) {
+  constexpr double TOL = 1.0e-15;
+  testIntegration<double, 2>(TOL);
+  testIntegration<double, 3>(TOL);
+  testIntegration<double, 4>(TOL);
+  testIntegration<double, 5>(TOL);
+  testIntegration<double, 6>(TOL);
+  testIntegration<double, 7>(TOL);
+  testIntegration<double, 8>(TOL);
+  testIntegration<double, 9>(TOL);
+  testIntegration<double, 10>(TOL);
+
+  if constexpr (sizeof(long double) != sizeof(double)) {
+    constexpr long double TOLL = 1.0e-18l;
+    testIntegration<long double, 2>(TOLL);
+    testIntegration<long double, 3>(TOLL);
+    testIntegration<long double, 4>(TOLL);
+    testIntegration<long double, 5>(TOLL);
+    testIntegration<long double, 6>(TOLL);
+    testIntegration<long double, 7>(TOLL);
+    testIntegration<long double, 8>(TOLL);
+    testIntegration<long double, 9>(TOLL);
+    testIntegration<long double, 10>(TOLL);
+  }
+}
+
 BOOST_AUTO_TEST_CASE(TestArithmetic) {
   constexpr double TOL = 1.0e-15;
   testArithmetic<double, 2>(TOL);
@@ -212,3 +213,4 @@ BOOST_AUTO_TEST_CASE(TestArithmetic) {
     testArithmetic<long double, 10>(TOLL);
   }
 }
+BOOST_AUTO_TEST_SUITE_END()

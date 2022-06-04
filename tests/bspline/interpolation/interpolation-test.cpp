@@ -1,4 +1,3 @@
-#define BOOST_TEST_MODULE SplineTest
 /*
  * ########################################################################
  * The contents of this file is free and unencumbered software released into the
@@ -9,9 +8,11 @@
 #include <bspline/interpolation/interpolation.h>
 #include <bspline/support/Support.h>
 
-#include <boost/test/included/unit_test.hpp>
+#include <boost/test/unit_test.hpp>
 #include <boost/test/tools/floating_point_comparison.hpp>
 
+
+BOOST_AUTO_TEST_SUITE(SplineInterpolationTestSuite)
 #ifdef BSPLINE_INTERPOLATION_USE_EIGEN
 template <typename T, size_t order>
 void testInterpolationEigen(T tol) {
@@ -72,3 +73,4 @@ BOOST_AUTO_TEST_CASE(TestInterpolationArmadillo) {
   testInterpolationArmadillo<4>(2.0e-14);
 }
 #endif
+BOOST_AUTO_TEST_SUITE_END()
