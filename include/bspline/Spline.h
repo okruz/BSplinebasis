@@ -477,9 +477,8 @@ inline Spline<T, order> operator*(const T &d, const Spline<T, order> &b) {
  * grids of all splines are not logically equivalent.
  */
 template <typename CoeffIter, typename SplineIter>
-decltype(auto) linearCombination(CoeffIter coeffsBegin, CoeffIter coeffsEnd,
-                                 SplineIter splinesBegin,
-                                 SplineIter splinesEnd) {
+auto linearCombination(CoeffIter coeffsBegin, CoeffIter coeffsEnd,
+                       SplineIter splinesBegin, SplineIter splinesEnd) {
   // The spline data type.
   using Spline = typename std::remove_cv_t<
       typename std::iterator_traits<SplineIter>::value_type>;
@@ -592,8 +591,8 @@ decltype(auto) linearCombination(CoeffIter coeffsBegin, CoeffIter coeffsEnd,
  * grids of all splines are not logically equivalent.
  */
 template <typename CoeffCollection, typename SplineCollection>
-decltype(auto) linearCombination(const CoeffCollection &coeffs,
-                                 const SplineCollection &splines) {
+auto linearCombination(const CoeffCollection &coeffs,
+                       const SplineCollection &splines) {
   return linearCombination(coeffs.begin(), coeffs.end(), splines.begin(),
                            splines.end());
 }
