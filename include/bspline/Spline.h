@@ -63,8 +63,8 @@ class Spline {
   /*! Coefficients of the polynomials on each interval. */
   std::vector<std::array<T, ARRAY_SIZE>> _coefficients;
 
-  using diff_t =
-      typename std::vector<std::array<T, ARRAY_SIZE>>::difference_type;
+  // Signed integer type.
+  using diff_t = typename Support<T>::const_iterator::difference_type;
 
   /*!
    * Finds the interval in which x lies by binary search. Used during the
@@ -82,12 +82,7 @@ class Spline {
     const auto it = std::lower_bound(begin, _support.end(), x);
 
     const diff_t intervalEndIndex = std::distance(begin, it);
-
-    if (intervalEndIndex > 0) {
-      return intervalEndIndex - 1;
-    } else {
-      return 0;
-    }
+    return std::max<diff_t>(0, intervalEndIndex - 1);
   };
 
   /**
@@ -166,12 +161,13 @@ class Spline {
    */
   T operator()(const T &x) const {
     const auto intervalIndex = findInterval(x);
+
     if (!intervalIndex) return static_cast<T>(0);
-    const T xm = (_support[intervalIndex.value() + 1] +
-                  _support[intervalIndex.value()]) /
+
+    const T xm = (_support[*intervalIndex + 1] + _support[*intervalIndex]) /
                  static_cast<T>(2);
-    return internal::evaluateInterval(x, _coefficients[intervalIndex.value()],
-                                      xm);
+
+    return internal::evaluateInterval(x, _coefficients[*intervalIndex], xm);
   };
 
   /*!
