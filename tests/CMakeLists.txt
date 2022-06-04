@@ -23,8 +23,7 @@ if (Boost_unit_test_framework_FOUND)
     )
 
     if (ARMADILLO_FOUND)                                     
-      target_link_libraries(test armadillo)
-      target_include_directories(test PUBLIC ${ARMADILLO_INCLUDE_DIRS})
+      target_link_libraries(test ${ARMADILLO_LIBRARIES})
       target_compile_definitions(test PUBLIC 
              BSPLINE_INTERPOLATION_USE_ARMADILLO
       )
