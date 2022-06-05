@@ -329,8 +329,8 @@ class Spline {
     for (size_t i = 0; i < nintervals; i++) {
       const auto ai = newSupport.absoluteFromRelative(i);
 
-      auto thisRelIndex = _support.relativeFromAbsolute(ai).value();
-      auto aRelIndex = a.getSupport().relativeFromAbsolute(ai).value();
+      auto thisRelIndex = _support.intervalIndexFromAbsolute(ai).value();
+      auto aRelIndex = a.getSupport().intervalIndexFromAbsolute(ai).value();
 
       const auto &thiscoeffs = _coefficients[thisRelIndex];
       const auto &acoeffs = a.getCoefficients()[aRelIndex];
@@ -372,15 +372,14 @@ class Spline {
       if (thisRelIndex && !aRelIndex) {
         ncoefficients[i] =
             internal::changearraysize<T, order + 1, NEW_ARRAY_SIZE>(
-                _coefficients[thisRelIndex.value()]);
+                _coefficients[*thisRelIndex]);
       } else if (aRelIndex && !thisRelIndex) {
         ncoefficients[i] =
             internal::changearraysize<T, ordera + 1, NEW_ARRAY_SIZE>(
-                a.getCoefficients()[aRelIndex.value()]);
+                a.getCoefficients()[*aRelIndex]);
       } else if (thisRelIndex && aRelIndex) {
         ncoefficients[i] = internal::add<T, ordera + 1, order + 1>(
-            a.getCoefficients()[aRelIndex.value()],
-            _coefficients[thisRelIndex.value()]);
+            a.getCoefficients()[*aRelIndex], _coefficients[*thisRelIndex]);
       } else {
         ncoefficients[i] =
             internal::make_array<T, NEW_ARRAY_SIZE>(static_cast<T>(0));
