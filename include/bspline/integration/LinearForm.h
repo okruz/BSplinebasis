@@ -53,7 +53,7 @@ class LinearForm {
    *
    * @param o The operator acting on the spline.
    */
-  explicit LinearForm(O o) : _o(o){};
+  explicit LinearForm(O o) : _o(std::move(o)){};
 
   /*!
    * Default constructor constructing a LinearForm.
@@ -71,12 +71,10 @@ class LinearForm {
   T evaluate(const Spline<T, order> &a) const {
     const size_t nintervals = a.getSupport().numberOfIntervals();
 
-    if (nintervals == 0) return static_cast<T>(0);  // no overlap
-
     T result = static_cast<T>(0);
 
     for (size_t i = 0; i < nintervals; i++) {
-      const size_t absIndex = a.getSupport().absoulteFromRelative(i);
+      const size_t absIndex = a.getSupport().absoluteFromRelative(i);
       const T dxhalf =
           (a.getSupport()[i + 1] - a.getSupport()[i]) / static_cast<T>(2);
 

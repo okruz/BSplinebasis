@@ -10,8 +10,8 @@
 #include <bspline/integration/analytical.h>
 #include <bspline/integration/numerical.h>
 
-#include <boost/test/unit_test.hpp>
 #include <boost/test/tools/floating_point_comparison.hpp>
+#include <boost/test/unit_test.hpp>
 
 using bspline::BSplineGenerator;
 using bspline::Spline;
@@ -53,6 +53,7 @@ void testIntegration(T tol) {
   integration::BilinearForm bfdx{operators::Dx<1>{}};
   integration::BilinearForm bfdx2{operators::Dx<2>{}};
   integration::BilinearForm bfx2_dx2{operators::X<2>{} * operators::Dx<2>{}};
+  integration::LinearForm lf{};
 
   for (const auto &s1 : splines) {
     for (const auto &s2 : splines) {
@@ -71,9 +72,10 @@ void testIntegration(T tol) {
       BOOST_CHECK_SMALL(bfx.evaluate(s1, s2) - integrate<2 * order>(fx, s1, s2),
                         static_cast<T>(10) * tol);
     }
+    BOOST_CHECK_SMALL(lf.evaluate(s1) - integrate<T>(s1), tol);
+    BOOST_CHECK_SMALL(lf.evaluate(s1 * s1) - sp.evaluate(s1, s1), tol);
   }
 }
-
 
 template <typename T, size_t order>
 T lc(T x, const std::vector<T> &coeffs,
