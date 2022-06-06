@@ -103,9 +103,10 @@ class Support {
   bool empty() const { return (_startIndex == _endIndex); };
 
   /*!
-   * Checks whether the support contains any intervals. Returns true if the
-   * support is empty or point-like. The number of intervals is the number of
-   * grid points minus one (size() - 1).
+   * Checks whether the support contains any intervals. The number of intervals
+   * is the number of grid points minus one (size() - 1).
+   *
+   * @returns false if the support is empty or point-like, true otherwise.
    */
   bool containsIntervals() const { return (size() > 1); };
 
