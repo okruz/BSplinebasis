@@ -37,8 +37,7 @@ Spline interpolateFunction(std::vector<data_t> gridPoints,
  * @return A vector of BSplines representing the basis.
  */
 static std::vector<Spline> setUpBasis(const support::Grid<data_t> &grid) {
-  const std::vector<data_t> knotsVector{grid.begin(), grid.end()};
-  BSplineGenerator gen(knotsVector, grid);
+  BSplineGenerator gen{std::vector<data_t>{grid.begin(), grid.end()}, grid};
   return gen.template generateBSplines<SPLINE_ORDER + 1>();
 }
 

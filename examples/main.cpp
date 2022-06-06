@@ -20,9 +20,9 @@ using namespace bspline::examples::harmonic_oscillator;
 using namespace bspline::examples::spline_potential;
 using namespace bspline::examples;
 
-void harmonicOscillator() {
+static void harmonicOscillator() {
   std::cout.precision(std::numeric_limits<data_t>::max_digits10);
-  std::vector<Eigenspace> harmonicOscillator = solveHarmonicOscillator();
+  const std::vector<Eigenspace> harmonicOscillator = solveHarmonicOscillator();
 
   std::cout << "Harmonic Oscillator eigenvalues:\n\n";
   std::cout << std::setw(2) << "n"
@@ -53,7 +53,7 @@ void harmonicOscillator() {
   }
 }
 
-void splinePotential() {
+static void splinePotential() {
   std::cout.precision(std::numeric_limits<data_t>::max_digits10);
   std::vector<data_t> gridPoints;
   for (int i = -100; i <= 100; i++) {
@@ -64,7 +64,7 @@ void splinePotential() {
     return (exp(x) + exp(-x)) / static_cast<data_t>(2) - static_cast<data_t>(1);
   });
 
-  std::vector<Eigenspace> eigenSpaces = solveSEWithSplinePotential(v);
+  const std::vector<Eigenspace> eigenSpaces = solveSEWithSplinePotential(v);
 
   std::cout << "Spline potential eigenvalues:\n\n";
   std::cout << std::setw(2) << "n"
@@ -90,9 +90,9 @@ void splinePotential() {
   }
 }
 
-void radialHydrogen() {
+static void radialHydrogen() {
   std::cout.precision(std::numeric_limits<data_t>::max_digits10);
-  std::vector<Eigenspace> hydrogen = solveRadialHydrogen();
+  const std::vector<Eigenspace> hydrogen = solveRadialHydrogen();
 
   std::cout << "Hydrogen (L=" << L << ") eigenvalues:\n\n";
   std::cout << std::setw(2) << "n"

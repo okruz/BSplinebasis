@@ -1,4 +1,5 @@
 find_package(Eigen3)
+find_package(BLAS)
 
 if (Eigen3_FOUND)
   add_executable(examples 
@@ -14,6 +15,13 @@ if (Eigen3_FOUND)
     ${CMAKE_CURRENT_SOURCE_DIR}
   )
   target_link_libraries(examples Eigen3::Eigen)
+
+  if (BLAS_FOUND)
+    target_link_libraries(examples ${BLAS_LIBRARIES})
+    target_compile_definitions(examples PUBLIC 
+      EIGEN_USE_BLAS
+    )
+  endif(BLAS_FOUND)
 
   # Might be needed, if you want to use boost multiprecision types as data_t in the examples.
   # target_include_directories(examples PUBLIC /usr/include/eigen3)
