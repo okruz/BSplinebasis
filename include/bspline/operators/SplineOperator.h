@@ -82,7 +82,7 @@ class SplineOperator : public Operator {
 
     if (relativeIndex) {
       // The interval is part of the Spline's support.
-      const auto &coeffs = _s.getCoefficients()[relativeIndex.value()];
+      const auto &coeffs = _s.getCoefficients()[*relativeIndex];
 
       for (size_t i = 0; i < input.size(); i++) {
         for (size_t j = 0; j < coeffs.size(); j++) {
