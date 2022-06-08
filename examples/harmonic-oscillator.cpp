@@ -67,14 +67,13 @@ std::vector<Eigenspace> solveHarmonicOscillator() {
 
   std::vector<Eigenspace> ret;
   ret.reserve(10);
-  // Return the eienvalues and eigenfunctions correspondig to the ten lowest
+  // Return the eigenvalues and eigenfunctions corresponding to the ten lowest
   // eigenvalues.
   for (size_t i = 0; i < 10; i++) {
     const auto eigenvalue = eigenvalues(i);
     const auto eigenvector = toStdVector(eigenvectors.col(i));
-    auto wavefunction = bspline::linearCombination(eigenvector, basis);
 
-    ret.push_back({eigenvalue, std::move(wavefunction)});
+    ret.push_back({eigenvalue, linearCombination(eigenvector, basis)});
   }
   return ret;
 }
