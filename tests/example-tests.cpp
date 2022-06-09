@@ -17,11 +17,12 @@ BOOST_AUTO_TEST_SUITE(ExampleTestSuite)
 BOOST_AUTO_TEST_CASE(HarmonicOscillatorTest) {
   const auto eigenSpaces =
       bspline::examples::harmonic_oscillator::solveHarmonicOscillator();
-  static constexpr data_t TOL = 5.0e-12;
+  static constexpr data_t TOL = 1.0e-12;
 
   for (size_t i = 0; i < eigenSpaces.size(); i++) {
+    const data_t eigenvalue = eigenSpaces.at(i).energy;
     const data_t expected = static_cast<data_t>(2 * i + 1) / 2;
-    BOOST_CHECK_SMALL(eigenSpaces.at(i).energy - expected, TOL);
+    BOOST_CHECK_SMALL((eigenvalue - expected) / abs(expected), TOL);
   }
 }
 
@@ -30,9 +31,12 @@ BOOST_AUTO_TEST_CASE(HydrogenTest) {
   static constexpr data_t TOL = 5.0e-12;
 
   for (size_t i = 0; i < eigenSpaces.size(); i++) {
+    const data_t eigenvalue = eigenSpaces.at(i).energy;
+
     const size_t n = i + 2;
     const data_t expected = static_cast<data_t>(-1) / (n * n);
-    BOOST_CHECK_SMALL(eigenSpaces.at(i).energy - expected, TOL);
+
+    BOOST_CHECK_SMALL((eigenvalue - expected) / abs(expected), TOL);
   }
 }
 
