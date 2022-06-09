@@ -30,9 +30,17 @@ if (Boost_unit_test_framework_FOUND)
     endif (ARMADILLO_FOUND)
   
     if (Eigen3_FOUND)
-      target_link_libraries(test Eigen3::Eigen)
+      target_link_libraries(test
+          Eigen3::Eigen
+          examples_objects
+      )
+
       target_compile_definitions(test PUBLIC 
              BSPLINE_INTERPOLATION_USE_EIGEN
+      )
+
+      target_sources(test PRIVATE
+          example-tests.cpp
       )
     endif (Eigen3_FOUND)
   endif (ARMADILLO_FOUND OR Eigen3_FOUND)

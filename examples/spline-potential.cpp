@@ -8,7 +8,6 @@
 #include "spline-potential.h"
 
 #include <bspline/BSplineGenerator.h>
-#define BSPLINE_INTERPOLATION_USE_EIGEN
 #include <bspline/interpolation/interpolation.h>
 
 #include <algorithm>
