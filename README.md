@@ -19,7 +19,19 @@ For a case study on the numerical properties of a BSpline basis, see [here](read
 * They are not orthogonal. Using the BSplines as basis functions in eigenvalue problems will usually result in generalized, algebraic eigenvalue problems of the kind A x = lambda B x (still self-adjoint, though).
 
 ## Usage of the library
-**TODO**
+### Generating BSplines
+The first step to generate a basis set of BSplines is to define your knots. From the knots, a set of BSplines can be generated using the `bspline::BSplineGenerator`.
+```C++
+  #include <bspline/Core.h>
+  
+  static constexpr size_t SPLINE_ORDER = 3;
+  const std::vector<double> knots{0.0, 1.0, 2.0, 3.0, 4.0, 5.0};
+  bspline::BSplineGenerator gen(knots);
+  const std::vector<bspline::Spline<double, SPLINE_ORDER>> = gen.template generateBSplines<SPLINE_ORDER + 1>();
+```
+
+The corresponding splines are shown in the following graphic.
+![Third order BSplines.](readme/splines_normal.png?raw=true "Third order BSplines.")
 
 
 ## Dependencies
