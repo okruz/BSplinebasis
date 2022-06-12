@@ -6,7 +6,7 @@ all you have to do is to add this folder to the include path.
 ### Advantages of using BSplines
 BSplines have a number of advantagous properties for the use as basis functions. Some of these advantages are:
 
-- They are very versatile. They can be adapted to many different problems.
+- They are very versatile and can be adapted to many different problems.
 - The parametrization is very intuitive.
 - They have a finite support, ensuring that each spline overlaps only with a few neighbour splines. They can therefore be used in sparse-matrix scenarios.
 - Many integrals can easily be evaluated analytically which makes the calculations quite fast and reasonably accurate.
@@ -18,7 +18,7 @@ For a case study on the numerical properties of a BSpline basis, see [here](read
 - They are only finitely many times continously differentiable. Make sure to also read the `Cautions` section.
 - They are not orthogonal. Using the BSplines as basis functions in eigenvalue problems will usually result in generalized, algebraic eigenvalue problems of the kind A x = lambda B x (still self-adjoint, though).
 
-## Usage
+## Usage of the library
 **TODO**
 
 
@@ -40,4 +40,6 @@ The operators implemented in `include/bspline/operators/` assume that the result
 
 
 ## Docs
-Docs can be found [here](https://okruz.github.io/BSplinebasis/).
+The Doxygen docs can be found [here](https://okruz.github.io/BSplinebasis/).
+
+If you are not familiar with BSplines, a good place to start is the [Wikipedia article](https://en.wikipedia.org/wiki/B-spline).
