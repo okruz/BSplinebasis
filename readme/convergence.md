@@ -10,3 +10,5 @@ The image shows the relative deviations between the anlytically known and the nu
 The horizontal lines mark the epsilons for the two data types, respectively. All calculations where performed on a quadratic grid stretching over `-15 <= x <= 15` and using `n` basis functions.
 
 ![Accuracy](accuracy.png?raw=true "Accuracy")
+
+For the corresponding code, see `readme/accuracy/`.
