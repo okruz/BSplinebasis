@@ -1,6 +1,6 @@
 # Convergence and numerical properties
 ## Case study: The quantum mechanical harmonic oscillator
-This document analyses the numerical properties of the solution to the quantum mechanical harmonic oscillator `(-1/2 d^2/dx^2 + 1/2 x^2) f(x) = E f(x)`. The eigenergies `E_n` are known analytically as `E_n = n + 1/2`, where `n = 0,1,...`. 
+This document analyses the numerical properties of the solution to the quantum mechanical harmonic oscillator `(-1/2 d^2/dx^2 + 1/2 x^2) f(x) = E f(x)`. The eigenenergies `E_n` are known analytically as `E_n = n + 1/2`, where `n = 0,1,...`. 
 
 The image shows the relative deviations between the analytically known and the numerically calculated eigenenergies of the lowest three states `n = 0,1,2`, using different spline orders and different grids. The color encodes the data type:
 

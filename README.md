@@ -4,18 +4,18 @@ all you have to do is to add this folder to the include path.
 
 ## Why BSplines?
 ### Advantages of using BSplines
-BSplines have a number of advantagous properties for the use as basis functions. Some of these advantages are:
+BSplines have a number of advantageous properties for the use as basis functions. Some of these advantages are:
 
 * They are very versatile and can be adapted to many different problems.
 * The parametrization is very intuitive.
-* They have a finite support, ensuring that each spline overlaps only with a few neighbour splines. They can therefore be used in sparse-matrix scenarios.
+* They have a finite support, ensuring that each spline overlaps only with a few neighbor splines. They can therefore be used in sparse-matrix scenarios.
 * Many integrals can easily be evaluated analytically which makes the calculations quite fast and reasonably accurate.
 
 For a case study on the numerical properties of a BSpline basis, see [here](readme/convergence.md).
 
 ### Disadvantages of using BSplines
 
-* They are only finitely many times continously differentiable. Please make sure to also read the [Cautions](#cautions) section.
+* They are only finitely many times continuously differentiable. Please make sure to also read the [Cautions](#cautions) section.
 * They are not orthogonal. Using the BSplines as basis functions in eigenvalue problems will usually result in generalized, algebraic eigenvalue problems of the kind `A x = lambda B x` (still self-adjoint, though).
 
 ## Usage of the library
@@ -40,7 +40,7 @@ const std::vector<double> knots{0.0, 0.0, 0.0, 0.0, 1.0, 2.0, 3.0, 4.0, 5.0};
 the following BSplines are generated:
 ![Third order BSplines with reduced continuity.](readme/splines_non_continuous.png?raw=true "Third order BSplines with reduced continuity.")
 
-The three red splines were added. They are, respectively, continous up to the first derivative, the zeroth derivative and not continous at all at `x=0`. This approach can be used to bake boundary conditions into the basis. For additional information, the user is referred to the literature on BSplines, e.g. the [Wikipedia article](https://en.wikipedia.org/wiki/B-spline).
+The three red splines were added. They are, respectively, continuous up to the first derivative, the zeroth derivative and not continuous at all at `x=0`. This approach can be used to bake boundary conditions into the basis. For additional information, the user is referred to the literature on BSplines, e.g. the [Wikipedia article](https://en.wikipedia.org/wiki/B-spline).
 
 ### Evaluation of matrix elements
 The library provides a class `bspline::integration::BilinearForm` for the evaluation of many common matrix elements. To evaluate the matrix element of the Hamiltonian of the harmonic oscillator, you can use
@@ -74,11 +74,11 @@ The **core library** does not have any additional dependencies beyond a C++ comp
 
 Furthermore, the tests and examples require `Eigen` to compile and the tests are based on `Boost::test`.
 
-The tests are currently only run regularly on an x64 linux plattform using gcc and clang. The main library should be usable with every standard-conformant C++ compiler supporting C++17. If you are using the library on a different plattform, I would be happy to receive your feedback.
+The tests are currently only run regularly on an x64 linux platform using gcc and clang. The main library should be usable with every standard-conformant C++ compiler supporting C++17. If you are using the library on a different platform, I would be happy to receive your feedback.
 
 
 ## Cautions
-The operators implemented in `include/bspline/operators/` assume that the result of their application to a spline can again be represented as a spline. As each spline is only finitely many times continously differentiable, this is not true for every application of a derivative operator to a spline. If the spline is not sufficiently many times continously differentiable, Dirac delta distributions may arise during the application, which are not handled at all by the library. It is left up to the user of the library to make sure that the forementioned assumption holds true.
+The operators implemented in `include/bspline/operators/` assume that the result of their application to a spline can again be represented as a spline. As each spline is only finitely many times continuously differentiable, this is not true for every application of a derivative operator to a spline. If the spline is not sufficiently many times continuously differentiable, Dirac delta distributions may arise during the application, which are not handled at all by the library. It is left up to the user of the library to make sure that the aforementioned assumption holds true.
 
 
 ## Docs
