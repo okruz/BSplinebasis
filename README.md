@@ -35,7 +35,7 @@ The corresponding splines are shown in the following graphic. The splines are th
 
 The overall continuity properties of the basis can be controlled by adding certain knots repeatedly. Every additional insert of a knot reduces the continuity at the corresponding grid point by one order. Using, e.g., the knots vector
 ```C++
-const std::vector<double> knotsNonContinous{0.0, 0.0, 0.0, 0.0, 1.0, 2.0, 3.0, 4.0, 5.0};
+const std::vector<double> knots{0.0, 0.0, 0.0, 0.0, 1.0, 2.0, 3.0, 4.0, 5.0};
 ```
 the following BSplines are generated:
 ![Third order BSplines with reduced continuity.](readme/splines_non_continuous.png?raw=true "Third order BSplines with reduced continuity.")

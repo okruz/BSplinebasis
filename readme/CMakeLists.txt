@@ -42,7 +42,7 @@ add_custom_target(generation-plots
   COMMAND
     python3 ${CMAKE_CURRENT_SOURCE_DIR}/generation/plot.py ${CMAKE_CURRENT_BINARY_DIR}/splines_normal.txt ${CMAKE_CURRENT_SOURCE_DIR}/splines_normal.png
   COMMAND
-    python3 ${CMAKE_CURRENT_SOURCE_DIR}/generation/plot.py ${CMAKE_CURRENT_BINARY_DIR}/splines_non_continuous.txt ${CMAKE_CURRENT_SOURCE_DIR}/splines_non_contiuous.png 3
+    python3 ${CMAKE_CURRENT_SOURCE_DIR}/generation/plot.py ${CMAKE_CURRENT_BINARY_DIR}/splines_non_continuous.txt ${CMAKE_CURRENT_SOURCE_DIR}/splines_non_continuous.png 3
   DEPENDS generation
 )
 
