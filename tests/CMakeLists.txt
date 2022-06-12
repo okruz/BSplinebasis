@@ -11,9 +11,11 @@ if (Boost_unit_test_framework_FOUND)
   )
 
   set_property(TARGET test PROPERTY CXX_STANDARD 17)
-  target_include_directories(test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../include)
   target_include_directories(test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-  target_link_libraries(test ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
+  target_link_libraries(test 
+       ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY}
+       main_library
+  )
   add_test(test test)
 
   if (ARMADILLO_FOUND OR Eigen3_FOUND)

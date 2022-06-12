@@ -11,12 +11,14 @@ if (Eigen3_FOUND)
       BSPLINE_INTERPOLATION_USE_EIGEN
   )
 
-  target_link_libraries(examples_objects PUBLIC Eigen3::Eigen)
+  target_link_libraries(examples_objects PUBLIC
+      Eigen3::Eigen
+      main_library
+  )
   set_property(TARGET examples_objects PROPERTY CXX_STANDARD 17)
 
 
   target_include_directories(examples_objects PUBLIC
-    ${CMAKE_CURRENT_SOURCE_DIR}/../include
     ${CMAKE_CURRENT_SOURCE_DIR}
   )
 

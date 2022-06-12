@@ -1,5 +1,6 @@
 *.depend
 *.layout
+*.kate-swp
 *~
 **/bin/**
 **/obj/**
