@@ -53,15 +53,15 @@ for i, ax in enumerate(fig.axes):
     ax.axhline(y=double_eps, color='r', linestyle='-')
     ax.axhline(y=quad_eps, color='b', linestyle='-')
     
-plot(folder + '/double_2_quadratic.txt', axs[0,0], 'ro:')
-plot(folder + '/double_5_quadratic.txt', axs[0,1], 'ro:')
-plot(folder + '/double_10_quadratic.txt', axs[1,0], 'ro:')
-plot(folder + '/double_15_quadratic.txt', axs[1,1], 'ro:')
+plot(folder + '/double_2.txt', axs[0,0], 'ro:')
+plot(folder + '/double_5.txt', axs[0,1], 'ro:')
+plot(folder + '/double_10.txt', axs[1,0], 'ro:')
+plot(folder + '/double_15.txt', axs[1,1], 'ro:')
 
-plot(folder + '/quad_2_quadratic.txt', axs[0,0], 'b^:')
-plot(folder + '/quad_5_quadratic.txt', axs[0,1], 'b^:')
-plot(folder + '/quad_10_quadratic.txt', axs[1,0], 'b^:')
-plot(folder + '/quad_15_quadratic.txt', axs[1,1], 'b^:')
+plot(folder + '/quad_2.txt', axs[0,0], 'b^:')
+plot(folder + '/quad_5.txt', axs[0,1], 'b^:')
+plot(folder + '/quad_10.txt', axs[1,0], 'b^:')
+plot(folder + '/quad_15.txt', axs[1,1], 'b^:')
 
 
 
