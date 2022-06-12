@@ -15,8 +15,8 @@ For a case study on the numerical properties of a BSpline basis, see [here](read
 
 ### Disadvantages of using BSplines
 
-* They are only finitely many times continously differentiable. Make sure to also read the `Cautions` section.
-* They are not orthogonal. Using the BSplines as basis functions in eigenvalue problems will usually result in generalized, algebraic eigenvalue problems of the kind A x = lambda B x (still self-adjoint, though).
+* They are only finitely many times continously differentiable. Please make sure to also read the [Cautions](#cautions) section.
+* They are not orthogonal. Using the BSplines as basis functions in eigenvalue problems will usually result in generalized, algebraic eigenvalue problems of the kind `A x = lambda B x` (still self-adjoint, though).
 
 ## Usage of the library
 ### Generating BSplines
@@ -40,9 +40,29 @@ const std::vector<double> knots{0.0, 0.0, 0.0, 0.0, 1.0, 2.0, 3.0, 4.0, 5.0};
 the following BSplines are generated:
 ![Third order BSplines with reduced continuity.](readme/splines_non_continuous.png?raw=true "Third order BSplines with reduced continuity.")
 
-The three red splines were added. They are, respectively, continous up to the first derivative, the zeroth derivative and not continous at all at `x=0`. This approach can be used to bake boundary conditions into the basis.
+The three red splines were added. They are, respectively, continous up to the first derivative, the zeroth derivative and not continous at all at `x=0`. This approach can be used to bake boundary conditions into the basis. For additional information, the user is referred to the literature on BSplines, e.g. the [Wikipedia article](https://en.wikipedia.org/wiki/B-spline).
 
+### Evaluation of matrix elements
+The library provides a class `bspline::integration::BilinearForm` for the evaluation of many common matrix elements. To evaluate the matrix element of the Hamiltonian of the harmonic oscillator, you can use
+```C++
+#include <bspline/Core.h>
 
+using namespace bspline::operators;
+using namespace bspline::integration;
+
+const auto hamiltonOperator =  0.5 * (-Dx<2>{} + X<2>{});
+
+const auto bilinearForm = BilinearForm(hamiltonOperator);
+const double matrixElement = bilinearForm.evaluate(spline1, spline2);
+
+// Typedef for BilinearForm(UnityOperator{});
+const ScalarProduct scalarProduct;
+const double overlapMatrixElement = scalarProduct.evaluate(spline1, spline2);
+```
+
+A full implementation of the solution of the harmonic oscillator and the radial hydrogen problem can be found in the folder `examples/`.
+
+**Note:** There is also a `bspline::integration::LinearForm`.
 
 ## Dependencies
 The **core library** does not have any additional dependencies beyond a C++ compiler supporting C++17. Everything that is directly or indirectly included by `include/bspline/Core.h` is considered part of the core library. Parts that are not part of the core library are:
