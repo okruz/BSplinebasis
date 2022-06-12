@@ -22,16 +22,26 @@ For a case study on the numerical properties of a BSpline basis, see [here](read
 ### Generating BSplines
 The first step to generate a basis set of BSplines is to define your knots. From the knots, a set of BSplines can be generated using the `bspline::BSplineGenerator`.
 ```C++
-  #include <bspline/Core.h>
-  
-  static constexpr size_t SPLINE_ORDER = 3;
-  const std::vector<double> knots{0.0, 1.0, 2.0, 3.0, 4.0, 5.0};
-  bspline::BSplineGenerator gen(knots);
-  const std::vector<bspline::Spline<double, SPLINE_ORDER>> = gen.template generateBSplines<SPLINE_ORDER + 1>();
+#include <bspline/Core.h>
+
+static constexpr size_t SPLINE_ORDER = 3;
+const std::vector<double> knots{0.0, 1.0, 2.0, 3.0, 4.0, 5.0};
+bspline::BSplineGenerator gen(knots);
+const std::vector<bspline::Spline<double, SPLINE_ORDER>> = gen.template generateBSplines<SPLINE_ORDER + 1>();
 ```
 
-The corresponding splines are shown in the following graphic.
+The corresponding splines are shown in the following graphic. The splines are third order splines and two times continuously differentiable.
 ![Third order BSplines.](readme/splines_normal.png?raw=true "Third order BSplines.")
+
+The overall continuity properties of the basis can be controlled by adding certain knots repeatedly. Every additional insert of a knot reduces the continuity at the corresponding grid point by one order. Using, e.g., the knots vector
+```C++
+const std::vector<double> knotsNonContinous{0.0, 0.0, 0.0, 0.0, 1.0, 2.0, 3.0, 4.0, 5.0};
+```
+the following BSplines are generated:
+![Third order BSplines with reduced continuity.](readme/splines_non_continuous.png?raw=true "Third order BSplines with reduced continuity.")
+
+The three red splines were added. They are, respectively, continous up to the first derivative, the zeroth derivative and not continous at all at `x=0`. This approach can be used to bake boundary conditions into the basis.
+
 
 
 ## Dependencies
