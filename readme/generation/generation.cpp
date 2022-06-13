@@ -16,7 +16,10 @@ using namespace bspline;
 static constexpr size_t order = 3;
 
 static void printSplines(const std::string &fileName,
-                         const std::vector<Spline<double, order>> &splines) {
+                         const std::vector<double> &knots) {
+  const auto splines =
+      BSplineGenerator(knots).template generateBSplines<order + 1>();
+
   std::ofstream o(fileName.c_str());
   o.precision(std::numeric_limits<double>::max_digits10);
 
@@ -35,16 +38,14 @@ int main(int argc, char **argv) {
               << argv[0] << " <output-folder>." << std::endl;
     return 1;
   }
+
   const std::string folder{argv[1]};
   const std::vector<double> knotsNormal{0.0, 1.0, 2.0, 3.0, 4.0, 5.0};
-  const std::vector<double> knotsNonContinous{0.0, 0.0, 0.0, 0.0, 1.0,
-                                              2.0, 3.0, 4.0, 5.0};
+  const std::vector<double> knotsNonContinuous{0.0, 0.0, 0.0, 0.0, 1.0,
+                                               2.0, 3.0, 4.0, 5.0};
 
-  printSplines(
-      folder + "/splines_normal.txt",
-      BSplineGenerator(knotsNormal).template generateBSplines<order + 1>());
-  printSplines(folder + "/splines_non_continuous.txt",
-               BSplineGenerator(knotsNonContinous)
-                   .template generateBSplines<order + 1>());
+  printSplines(folder + "/splines_normal.txt", knotsNormal);
+  printSplines(folder + "/splines_non_continuous.txt", knotsNonContinuous);
+
   return 0;
 }
