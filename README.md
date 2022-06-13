@@ -20,7 +20,7 @@ For a case study on the numerical properties of a BSpline basis, see [here](read
 
 ## Usage of the library
 ### Generating BSplines
-The first step to generate a basis set of BSplines is to define your knots. From the knots, a set of BSplines can be generated using the `bspline::BSplineGenerator`.
+The first step to generate a basis set of BSplines is to define the knots vector. From the knots, a set of BSplines can be generated using the `bspline::BSplineGenerator` or the convenience method `bspline::generateBSplines()` based on it.
 ```C++
 #include <bspline/Core.h>
 
