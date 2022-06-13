@@ -175,5 +175,18 @@ class BSplineGenerator {
   }
 };
 
+/*!
+ * Convenience method to generate a set of BSplines.
+ *
+ * @param knots The knots vector to generate the splines from.
+ * @tparam order The order of the BSplines to generate.
+ * @tparam T The data type of the knots vector and the generated BSplines.
+ */
+template <size_t order, typename T>
+std::vector<Spline<T, order>> generateBSplines(std::vector<T> knots) {
+  BSplineGenerator gen(std::move(knots));
+  return gen.template generateBSplines<order + 1>();
+}
+
 }  // namespace bspline
 #endif  // BSPLINE_BSPLINEGENERATOR_H

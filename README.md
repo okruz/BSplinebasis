@@ -24,15 +24,16 @@ The first step to generate a basis set of BSplines is to define your knots. From
 ```C++
 #include <bspline/Core.h>
 
+using namespace bspline;
+
 static constexpr size_t SPLINE_ORDER = 3;
-using Spline = bspline::Spline<double, SPLINE_ORDER>;
+using Spline = Spline<double, SPLINE_ORDER>;
 
 // Define knots vector.
 const std::vector<double> knots{0.0, 1.0, 2.0, 3.0, 4.0, 5.0};
 
 // Generate Splines.
-bspline::BSplineGenerator gen(knots);
-const std::vector<Spline> = gen.template generateBSplines<SPLINE_ORDER + 1>();
+const std::vector<Spline> = generateBSplines<SPLINE_ORDER>(knots);
 ```
 
 The corresponding splines are shown in the following graphic. The splines are third order splines and two times continuously differentiable.
