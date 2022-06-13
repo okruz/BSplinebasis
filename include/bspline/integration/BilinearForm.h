@@ -138,7 +138,7 @@ class BilinearForm {
  * @tparam O2 Type of the operator applied to the second spline.
  */
 template <typename O2>
-BilinearForm(O2 o2) -> BilinearForm<operators::UnityOperator, O2>;
+BilinearForm(O2 o2) -> BilinearForm<operators::IdentityOperator, O2>;
 
 /*!
  * Deduction guide for a bilinear form which corresponds to the scalar product.
@@ -147,7 +147,7 @@ BilinearForm(O2 o2) -> BilinearForm<operators::UnityOperator, O2>;
  * \,\,b(x)\ \f]
  */
 BilinearForm()
-    ->BilinearForm<operators::UnityOperator, operators::UnityOperator>;
+    ->BilinearForm<operators::IdentityOperator, operators::IdentityOperator>;
 
 /*!
  * Short hand for a scalar product \f[\left\langle a,\, b\right\rangle =
@@ -155,7 +155,7 @@ BilinearForm()
  * \mathrm{d}x~a(x) \,\,b(x).\ \f]
  */
 using ScalarProduct =
-    BilinearForm<operators::UnityOperator, operators::UnityOperator>;
+    BilinearForm<operators::IdentityOperator, operators::IdentityOperator>;
 
 }  // namespace bspline::integration
 #endif  // BSPLINE_INTEGRATION_BILINEARFORM_H

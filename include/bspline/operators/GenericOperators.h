@@ -75,12 +75,12 @@ decltype(auto) transformSpline(const O &op, const Spline<T, order> &spline) {
 // #######################################################################
 
 // #######################################################################
-// ########################## UnityOperator ##############################
+// ########################## IdentityOperator ##############################
 
 /*!
- * Represents the unity operator.
+ * Represents the identity operator.
  */
-class UnityOperator : public Operator {
+class IdentityOperator : public Operator {
  public:
   /*!
    * Returns the order of the output spline for a given input order.

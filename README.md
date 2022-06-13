@@ -62,7 +62,7 @@ const auto hamiltonOperator =  0.5 * (-Dx<2>{} + X<2>{});
 const auto bilinearForm = BilinearForm(hamiltonOperator);
 const double matrixElement = bilinearForm.evaluate(spline1, spline2);
 
-// Typedef for BilinearForm(UnityOperator{});
+// Typedef for BilinearForm(IdentityOperator{});
 const ScalarProduct scalarProduct;
 const double overlapMatrixElement = scalarProduct.evaluate(spline1, spline2);
 ```
