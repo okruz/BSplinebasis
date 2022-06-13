@@ -25,9 +25,14 @@ The first step to generate a basis set of BSplines is to define your knots. From
 #include <bspline/Core.h>
 
 static constexpr size_t SPLINE_ORDER = 3;
+using Spline = bspline::Spline<double, SPLINE_ORDER>;
+
+// Define knots vector.
 const std::vector<double> knots{0.0, 1.0, 2.0, 3.0, 4.0, 5.0};
+
+// Generate Splines.
 bspline::BSplineGenerator gen(knots);
-const std::vector<bspline::Spline<double, SPLINE_ORDER>> = gen.template generateBSplines<SPLINE_ORDER + 1>();
+const std::vector<Spline> = gen.template generateBSplines<SPLINE_ORDER + 1>();
 ```
 
 The corresponding splines are shown in the following graphic. The splines are third order splines and two times continuously differentiable.
@@ -46,9 +51,12 @@ The three red splines were added. They are, respectively, continuous up to the f
 The library provides a class `bspline::integration::BilinearForm` for the evaluation of many common matrix elements. To evaluate the matrix element of the Hamiltonian of the harmonic oscillator, you can use
 ```C++
 #include <bspline/Core.h>
-
 using namespace bspline::operators;
 using namespace bspline::integration;
+
+
+// [...] Generate spline1 and spline2.
+
 
 const auto hamiltonOperator =  0.5 * (-Dx<2>{} + X<2>{});
 
