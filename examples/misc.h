@@ -32,7 +32,7 @@ using data_t = double;
 
 using DeMat = Eigen::Matrix<data_t, Eigen::Dynamic, Eigen::Dynamic>;
 
-constexpr size_t SPLINE_ORDER = 5;
+constexpr size_t SPLINE_ORDER = 10;
 
 using Spline = bspline::Spline<data_t, SPLINE_ORDER>;
 

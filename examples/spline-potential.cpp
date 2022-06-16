@@ -17,8 +17,8 @@ namespace bspline::examples::spline_potential {
 
 using namespace bspline;
 
-Spline interpolateFunction(std::vector<data_t> gridPoints,
-                           const std::function<data_t(data_t)> &func) {
+PSpline interpolateFunction(std::vector<data_t> gridPoints,
+                            const std::function<data_t(data_t)> &func) {
   support::Support<data_t> support{Grid<data_t>{std::move(gridPoints)},
                                    support::Construction::WHOLE_GRID};
   std::vector<data_t> y;
@@ -26,7 +26,7 @@ Spline interpolateFunction(std::vector<data_t> gridPoints,
   for (const auto x : support) {
     y.push_back(func(x));
   }
-  return interpolation::interpolate_using_eigen<data_t, SPLINE_ORDER>(
+  return interpolation::interpolate_using_eigen<data_t, PSpline::spline_order>(
       std::move(support), y);
 }
 
@@ -40,7 +40,7 @@ static std::vector<Spline> setUpBasis(const support::Grid<data_t> &grid) {
   return gen.template generateBSplines<SPLINE_ORDER + 1>();
 }
 
-std::vector<Eigenspace> solveSEWithSplinePotential(Spline v) {
+std::vector<Eigenspace> solveSEWithSplinePotential(PSpline v) {
   // Get the basis.
   const std::vector<Spline> basis = setUpBasis(v.getSupport().getGrid());
 
