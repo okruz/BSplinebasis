@@ -57,7 +57,7 @@ class ScalarMultiplication : public Operator {
    *
    * @param s The scalar to be multiplied.
    */
-  ScalarMultiplication(S s) : _s(s), _o(UnityOperator{}){};
+  ScalarMultiplication(S s) : _s(s), _o(IdentityOperator{}){};
 
   /*!
    * Returns the order of the output spline for a given input order.
@@ -109,7 +109,7 @@ class ScalarMultiplication : public Operator {
  * @tparam S The type of the scalar.
  */
 template <typename S>
-ScalarMultiplication(S s) -> ScalarMultiplication<S, UnityOperator>;
+ScalarMultiplication(S s) -> ScalarMultiplication<S, IdentityOperator>;
 
 /*!
  * The scalar multiplication operator for an operator.

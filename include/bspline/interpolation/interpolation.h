@@ -303,7 +303,7 @@ bspline::Spline<double, order> interpolate_using_armadillo(
     Support<double> x, const std::vector<double> &y,
     const std::array<Boundary<double>, order - 1> boundaries =
         internal::defaultBoundaries<double, order>()) {
-  class ArmadilloSolver : public internal::ISolver<double> {
+  class ArmadilloSolver final : public internal::ISolver<double> {
    private:
     arma::mat _M;
     arma::vec _b, _x;
@@ -312,11 +312,11 @@ bspline::Spline<double, order> interpolate_using_armadillo(
     ArmadilloSolver(size_t problemsize)
         : _M(arma::mat(problemsize, problemsize, arma::fill::zeros)),
           _b(arma::vec(problemsize, arma::fill::zeros)){};
-    virtual ~ArmadilloSolver() = default;
-    virtual double &M(size_t i, size_t j) override { return _M(i, j); };
-    virtual double &b(size_t i) override { return _b(i); };
-    virtual void solve() override { _x = arma::solve(_M, _b); };
-    virtual double &x(size_t i) override { return _x(i); };
+    ~ArmadilloSolver() override = default;
+    double &M(size_t i, size_t j) override { return _M(i, j); };
+    double &b(size_t i) override { return _b(i); };
+    void solve() override { _x = arma::solve(_M, _b); };
+    double &x(size_t i) override { return _x(i); };
   };
 
   return interpolate<double, order, ArmadilloSolver>(std::move(x), y,
@@ -345,7 +345,7 @@ bspline::Spline<T, order> interpolate_using_eigen(
   using DeMat = Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic>;
   using DeVec = Eigen::Matrix<T, Eigen::Dynamic, 1>;
 
-  class EigenSolver : public internal::ISolver<T> {
+  class EigenSolver final : public internal::ISolver<T> {
    private:
     DeMat _M;
     DeVec _b, _x;
@@ -354,11 +354,11 @@ bspline::Spline<T, order> interpolate_using_eigen(
     EigenSolver(size_t problemsize)
         : _M(DeMat::Zero(problemsize, problemsize)),
           _b(DeVec::Zero(problemsize)){};
-    virtual ~EigenSolver() = default;
-    virtual T &M(size_t i, size_t j) override { return _M(i, j); };
-    virtual T &b(size_t i) override { return _b(i); };
-    virtual void solve() override { _x = _M.colPivHouseholderQr().solve(_b); };
-    virtual T &x(size_t i) override { return _x(i); };
+    ~EigenSolver() override = default;
+    T &M(size_t i, size_t j) override { return _M(i, j); };
+    T &b(size_t i) override { return _b(i); };
+    void solve() override { _x = _M.colPivHouseholderQr().solve(_b); };
+    T &x(size_t i) override { return _x(i); };
   };
 
   return interpolate<T, order, EigenSolver>(std::move(x), y, boundaries);

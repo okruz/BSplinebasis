@@ -92,7 +92,7 @@ class LinearForm {
  * spline \f[\left\langle
  * a\right\rangle=\int\limits_{-\infty}^{\infty}\mathrm{d}x~a(x).\f]
  */
-LinearForm()->LinearForm<operators::UnityOperator>;
+LinearForm()->LinearForm<operators::IdentityOperator>;
 
 }  // namespace bspline::integration
 #endif  // BSPLINE_INTEGRATION_LINEARFORM_H

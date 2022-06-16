@@ -68,8 +68,7 @@ static std::vector<data_t> setUpKnotsVector() {
  * @return A vector of BSplines representing the basis.
  */
 static std::vector<Spline> setUpBasis() {
-  BSplineGenerator gen(setUpKnotsVector());
-  return gen.template generateBSplines<SPLINE_ORDER + 1>();
+  return generateBSplines<SPLINE_ORDER>(setUpKnotsVector());
 }
 
 std::vector<Eigenspace> solveRadialHydrogen() {
