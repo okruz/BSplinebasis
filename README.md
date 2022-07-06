@@ -59,7 +59,7 @@ using namespace bspline::integration;
 
 const auto hamiltonOperator =  0.5 * (-Dx<2>{} + X<2>{});
 
-const auto bilinearForm = BilinearForm(hamiltonOperator);
+const BilinearForm bilinearForm{hamiltonOperator};
 const double matrixElement = bilinearForm.evaluate(spline1, spline2);
 
 // Typedef for BilinearForm(IdentityOperator{});
