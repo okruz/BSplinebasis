@@ -57,8 +57,7 @@ class Spline {
  private:
   /*! Number of coefficients per interval. */
   static constexpr size_t ARRAY_SIZE = order + 1;
-  /*! The support of this spline, represented by N+1 grid
-                            points. */
+  /*! The support of this spline. */
   Support<T> _support;
   /*! Coefficients of the polynomials on each interval. */
   std::vector<std::array<T, ARRAY_SIZE>> _coefficients;
@@ -158,6 +157,7 @@ class Spline {
    *
    * @param x Point at which to evaluate the spline. If x is outside of the
    * support of the spline, zero is returned.
+   * @returns The value of the spline at point x.
    */
   T operator()(const T &x) const {
     const auto intervalIndex = findInterval(x);
@@ -191,6 +191,8 @@ class Spline {
    *
    * @param m2 Other spline against which to check.
    * @tparam order2 Order of spline m2.
+   * @returns True if the intersection of the supports of the two splines is not
+   * empty or point-like.
    */
   template <size_t order2>
   bool checkOverlap(const Spline<T, order2> &m2) const {
@@ -205,6 +207,8 @@ class Spline {
    * Checks whether this spline returns zero for all x. Can be the case, either
    * if the support contains no intervals (i.e. the vector intervals is empty)
    * or if all coefficients are zero.
+   * @returns True if the evaluation of the spline returns zero for all input
+   * values.
    */
   bool isZero() const {
     static const T ZERO = static_cast<T>(0);
@@ -224,6 +228,7 @@ class Spline {
    * Scalar-division operator. Divides this spline by the scalar d.
    *
    * @param d Scalar by which to divide this spline.
+   * @returns A new, scaled spline.
    */
   Spline<T, order> operator/(const T &d) const {
     return (*this) * (static_cast<T>(1) / d);
@@ -233,6 +238,7 @@ class Spline {
    * Scalar-multiplication operator. Multiplies this spline with the scalar d.
    *
    * @param d Scalar by which to multiply this spline.
+   * @returns A new, scaled spline.
    */
   Spline<T, order> operator*(const T &d) const {
     Spline<T, order> ret(*this);
@@ -249,6 +255,7 @@ class Spline {
    * scalar d in-place.
    *
    * @param d Scalar by which to multiply this spline.
+   * @returns A reference to this spline.
    */
   Spline<T, order> &operator*=(const T &d) {
     for (auto &cs : _coefficients) {
@@ -264,6 +271,7 @@ class Spline {
    * in-place.
    *
    * @param d Scalar by which to divide this spline.
+   * @returns A reference to this spline.
    */
   Spline<T, order> &operator/=(const T &d) {
     (*this) *= (static_cast<T>(1) / d);
@@ -272,6 +280,7 @@ class Spline {
 
   /*!
    * Unary minus operator.
+   * @returns A new, scaled spline.
    */
   Spline<T, order> operator-() const { return (*this) * static_cast<T>(-1); };
 
@@ -282,6 +291,7 @@ class Spline {
    *
    * @param a Spline to be assigned.
    * @tparam ordera Order of spline a.
+   * @returns A reference to this spline.
    */
   template <size_t ordera>
   Spline<T, order> &operator=(const Spline<T, ordera> &a) {
@@ -310,6 +320,8 @@ class Spline {
    *
    * @param a Spline to be multiplied with this spline.
    * @tparam ordera Order of spline a.
+   * @throws BSplineException If the two splines are defined on different grids.
+   * @returns A new spline representing the product of this spline and spline a.
    */
   template <size_t ordera>
   Spline<T, order + ordera> operator*(const Spline<T, ordera> &a) const {
@@ -351,6 +363,8 @@ class Spline {
    *
    * @param a Spline to be added.
    * @tparam ordera Order of spline a.
+   * @throws BSplineException If the two splines are defined on different grids.
+   * @returns A new spline representing the sum of this spline and spline a.
    */
   template <size_t ordera>
   Spline<T, std::max(order, ordera)> operator+(
@@ -396,6 +410,8 @@ class Spline {
    *
    * @param a Spline to be added.
    * @tparam ordera Order of spline a.
+   * @throws BSplineException If the two splines are defined on different grids.
+   * @returns A reference to this spline.
    */
   template <size_t ordera>
   Spline<T, order> &operator+=(const Spline<T, ordera> &a) {
@@ -414,6 +430,8 @@ class Spline {
    *
    * @param a Spline to be subtracted.
    * @tparam ordera Order of spline a.
+   * @throws BSplineException If the two splines are defined on different grids.
+   * @returns A reference to this spline.
    */
   template <size_t ordera>
   Spline<T, order> &operator-=(const Spline<T, ordera> &a) {
@@ -426,6 +444,9 @@ class Spline {
    *
    * @param a Spline to be subtracted.
    * @tparam ordera Order of spline a.
+   * @throws BSplineException If the two splines are defined on different grids.
+   * @returns A new spline representing the difference of this spline and spline
+   * a.
    */
   template <size_t ordera>
   Spline<T, std::max(order, ordera)> operator-(
@@ -451,6 +472,7 @@ Spline(Support<T> support, std::vector<std::array<T, ARRAY_SIZE>> coefficients)
  * @param b Spline to be multiplied.
  * @tparam T Datatype of spline and scalar.
  * @tparam order Order of the spline.
+ * @returns A new, scaled spline.
  */
 template <typename T, size_t order>
 inline Spline<T, order> operator*(const T &d, const Spline<T, order> &b) {

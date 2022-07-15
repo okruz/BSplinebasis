@@ -64,6 +64,8 @@ class BSplineGenerator {
    * @param knots The knots, the BSplines shall be generated on.
    * @param grid The Grid instance to use. Must be logically equivalent to the
    * Grid generated from knots. If that is not the case, an exception is thrown.
+   * @throws BSplineException If the grid derived from the knots vector is not
+   * logically equivalent to the Grid grid.
    */
   BSplineGenerator(std::vector<T> knots, Grid<T> grid)
       : _grid(std::move(grid)), _knots(std::move(knots)) {
@@ -83,6 +85,10 @@ class BSplineGenerator {
    * Generates all BSplines with respect to the knots vector.
    * @tparam k Number of the coefficients per interval for the spline (i.e.
    * order of the spline plus one).
+   * @throws BSplineException if the knots vector does not contain enough
+   * entries to generate a spline of the requested order.
+   * @throws BSplineException If the knots vector is not sorted.
+   * @returns The BSplines of order k - 1 defined on the knots vector.
    */
   template <size_t k>
   std::vector<Spline<T, k - 1>> generateBSplines() const {
@@ -118,6 +124,8 @@ class BSplineGenerator {
    * @param splineip1 The spline of the next lower order at index i + 1.
    * @tparam k Number of the coefficients per interval for the spline (i.e.
    * order of the spline plus one).
+   * @returns The BSpline of next higher order, derived from the two lower order
+   * splines via the recursion relation.
    */
   template <size_t k>
   Spline<T, k - 1> applyRecursionRelation(
@@ -147,7 +155,10 @@ class BSplineGenerator {
   }
 
   /*!
-   * Generates all zeroth order splines.
+   * Generates all zeroth order BSplines.
+   *
+   * @throws BSplineException If the knots vector is not sorted.
+   * @returns The zeroth order BSplines defined on the knots vector.
    */
   std::vector<Spline<T, 0>> generateZerothOrderSplines() const {
     std::vector<Spline<T, 0>> ret;
@@ -181,6 +192,10 @@ class BSplineGenerator {
  * @param knots The knots vector to generate the splines from.
  * @tparam order The order of the BSplines to generate.
  * @tparam T The data type of the knots vector and the generated BSplines.
+ * @throws BSplineException if the knots vector does not contain enough entries
+ * to generate a spline of the requested order.
+ * @throws BSplineException If the knots vector is not sorted.
+ * @returns The BSplines of order order defined on the knots vector.
  */
 template <size_t order, typename T>
 std::vector<Spline<T, order>> generateBSplines(std::vector<T> knots) {
