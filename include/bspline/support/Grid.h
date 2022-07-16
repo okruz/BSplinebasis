@@ -58,7 +58,7 @@ class Grid {
    * @param end The iterator referencing the element behind the last element to
    * be copied into the grid.
    * @tparam Iter The type of the two iterators.
-   * @throws BSplineException if the grid is not empty but contains only a
+   * @throws BSplineException If the grid is not empty but contains only a
    * single element, or if the elements are not in steadily increasing order.
    */
   template <typename Iter>
@@ -69,7 +69,7 @@ class Grid {
    * Constructs a grid from a std::vector.
    *
    * @param v The input vector.
-   * @throws BSplineException if the grid is not empty but contains only a
+   * @throws BSplineException If the grid is not empty but contains only a
    * single element, or if the elements are not in steadily increasing order.
    */
   explicit Grid(std::vector<T> v)
@@ -79,7 +79,7 @@ class Grid {
    * Constructs a grid from a std::initializer_list.
    *
    * @param v The input initializer_list.
-   * @throws BSplineException if the grid is not empty but contains only a
+   * @throws BSplineException If the grid is not empty but contains only a
    * single element, or if the elements are not in steadily increasing order.
    */
   explicit Grid(const std::initializer_list<T> &v) : Grid(v.begin(), v.end()){};
@@ -88,7 +88,7 @@ class Grid {
    * Constructs a grid from a std::shared_ptr<const std::vector<T>>.
    *
    * @param data A shared pointer to the grid elements.
-   * @throws BSplineException if the grid is not empty but contains only a
+   * @throws BSplineException If the grid is not empty but contains only a
    * single element, or if the elements are not in steadily increasing order.
    */
   explicit Grid(std::shared_ptr<const std::vector<T>> data)
@@ -161,7 +161,7 @@ class Grid {
    *
    * @param i The index of the element to be returned.
    * @returns A reference to the ith element.
-   * @throws BSplineException if the access is out of bounds.
+   * @throws BSplineException If the access is out of bounds.
    */
   const T &at(size_t i) const {
     if (i >= size()) {
@@ -174,7 +174,7 @@ class Grid {
    * Returns a reference to the first element of the grid.
    *
    * @returns A reference to the first element.
-   * @throws BSplineException if the grid is empty.
+   * @throws BSplineException If the grid is empty.
    */
   const T &front() const {
     if (empty()) {
@@ -187,7 +187,7 @@ class Grid {
    * Returns a reference to the last element of the grid.
    *
    * @returns A reference to the last element.
-   * @throws BSplineException if the grid is empty.
+   * @throws BSplineException If the grid is empty.
    */
   const T &back() const {
     if (empty()) {
@@ -214,7 +214,7 @@ class Grid {
    * Returns the index corresponding to the element x.
    *
    * @param x The element to be searched for.
-   * @throws BSplineException if the element could not be found.
+   * @throws BSplineException If the element could not be found.
    */
   size_t findElement(const T &x) const {
     const auto beginIt = begin();

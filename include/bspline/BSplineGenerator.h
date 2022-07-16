@@ -42,6 +42,8 @@ class BSplineGenerator {
    * Bsplines at this grid point (see e.g. [1]).
    *
    * @param knots The vector of knots.
+   * @throws BSplineException If the knots are not in increasing order.
+   * @returns The grid generated from the knots vector.
    */
   Grid<T> generateGrid(std::vector<T> knots) {
     const auto endIterator = std::unique(knots.begin(), knots.end());
@@ -54,16 +56,18 @@ class BSplineGenerator {
    * Constructor generating the grid from the knots vector.
    *
    * @param knots The knots, the BSplines shall be generated on.
+   * @throws BSplineException If the knots are not in increasing order.
    */
   explicit BSplineGenerator(std::vector<T> knots)
       : _grid(generateGrid(knots)), _knots(std::move(knots)){};
 
   /*!
-   * Constructor generating the grid from the knots vector.
+   * Constructor using the provided grid instance.
    *
    * @param knots The knots, the BSplines shall be generated on.
    * @param grid The Grid instance to use. Must be logically equivalent to the
    * Grid generated from knots. If that is not the case, an exception is thrown.
+   * @throws BSplineException If the knots are not in increasing order.
    * @throws BSplineException If the grid derived from the knots vector is not
    * logically equivalent to the Grid grid.
    */
@@ -85,7 +89,7 @@ class BSplineGenerator {
    * Generates all BSplines with respect to the knots vector.
    * @tparam k Number of the coefficients per interval for the spline (i.e.
    * order of the spline plus one).
-   * @throws BSplineException if the knots vector does not contain enough
+   * @throws BSplineException If the knots vector does not contain enough
    * entries to generate a spline of the requested order.
    * @throws BSplineException If the knots vector is not sorted.
    * @returns The BSplines of order k - 1 defined on the knots vector.
@@ -192,7 +196,7 @@ class BSplineGenerator {
  * @param knots The knots vector to generate the splines from.
  * @tparam order The order of the BSplines to generate.
  * @tparam T The data type of the knots vector and the generated BSplines.
- * @throws BSplineException if the knots vector does not contain enough entries
+ * @throws BSplineException If the knots vector does not contain enough entries
  * to generate a spline of the requested order.
  * @throws BSplineException If the knots vector is not sorted.
  * @returns The BSplines of order order defined on the knots vector.
