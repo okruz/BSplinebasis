@@ -38,22 +38,10 @@ class OperatorProduct : public Operator {
    * Returns the order of the output spline for a given input order.
    *
    * @param inputOrder the order of the input spline.
+   * @returns The output spline-order for a given input input order.
    */
   static constexpr size_t outputOrder(size_t inputOrder) {
     return O1::outputOrder(O2::outputOrder(inputOrder));
-  }
-
-  /*!
-   * Applies the operator to a spline.
-   *
-   * @param spline The spline to apply the operator to.
-   * @tparam T The datatype of the splines.
-   * @tparam order The order of the input spline.
-   */
-  template <typename T, size_t order>
-  Spline<T, outputOrder(order)> operator*(
-      const Spline<T, order> &spline) const {
-    return transformSpline(*this, spline);
   }
 
   /*!
@@ -66,6 +54,8 @@ class OperatorProduct : public Operator {
    * the global grid.
    * @tparam T The datatype of the coefficients.
    * @tparam size The size of the input array, i. e. the number of coefficients.
+   * @returns The polyomial coefficients arising from the application of this
+   * operator to the input coefficients.
    */
   template <typename T, size_t size>
   std::array<T, outputOrder(size - 1) + 1> transform(
@@ -143,6 +133,7 @@ class OperatorSum : public Operator {
    * @tparam T The datatype of the arrays.
    * @tparam sizea The size of a.
    * @tparam sizeb The size of b.
+   * @returns The sum of the two input arrays.
    */
   template <typename T, size_t sizea, size_t sizeb>
   static std::array<T, std::max(sizea, sizeb)> &add(std::array<T, sizea> &a,
@@ -170,22 +161,10 @@ class OperatorSum : public Operator {
    * Returns the order of the output spline for a given input order.
    *
    * @param inputOrder the order of the input spline.
+   * @returns The output spline-order for a given input input order.
    */
   static constexpr size_t outputOrder(size_t inputOrder) {
     return std::max(O1::outputOrder(inputOrder), O2::outputOrder(inputOrder));
-  }
-
-  /*!
-   * Applies the operator to a spline.
-   *
-   * @param spline The spline to apply the operator to.
-   * @tparam T The datatype of the splines.
-   * @tparam order The order of the input spline.
-   */
-  template <typename T, size_t order>
-  Spline<T, outputOrder(order)> operator*(
-      const Spline<T, order> &spline) const {
-    return transformSpline(*this, spline);
   }
 
   /*!
@@ -198,6 +177,8 @@ class OperatorSum : public Operator {
    * the global grid.
    * @tparam T The datatype of the coefficients.
    * @tparam size The size of the input array, i. e. the number of coefficients.
+   * @returns The polyomial coefficients arising from the application of this
+   * operator to the input coefficients.
    */
   template <typename T, size_t size>
   std::array<T, outputOrder(size - 1) + 1> transform(
@@ -224,6 +205,7 @@ class OperatorSum : public Operator {
  * @param o2 The second operator.
  * @tparam O1 The type of the first operator.
  * @tparam O2 The type of the second operator.
+ * @returns The sum of the two input operators.
  */
 template <typename O1, typename O2,
           std::enable_if_t<are_operators_v<O1, O2>, bool> = true>
@@ -239,6 +221,7 @@ auto operator+(O1 &&o1, O2 &&o2) {
  * @param o2 The second operator.
  * @tparam O1 The type of the first operator.
  * @tparam O2 The type of the second operator.
+ * @returns the difference of the two input operators.
  */
 template <typename O1, typename O2,
           std::enable_if_t<are_operators_v<O1, O2>, bool> = true>

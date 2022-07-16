@@ -93,12 +93,16 @@ class Support {
         _endIndex((constr == Construction::EMPTY) ? 0 : _grid.size()){};
 
   /*!
-   * Returns the number of grid points contained in the support.
+   * Returns the number of grid points contained in this support.
+   *
+   * @returns The number of grid points contained in this support.
    */
   size_t size() const { return _endIndex - _startIndex; };
 
   /*!
    * Checks whether the number of grid points contained in the support is zero.
+   *
+   * @returns True if this support contains no grid points, false otherwise.
    */
   bool empty() const { return (_startIndex == _endIndex); };
 
@@ -117,6 +121,8 @@ class Support {
    * contained in this support, std::nullopt is returned.
    *
    * @param index The AbsoluteIndex referring to an interval on the global grid.
+   * @returns The relative index if the corresponding grid point is part of this
+   * support, std::nullopt else.
    */
   std::optional<RelativeIndex> relativeFromAbsolute(AbsoluteIndex index) const {
     if (index >= _startIndex && index < _endIndex)
@@ -131,6 +137,8 @@ class Support {
    * contained in this support, std::nullopt is returned.
    *
    * @param index The AbsoluteIndex referring to an interval on the global grid.
+   * @returns The relative index if the corresponding interval is part of this
+   * support, std::nullopt else.
    */
   std::optional<RelativeIndex> intervalIndexFromAbsolute(
       AbsoluteIndex index) const {
@@ -145,6 +153,9 @@ class Support {
    * support.
    *
    * @param index The AbsoluteIndex referring to an interval on the global grid.
+   * @throws BSplineException If the relative index is out of bounds for this
+   * support.
+   * @returns The absolute index corresponding to the relative index.
    */
   AbsoluteIndex absoluteFromRelative(RelativeIndex index) const {
     if (index >= size()) {
@@ -155,6 +166,8 @@ class Support {
 
   /*!
    * Returns the number of intervals represented by this support.
+   *
+   * @returns The number of intervals contained in this support.
    */
   size_t numberOfIntervals() const {
     const size_t si = size();
@@ -166,16 +179,22 @@ class Support {
 
   /*!
    * Returns the global grid.
+   *
+   * @returns A reference to the global grid.
    */
   const Grid<T> &getGrid() const { return _grid; };
 
   /*!
    * Returns the _startIndex.
+   *
+   * @returns The start index.
    */
   AbsoluteIndex getStartIndex() const { return _startIndex; };
 
   /*!
    * Returns the _endIndex.
+   *
+   * @returns The end index.
    */
   AbsoluteIndex getEndIndex() const { return _endIndex; }
 
@@ -184,6 +203,8 @@ class Support {
    * bounds checks.
    *
    * @param index Index of the element.
+   * @returns A reference to the element represented by index. Bounds are not
+   * checked.
    */
   const T &operator[](RelativeIndex index) const {
     return _grid[_startIndex + index];
@@ -194,6 +215,9 @@ class Support {
    * and throws exception in case of out-of-bounds access.
    *
    * @param index Index of the element.
+   * @throws BSplineException If the access is out of bounds for this support.
+   * @returns A reference to the element represented by index. Bounds are not
+   * checked.
    */
   const T &at(RelativeIndex index) const {
     if (_startIndex + index >= _endIndex) {
@@ -204,6 +228,9 @@ class Support {
 
   /*!
    * Returns a reference to the first grid point that is part of the support.
+   *
+   * @throws BSplineException If this support is empty.
+   * @returns A reference to the first grid point contained in this support.
    */
   const T &front() const {
     if (empty()) {
@@ -214,6 +241,10 @@ class Support {
 
   /*!
    * Returns a reference to the last grid point that is part of the support.
+   *
+   * @throws BSplineException If this support is empty.
+   * @returns A reference to the last grid point contained in this support.
+
    */
   const T &back() const {
     if (empty()) {
@@ -241,6 +272,8 @@ class Support {
    * logically equivalent.
    *
    * @param s Support to check against.
+   * @returns True if the support s is defined on a logically equivalent grid,
+   * false otherwise.
    */
   bool hasSameGrid(const Support &s) const { return _grid == s._grid; };
 
@@ -250,6 +283,8 @@ class Support {
    * number line.
    *
    * @param s Support to compare against.
+   * @returns True it the two supports are logically equivalent, false
+   * otherwise.
    */
   bool operator==(const Support &s) const {
     return hasSameGrid(s) &&
@@ -264,6 +299,9 @@ class Support {
    * both supports.
    *
    * @param s The Support to calculate the union with.
+   * @throws BSplineException If the two supports are defined on (logically)
+   * different grids.
+   * @returns The support representing the union of the two supports.
    */
   Support calcUnion(const Support &s) const {
     if (!hasSameGrid(s)) {
@@ -286,6 +324,9 @@ class Support {
    * Calculates the intersection of the two Supports.
    *
    * @param s The Support to calculate the intersection with.
+   * @throws BSplineException If the two supports are defined on (logically)
+   * different grids.
+   * @returns The support representing the intersection of the two supports.
    */
   Support calcIntersection(const Support &s) const {
     if (!hasSameGrid(s)) {

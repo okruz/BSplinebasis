@@ -33,6 +33,7 @@ class LinearForm {
    * @param dxhalf The half width of the interval.
    * @tparam T The datatype of the polynomials.
    * @tparam size The number of coefficients of the polynomial.
+   * @returns The value of the linear form on the one interval.
    */
   template <typename T, size_t size>
   static T evaluateInterval(const std::array<T, size> &a, const T &dxhalf) {
@@ -66,6 +67,7 @@ class LinearForm {
    * @param a The  spline.
    * @tparam T The datatype of the splines.
    * @tparam order The order of the spline.
+   * @returns The value of the linear form for the given spline.
    */
   template <typename T, size_t order>
   T evaluate(const Spline<T, order> &a) const {

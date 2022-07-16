@@ -28,6 +28,11 @@ class Grid {
   /*! The gridpoints. */
   std::shared_ptr<const std::vector<T>> _data;
 
+  /*!
+   * Checks whether grid points are steadily increasing.
+   *
+   * @returns True if the grid points are steadily increasing, false otherwise.
+   */
   bool isSteadilyIncreasing() const {
     for (size_t i = 1; i < _data->size(); i++) {
       if ((*_data)[i - 1] >= (*_data)[i]) {
@@ -123,18 +128,22 @@ class Grid {
 
   /*!
    * Returns the number of elements of the grid.
+   *
+   * @returns The number of grid points.
    */
   size_t size() const { return _data->size(); };
 
   /*!
    * Returns a shared pointer to the elements of this grid.
+   *
+   * @returns A shared pointer to the elements of this grid.
    */
   std::shared_ptr<const std::vector<T>> getData() const { return _data; };
 
   /*!
    * Checks whether the grids holds any elements.
    *
-   * @returns Returns true if this grid holds no element.
+   * @returns True if this grid holds no element.
    */
   bool empty() const { return _data->empty(); };
 

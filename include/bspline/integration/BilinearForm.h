@@ -45,6 +45,7 @@ class BilinearForm {
    * @tparam T The datatype of the polynomials.
    * @tparam sizea The number of coefficients of the first polynomial.
    * @tparam sizeb The number of coefficients of the second polynomial.
+   * @returns The value of the bilinear form on the one interval.
    */
   template <typename T, size_t sizea, size_t sizeb>
   static T evaluateInterval(const std::array<T, sizea> &a,
@@ -98,6 +99,8 @@ class BilinearForm {
    * @tparam T The datatype of the splines.
    * @tparam ordera The order of the first (left) spline.
    * @tparam orderb The order of the second (right) spline.
+   * @throws BSplineException If the two splines are defined on different grids.
+   * @returns The value of the bilinear form for the two splines.
    */
   template <typename T, size_t ordera, size_t orderb>
   T evaluate(const Spline<T, ordera> &a, const Spline<T, orderb> &b) const {

@@ -23,6 +23,7 @@ namespace bspline::internal {
  * @param val Value to initialise the members of the array with.
  * @tparam T Datatype of the array.
  * @tparam size Size of the array.
+ * @returns An array filled with the value val.
  */
 template <typename T, size_t size>
 std::array<T, size> make_array(T val) {
@@ -40,6 +41,7 @@ std::array<T, size> make_array(T val) {
  * @tparam T Datatype of both arrays.
  * @tparam sizea Size of the first array.
  * @tparam sizeb Size of the second array.
+ * @returns An array representing the sum of the two input arrays.
  */
 template <typename T, size_t sizea, size_t sizeb>
 std::array<T, std::max(sizea, sizeb)> add(const std::array<T, sizea> &a,
@@ -63,6 +65,7 @@ std::array<T, std::max(sizea, sizeb)> add(const std::array<T, sizea> &a,
  * @tparam T Datatype of the arrays.
  * @tparam sizein Size of the input array.
  * @tparam sizeout Size of the output array. Must fulfil sizeout >= sizein.
+ * @returns The array.
  */
 template <typename T, size_t sizein, size_t sizeout>
 std::array<T, sizeout> changearraysize(const std::array<T, sizein> &in) {
@@ -104,10 +107,11 @@ T evaluateInterval(const T &x, const std::array<T, size> &coeffs, const T &xm) {
 }
 
 /*!
- * Returns the faculty n!.
+ * Returns the faculty \f$n!\f$.
  *
  * @param n The value to calculate the faculty of.
  * @tparam T The datatype of the return type.
+ * @returns The faculty \f$n!\f$.
  */
 template <typename T>
 T faculty(size_t n) {
@@ -119,11 +123,12 @@ T faculty(size_t n) {
 }
 
 /*!
- * Returns the faculty ratio counter! / denominator!.
+ * Returns the faculty ratio \f[\frac{counter!}{denominator!}\f].
  *
  * @param counter The faculty of this value is the counter.
  * @param denominator The faculty of this value is the denominator.
  * @tparam T The datatype of the return type.
+ * @returns The value of the faculty ratio.
  */
 template <typename T>
 T facultyRatio(size_t counter, size_t denominator) {
@@ -139,12 +144,13 @@ T facultyRatio(size_t counter, size_t denominator) {
 }
 
 /*!
- * Returns the binomial coefficient n! / (k! (n - k)!).
- * Returns zero if k > n.
+ * Returns the binomial coefficient \f[\frac{n!}{k!\,(n-k)!]}\f].
+ * Returns zero if \f$k > n\f$.
  *
  * @param n The first parameter.
  * @param k The second parameter.
  * @tparam T The datatype of the return type.
+ * @returns The value of the binomial coefficient
  */
 template <typename T>
 T binomialCoefficient(size_t n, size_t k) {

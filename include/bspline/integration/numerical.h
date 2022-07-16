@@ -35,6 +35,8 @@ using namespace bspline::exceptions;
  * @tparam F Type of the callable \f$f(x)\f$.
  * @tparam order1 Order of the spline \f$m_1(x)\f$.
  * @tparam order2 Order of the spline \f$m_2(x)\f$.
+ * @throws BSplineException If the two splines are defined on different grids.
+ * @returns The value of the integral \$I\$.
  */
 template <size_t ordergl, typename T, typename F, size_t order1, size_t order2>
 T integrate(const F &f, const bspline::Spline<T, order1> &m1,

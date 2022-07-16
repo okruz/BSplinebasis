@@ -63,20 +63,10 @@ class ScalarMultiplication : public Operator {
    * Returns the order of the output spline for a given input order.
    *
    * @param inputOrder the order of the input spline.
+   * @returns The output spline-order for a given input input order.
    */
   static constexpr size_t outputOrder(size_t inputOrder) {
     return O::outputOrder(inputOrder);
-  }
-
-  /*!
-   * Applies the operator to a spline.
-   *
-   * @param spline The spline to apply the operator to.
-   * @tparam order The order of the spline.
-   */
-  template <size_t order>
-  auto operator*(const Spline<S, order> &spline) const {
-    return transformSpline(*this, spline);
   }
 
   /*!
@@ -89,6 +79,8 @@ class ScalarMultiplication : public Operator {
    * the global grid.
    * @tparam T The datatype of the spline.
    * @tparam size The size of the array, i. e. the number of coefficients.
+   * @returns The polyomial coefficients arising from the application of this
+   * operator to the input coefficients.
    */
   template <typename T, size_t size>
   auto transform(const std::array<T, size> &input, const support::Grid<T> &grid,
@@ -118,6 +110,7 @@ ScalarMultiplication(S s) -> ScalarMultiplication<S, IdentityOperator>;
  * @param o The operator to be multiplied.
  * @tparam S The type of the scalar.
  * @tparam O The type of the operator to be multiplied.
+ * @returns The scaled operator.
  */
 template <
     typename S, typename O,
@@ -133,6 +126,7 @@ ScalarMultiplication<S, O> operator*(const S &s, O &&o) {
  * @param s The scalar to be multiplied.
  * @tparam S The type of the scalar.
  * @tparam O The type of the operator to be multiplied.
+ * @returns The scaled operator.
  */
 template <
     typename S, typename O,
@@ -148,6 +142,7 @@ ScalarMultiplication<S, O> operator*(O &&o, const S &s) {
  * @param s The divisor.
  * @tparam S The type of the scalar.
  * @tparam O The type of the operator to be divided.
+ * @returns The scaled operator.
  */
 template <
     typename S, typename O,
@@ -163,6 +158,7 @@ ScalarMultiplication<S, O> operator/(O &&o, const S &s) {
  * @param s The scalar to be added.
  * @tparam S The type of the scalar.
  * @tparam O The type of the operator.
+ * @returns The shifted operator.
  */
 template <
     typename S, typename O,
@@ -178,6 +174,7 @@ auto operator+(O &&o, const S &s) {
  * @param o The operator to be added.
  * @tparam S The type of the scalar.
  * @tparam O The type of the operator.
+ * @returns The shifted operator.
  */
 template <
     typename S, typename O,
@@ -193,6 +190,7 @@ auto operator+(const S &s, O &&o) {
  * @param s The scalar to be subtracted.
  * @tparam S The type of the scalar.
  * @tparam O The type of the operator.
+ * @returns The shifted operator.
  */
 template <
     typename S, typename O,
@@ -208,6 +206,7 @@ auto operator-(O &&o, const S &s) {
  * @param o The operator to be subtracted.
  * @tparam S The type of the scalar.
  * @tparam O The type of the operator.
+ * @returns The shifted and inverted operator.
  */
 template <
     typename S, typename O,
@@ -222,6 +221,7 @@ auto operator-(const S &s, O &&o) {
  *
  * @param o The operator to be negated.
  * @tparam O The type of the operator to be negated.
+ * @returns The inverted operator.
  */
 template <typename O, std::enable_if_t<is_operator_v<O>, bool> = true>
 ScalarMultiplication<int, O> operator-(O &&o) {

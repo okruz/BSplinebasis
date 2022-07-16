@@ -30,6 +30,7 @@ enum class ErrorCode {
  * Returns the default error message for an error code.
  *
  * @param errorCode The errorCode for which the default message is requested.
+ * @returns The default error message corresponding to the errorCode.
  */
 inline std::string getErrorMessage(ErrorCode errorCode) {
   switch (errorCode) {
@@ -53,6 +54,7 @@ inline std::string getErrorMessage(ErrorCode errorCode) {
  * Returns the errorCode name.
  *
  * @param errorCode The errorCode for which the name is requested.
+ * @returns The name of the errorCode as a string.
  */
 inline std::string getErrorCodeName(ErrorCode errorCode) {
   switch (errorCode) {
@@ -86,6 +88,7 @@ class BSplineException : public std::exception {
    *
    * @param errorCode The errorCode to generate the what string for.
    * @param message A message string that can be custom.
+   * @returns The generated what string.
    */
   std::string generateWhatString(ErrorCode errorCode,
                                  const std::string &message) const {
@@ -119,6 +122,8 @@ class BSplineException : public std::exception {
 
   /*!
    * Returns a string representation of the exception.
+   *
+   * @returns The what string.
    */
   virtual const char *what() const noexcept override {
     return _whatString.c_str();
@@ -126,6 +131,8 @@ class BSplineException : public std::exception {
 
   /*!
    * Returns the error code of this exception.
+   *
+   * @returns the errorCode.
    */
   ErrorCode getErrorCode() const { return _errorCode; };
 };

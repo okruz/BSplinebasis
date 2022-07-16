@@ -28,22 +28,10 @@ class Derivative : public Operator {
    * Returns the order of the output spline for a given input order.
    *
    * @param inputOrder the order of the input spline.
+   * @returns The output spline-order for a given input input order.
    */
   static constexpr size_t outputOrder(size_t inputOrder) {
     return std::max(n, inputOrder) - n;
-  }
-
-  /*!
-   * Applies the operator to a spline.
-   *
-   * @param spline The spline to apply the operator to.
-   * @tparam T The datatype of the splines.
-   * @tparam order The order of the input spline.
-   */
-  template <typename T, size_t order>
-  Spline<T, outputOrder(order)> operator*(
-      const Spline<T, order> &spline) const {
-    return transformSpline(*this, spline);
   }
 
   /*!
@@ -56,6 +44,8 @@ class Derivative : public Operator {
    * the global grid.
    * @tparam T The datatype of the coefficients.
    * @tparam size The size of the input array, i. e. the number of coefficients.
+   * @returns The polyomial coefficients arising from the application of this
+   * operator to the input coefficients.
    */
   template <typename T, size_t size>
   std::array<T, outputOrder(size - 1) + 1> transform(

@@ -38,20 +38,10 @@ class SplineOperator : public Operator {
    * Returns the order of the output spline for a given input order.
    *
    * @param inputOrder the order of the input spline.
+   * @returns The output spline-order for a given input input order.
    */
   static constexpr size_t outputOrder(size_t inputOrder) {
     return inputOrder + order;
-  }
-
-  /*!
-   * Applies the operator to a spline.
-   *
-   * @param spline The spline to apply the operator to.
-   * @tparam orderSpline The order of the spline.
-   */
-  template <size_t orderSpline>
-  auto operator*(const Spline<T, orderSpline> &spline) const {
-    return transformSpline(*this, spline);
   }
 
   /*!
@@ -64,6 +54,10 @@ class SplineOperator : public Operator {
    * the global grid.
    * @tparam T The datatype of the spline.
    * @tparam size The size of the array, i. e. the number of coefficients.
+   * @throws BSplineException If the spline _s is defined on a grid that is
+   * (logically) different from grid.
+   * @returns The polyomial coefficients arising from the application of this
+   * operator to the input coefficients.
    */
   template <size_t size>
   auto transform(const std::array<T, size> &input, const support::Grid<T> &grid,

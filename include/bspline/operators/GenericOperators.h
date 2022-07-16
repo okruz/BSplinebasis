@@ -49,6 +49,8 @@ inline constexpr bool are_operators_v = is_operator_v<O1> &&is_operator_v<O2>;
  * @tparam T The datatype of the input and output splines.
  * @tparam order The order of the input spline.
  * @tparam O The type of the operator.
+ * @returns The spline resulting from the application of this operator to the
+ * spline.
  */
 template <typename T, size_t order, typename O,
           std::enable_if_t<is_operator_v<O>, bool> = true>
@@ -86,20 +88,9 @@ class IdentityOperator : public Operator {
    * Returns the order of the output spline for a given input order.
    *
    * @param inputOrder the order of the input spline.
+   * @returns The output spline-order for a given input input order.
    */
   static constexpr size_t outputOrder(size_t inputOrder) { return inputOrder; }
-
-  /*!
-   * Applies the operator to a spline.
-   *
-   * @param spline The spline to apply the operator to.
-   * @tparam T The datatype of the spline.
-   * @tparam order The order of the spline.
-   */
-  template <typename T, size_t order>
-  Spline<T, order> operator*(const Spline<T, order> &spline) const {
-    return spline;
-  }
 
   /*!
    * Applies the operator to a set of coefficients (representing a polynomial on
@@ -111,6 +102,8 @@ class IdentityOperator : public Operator {
    * the global grid.
    * @tparam T The datatype of the coefficients.
    * @tparam size The size of the array, i. e. the number of coefficients.
+   * @returns The polyomial coefficients arising from the application of this
+   * operator to the input coefficients.
    */
   template <typename T, size_t size>
   std::array<T, size> transform(const std::array<T, size> &input,
@@ -119,5 +112,21 @@ class IdentityOperator : public Operator {
     return input;
   }
 };
+
+/*!
+ * Applies an operator to a spline.
+ *
+ * @param o The operator.
+ * @param s The spline.
+ * @tparam O The type of the operator.
+ * @tparam S The type of the spline.
+ * @returns The spline resulting from the application of this operator to the
+ * spline.
+ */
+template <typename O, typename S,
+          std::enable_if_t<is_operator_v<O> && is_spline_v<S>, bool> = true>
+auto operator*(const O &o, const S &s) {
+  return transformSpline(o, s);
+}
 }  // namespace bspline::operators
 #endif  // BSPLINE_OPERATORS_GENERICOPERATORS_H

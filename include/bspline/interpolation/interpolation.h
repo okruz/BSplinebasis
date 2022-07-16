@@ -85,6 +85,7 @@ class ISolver {
    *
    * @param i Row index.
    * @param j Column index.
+   * @returns A reference to the corresponding element of M.
    */
   virtual T &M(size_t i, size_t j) = 0;
 
@@ -92,6 +93,7 @@ class ISolver {
    * Retrieve a reference to an element of the vector b.
    *
    * @param i Row index.
+   * @returns A reference to the corresponding element of b.
    */
   virtual T &b(size_t i) = 0;
 
@@ -104,6 +106,7 @@ class ISolver {
    * Retrieve a reference to an element of the vector x.
    *
    * @param i Row index.
+   * @returns A reference to the corresponding element of i.
    */
   virtual T &x(size_t i) = 0;
 };
@@ -114,6 +117,7 @@ class ISolver {
  *
  * @tparam T Datatype of the spline.
  * @tparam order Polynomial order of the spline.
+ * @returns An array with default order - 1 default boundary conditions.
  */
 template <typename T, size_t order>
 std::array<Boundary<T>, order - 1> defaultBoundaries() {
@@ -148,6 +152,10 @@ using bspline::support::Support;
  * @tparam T Datatype of the spline and data.
  * @tparam order Order of the spline.
  * @tparam Solver Class Wrapping the linear algebra routines.
+ * @throws BSplineException If the number of values on the abscissa and ordinate
+ * differ.
+ * @throws BSplineException If less than two data points are provided.
+ * @returns The spline interpolating the input data.
  */
 template <typename T, size_t order, class Solver>
 bspline::Spline<T, order> interpolate(
@@ -297,6 +305,10 @@ bspline::Spline<T, order> interpolate(
  * @param y Data on the ordinate.
  * @param boundaries Boundary conditions.
  * @tparam order Order of the spline.
+ * @throws BSplineException If the number of values on the abscissa and ordinate
+ * differ.
+ * @throws BSplineException If less than two data points are provided.
+ * @returns The spline interpolating the input data.
  */
 template <size_t order>
 bspline::Spline<double, order> interpolate_using_armadillo(
@@ -336,6 +348,10 @@ bspline::Spline<double, order> interpolate_using_armadillo(
  * @param boundaries Boundary conditions.
  * @tparam T Datatype of the spline and data.
  * @tparam order Order of the spline.
+ * @throws BSplineException If the number of values on the abscissa and ordinate
+ * differ.
+ * @throws BSplineException If less than two data points are provided.
+ * @returns The spline interpolating the input data.
  */
 template <typename T, size_t order>
 bspline::Spline<T, order> interpolate_using_eigen(
