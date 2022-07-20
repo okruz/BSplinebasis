@@ -89,7 +89,6 @@ T lc(T x, const std::vector<T> &coeffs,
 
 template <typename T, size_t order>
 void testArithmetic(T tol) {
-  std::cout.precision(20);
   static_assert(order >= 2, "For this test, order must be at least 2");
   using Spline = bspline::Spline<T, order>;
   using Spline6 = bspline::Spline<T, 2 * order>;
