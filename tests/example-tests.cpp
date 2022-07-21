@@ -22,7 +22,7 @@ BOOST_AUTO_TEST_CASE(HarmonicOscillatorTest) {
   for (size_t i = 0; i < eigenSpaces.size(); i++) {
     const data_t eigenvalue = eigenSpaces.at(i).energy;
     const data_t expected = static_cast<data_t>(2 * i + 1) / 2;
-    BOOST_CHECK_SMALL((eigenvalue - expected) / abs(expected), TOL);
+    BOOST_CHECK_SMALL((eigenvalue - expected) / std::abs(expected), TOL);
   }
 }
 
@@ -36,7 +36,7 @@ BOOST_AUTO_TEST_CASE(HydrogenTest) {
     const size_t n = i + 2;
     const data_t expected = static_cast<data_t>(-1) / (n * n);
 
-    BOOST_CHECK_SMALL((eigenvalue - expected) / abs(expected), TOL);
+    BOOST_CHECK_SMALL((eigenvalue - expected) / std::abs(expected), TOL);
   }
 }
 

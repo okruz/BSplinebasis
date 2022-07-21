@@ -31,7 +31,7 @@ static void harmonicOscillator() {
   for (size_t i = 0; i < harmonicOscillator.size(); i++) {
     const data_t expected = static_cast<data_t>(2 * i + 1) / 2;
     const data_t relativeDev =
-        abs((harmonicOscillator[i].energy - expected) / expected);
+        std::abs((harmonicOscillator[i].energy - expected) / expected);
     std::cout << std::setw(2) << i << "\t" << std::setw(20)
               << harmonicOscillator[i].energy << "\t" << std::setw(20)
               << relativeDev << '\n';
@@ -101,7 +101,8 @@ static void radialHydrogen() {
   for (size_t i = 0; i < hydrogen.size(); i++) {
     const data_t expected =
         static_cast<data_t>(-1) / pow(static_cast<data_t>(L + i + 1), 2);
-    const data_t relativeDev = abs((hydrogen[i].energy - expected) / expected);
+    const data_t relativeDev =
+        std::abs((hydrogen[i].energy - expected) / expected);
     std::cout << std::setw(2) << i + L + 1 << "\t" << std::setw(25)
               << hydrogen[i].energy << "\t" << std::setw(25) << relativeDev
               << '\n';
