@@ -87,27 +87,26 @@ class BSplineGenerator {
 
   /*!
    * Generates all BSplines with respect to the knots vector.
-   * @tparam k Number of the coefficients per interval for the spline (i.e.
-   * order of the spline plus one).
+   * @tparam order Order of the BSplines to generate.
    * @throws BSplineException If the knots vector does not contain enough
    * entries to generate a spline of the requested order.
    * @throws BSplineException If the knots vector is not sorted.
    * @returns The BSplines of order k - 1 defined on the knots vector.
    */
-  template <size_t k>
-  std::vector<Spline<T, k - 1>> generateBSplines() const {
-    static_assert(k >= 1, "k has to be at least 1.");
+  template <size_t order>
+  std::vector<Spline<T, order>> generateBSplines() const {
+    static constexpr size_t k = order + 1;
     if (_knots.size() < k) {
       throw BSplineException(ErrorCode::UNDETERMINED,
                              "The knots vector contains too few elements to "
                              "generate BSplines of the requested order.");
     }
 
-    if constexpr (k == 1) {
+    if constexpr (order == 0) {
       return generateZerothOrderSplines();
     } else {
-      const auto nextLowerOrderSplines = generateBSplines<k - 1>();
-      std::vector<Spline<T, k - 1>> ret;
+      const auto nextLowerOrderSplines = generateBSplines<order - 1>();
+      std::vector<Spline<T, order>> ret;
       ret.reserve(_knots.size() - k);
       for (size_t i = 0; i < _knots.size() - k; i++) {
         ret.push_back(applyRecursionRelation<k>(
@@ -204,7 +203,7 @@ class BSplineGenerator {
 template <size_t order, typename T>
 std::vector<Spline<T, order>> generateBSplines(std::vector<T> knots) {
   BSplineGenerator gen(std::move(knots));
-  return gen.template generateBSplines<order + 1>();
+  return gen.template generateBSplines<order>();
 }
 
 }  // namespace bspline

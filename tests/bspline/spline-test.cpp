@@ -40,7 +40,7 @@ void testIntegration(T tol) {
       5.7l,   6.1l,   6.35l,  6.5l,  6.85l, 7.0l});
 
   const std::vector<Spline> splines =
-      generator.template generateBSplines<order + 1>();
+      generator.template generateBSplines<order>();
   const Spline0 one = getOne(generator.getGrid());
 
   const auto f1 = [](const T & /*x*/) { return static_cast<T>(1); };
@@ -101,7 +101,7 @@ void testArithmetic(T tol) {
       5.7l,   6.1l,   6.35l,  6.5l,  6.85l, 7.0l});
 
   const std::vector<Spline> splines =
-      generator.template generateBSplines<order + 1>();
+      generator.template generateBSplines<order>();
   const Spline0 one = getOne(generator.getGrid());
 
   const std::vector<T> lcCoeffs{1, 2, 3, 4, 3};

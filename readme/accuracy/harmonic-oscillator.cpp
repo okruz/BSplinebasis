@@ -7,8 +7,15 @@
 #include <bspline/Core.h>
 
 #include <algorithm>
+
+// For clang, the serialization header must be included before the
+// multiprecision headers to avoid compilation errors.
+// clang-format off
+#include <boost/serialization/nvp.hpp>
 #include <boost/multiprecision/cpp_bin_float.hpp>
 #include <boost/multiprecision/eigen.hpp>
+// clang-format on
+
 #include <eigen3/Eigen/Eigenvalues>
 #include <fstream>
 #include <future>
@@ -64,8 +71,7 @@ static std::vector<data_t> setUpKnotsVector(int points) {
  */
 template <typename data_t, size_t order>
 static std::vector<bspline::Spline<data_t, order>> setUpBasis(int points) {
-  BSplineGenerator gen(setUpKnotsVector<data_t>(points));
-  return gen.template generateBSplines<order + 1>();
+  return generateBSplines<order>(setUpKnotsVector<data_t>(points));
 }
 
 template <typename data_t>

@@ -37,7 +37,7 @@ PSpline interpolateFunction(std::vector<data_t> gridPoints,
  */
 static std::vector<Spline> setUpBasis(const support::Grid<data_t> &grid) {
   BSplineGenerator gen{std::vector<data_t>{grid.begin(), grid.end()}, grid};
-  return gen.template generateBSplines<SPLINE_ORDER + 1>();
+  return gen.template generateBSplines<SPLINE_ORDER>();
 }
 
 std::vector<Eigenspace> solveSEWithSplinePotential(PSpline v) {
