@@ -90,7 +90,6 @@ class BSplineGenerator {
    * @tparam order Order of the BSplines to generate.
    * @throws BSplineException If the knots vector does not contain enough
    * entries to generate a spline of the requested order.
-   * @throws BSplineException If the knots vector is not sorted.
    * @returns All BSplines of order order defined on the knots vector.
    */
   template <size_t order>
@@ -160,7 +159,6 @@ class BSplineGenerator {
   /*!
    * Generates all zeroth order BSplines.
    *
-   * @throws BSplineException If the knots vector is not sorted.
    * @returns The zeroth order BSplines defined on the knots vector.
    */
   std::vector<Spline<T, 0>> generateZerothOrderSplines() const {
@@ -197,7 +195,7 @@ class BSplineGenerator {
  * @tparam T The data type of the knots vector and the generated BSplines.
  * @throws BSplineException If the knots vector does not contain enough entries
  * to generate a spline of the requested order.
- * @throws BSplineException If the knots vector is not sorted.
+ * @throws BSplineException If the knots are not in increasing order.
  * @returns All BSplines of order order defined on the knots vector.
  */
 template <size_t order, typename T>
