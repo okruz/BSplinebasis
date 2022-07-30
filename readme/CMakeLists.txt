@@ -1,16 +1,17 @@
 find_package(Eigen3)
+set(THREADS_PREFER_PTHREAD_FLAG ON)
 
 if (Eigen3_FOUND)
+  find_package(Threads REQUIRED)
   add_executable(accuracy
     accuracy/harmonic-oscillator.cpp
   )
 
-  set_property(TARGET accuracy PROPERTY CXX_STANDARD 17)
-
   target_link_libraries(accuracy PUBLIC main_library)
   target_include_directories(accuracy PUBLIC /usr/include/eigen3)
 
-  target_compile_options(accuracy PRIVATE -pthread)
+
+  target_link_libraries(accuracy PRIVATE Threads::Threads)
 
   add_custom_target(generate-accuracy-plots
     COMMAND
@@ -29,12 +30,7 @@ add_executable(generation
   generation/generation.cpp
 )
 
-set_property(TARGET generation PROPERTY CXX_STANDARD 17)
-
 target_link_libraries(generation PUBLIC main_library)
-
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic -Werror -pthread")
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
 
 add_custom_target(generation-plots
   COMMAND

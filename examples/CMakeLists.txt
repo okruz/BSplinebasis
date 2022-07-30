@@ -26,15 +26,10 @@ if (Eigen3_FOUND)
     main.cpp 
   )
 
-  set_property(TARGET examples PROPERTY CXX_STANDARD 17)
-
   target_link_libraries(examples PUBLIC examples_objects)
 
   # Might be needed, if you want to use boost multiprecision types as data_t in the examples.
   # target_include_directories(examples_objects PUBLIC /usr/include/eigen3)
-  
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic -Werror")
-  set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
 else()
   message(WARNING "Eigen3 framework not found. Not building examples.")
 endif (Eigen3_FOUND)

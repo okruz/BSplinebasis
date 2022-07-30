@@ -10,7 +10,6 @@ if (Boost_unit_test_framework_FOUND)
     bspline/spline-test.cpp
   )
 
-  set_property(TARGET test PROPERTY CXX_STANDARD 17)
   target_include_directories(test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
   target_link_libraries(test 
        ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY}
@@ -47,8 +46,8 @@ if (Boost_unit_test_framework_FOUND)
     endif (Eigen3_FOUND)
   endif (ARMADILLO_FOUND OR Eigen3_FOUND)
   
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic -Werror -Wno-deprecated-declarations")
-  set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
+  target_compile_options(test PRIVATE -Wno-deprecated-declarations)
+
   enable_testing()
   
   add_custom_target(run-test
