@@ -54,7 +54,7 @@ inline constexpr bool are_operators_v = is_operator_v<O1> &&is_operator_v<O2>;
  */
 template <typename T, size_t order, typename O,
           std::enable_if_t<is_operator_v<O>, bool> = true>
-decltype(auto) transformSpline(const O &op, const Spline<T, order> &spline) {
+auto transformSpline(const O &op, const Spline<T, order> &spline) {
   constexpr size_t OUTPUT_SIZE = O::outputOrder(order) + 1;
 
   const auto &oldCoefficients = spline.getCoefficients();
@@ -67,7 +67,7 @@ decltype(auto) transformSpline(const O &op, const Spline<T, order> &spline) {
   for (size_t i = 0; i < oldCoefficients.size(); i++) {
     const size_t absIndex = support.absoluteFromRelative(i);
     newCoefficients.push_back(
-        op.transform(oldCoefficients.at(i), support.getGrid(), absIndex));
+        op.transform(oldCoefficients[i], support.getGrid(), absIndex));
   }
 
   return Spline(spline.getSupport(), std::move(newCoefficients));
@@ -102,7 +102,7 @@ class IdentityOperator : public Operator {
    * the global grid.
    * @tparam T The datatype of the coefficients.
    * @tparam size The size of the array, i. e. the number of coefficients.
-   * @returns The polyomial coefficients arising from the application of this
+   * @returns The polyomial coefficients arising from the application of the
    * operator to the input coefficients.
    */
   template <typename T, size_t size>
@@ -120,7 +120,7 @@ class IdentityOperator : public Operator {
  * @param s The spline.
  * @tparam O The type of the operator.
  * @tparam S The type of the spline.
- * @returns The spline resulting from the application of this operator to the
+ * @returns The spline resulting from the application of the operator to the
  * spline.
  */
 template <typename O, typename S,
