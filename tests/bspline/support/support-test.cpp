@@ -7,8 +7,16 @@
 
 #include <bspline/support/Support.h>
 
-#include <boost/test/unit_test.hpp>
 #include <boost/test/tools/floating_point_comparison.hpp>
+#include <boost/test/unit_test.hpp>
+#include <type_traits>
+
+static_assert(
+    std::is_nothrow_move_constructible_v<bspline::support::Grid<double>>,
+    "Grid is not nothrow move constructible.");
+static_assert(
+    std::is_nothrow_move_constructible_v<bspline::support::Support<double>>,
+    "Support is not nothrow move constructible.");
 
 template <typename T>
 void testSupport() {
@@ -105,7 +113,6 @@ void testSupport() {
   BOOST_TEST(s3.absoluteFromRelative(0) == 3);
   BOOST_TEST(s3.absoluteFromRelative(1) == 4);
 }
-
 
 BOOST_AUTO_TEST_SUITE(SupportTestSuite)
 BOOST_AUTO_TEST_CASE(TestSupport) {

@@ -12,12 +12,16 @@
 
 #include <boost/test/tools/floating_point_comparison.hpp>
 #include <boost/test/unit_test.hpp>
+#include <type_traits>
 
 using bspline::BSplineGenerator;
 using bspline::Spline;
 
 using namespace bspline::support;
 using namespace bspline;
+
+static_assert(std::is_nothrow_move_constructible_v<Spline<double, 3>>,
+              "Spline is not nothrow move constructible.");
 
 template <typename T>
 Spline<T, 0> getOne(const Grid<T> &grid) {
@@ -214,4 +218,5 @@ BOOST_AUTO_TEST_CASE(TestArithmetic) {
     testArithmetic<long double, 10>(TOLL);
   }
 }
+
 BOOST_AUTO_TEST_SUITE_END()
