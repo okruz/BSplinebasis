@@ -21,9 +21,9 @@ template <typename O1, typename O2,
 class OperatorProduct : public Operator {
  private:
   /*! The first (left) operator.*/
-  const O1 _o1;
+  O1 _o1;
   /*! The second (right) operator.*/
-  const O2 _o2;
+  O2 _o2;
 
  public:
   /*!
@@ -120,9 +120,9 @@ template <
 class OperatorSum : public Operator {
  private:
   /*! The first operator.*/
-  const O1 _o1;
+  O1 _o1;
   /*! The second operator.*/
-  const O2 _o2;
+  O2 _o2;
 
   /*!
    * Adds the smaller array to the larger array in place and returns the larger

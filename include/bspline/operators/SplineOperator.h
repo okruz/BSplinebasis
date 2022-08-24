@@ -24,7 +24,7 @@ template <typename T, size_t order>
 class SplineOperator : public Operator {
  private:
   /*! The spline which this operator represents. */
-  const Spline<T, order> _s;
+  Spline<T, order> _s;
 
  public:
   /*!

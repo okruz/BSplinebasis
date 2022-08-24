@@ -38,9 +38,9 @@ template <typename S, typename O,
 class ScalarMultiplication : public Operator {
  private:
   /*! The scalar to multiply the operator with. */
-  const S _s;
+  S _s;
   /*! The operator to be multiplied. */
-  const O _o;
+  O _o;
 
  public:
   /*!

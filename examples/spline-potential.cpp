@@ -12,6 +12,7 @@
 
 #include <algorithm>
 #include <eigen3/Eigen/Eigenvalues>
+#include <type_traits>
 
 namespace bspline::examples::spline_potential {
 
@@ -47,6 +48,9 @@ std::vector<Eigenspace> solveSEWithSplinePotential(PSpline v) {
   // Hamiltonian operator -1/2 d^2/dx^2 + v(x)
   auto hamiltonOperator = (static_cast<data_t>(-1) / 2) * operators::Dx<2>{} +
                           operators::SplineOperator{std::move(v)};
+  static_assert(
+      std::is_nothrow_move_constructible_v<decltype(hamiltonOperator)>,
+      "Operator is not nothrow movable.");
 
   const DeMat hamiltonian = setUpSymmetricMatrix(
       integration::BilinearForm{std::move(hamiltonOperator)}, basis);
