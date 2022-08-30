@@ -32,9 +32,9 @@ template <typename O1, typename O2,
 class BilinearForm {
  private:
   /*! Operator applied to the first spline.*/
-  const O1 _o1;
+  O1 _o1;
   /*! Operator applied to the second spline.*/
-  const O2 _o2;
+  O2 _o2;
 
   /*!
    * Evaluates the bilinear form on one interval.

@@ -24,7 +24,7 @@ template <typename O,
 class LinearForm {
  private:
   /*! Operator applied to the spline.*/
-  const O _o;
+  O _o;
 
   /*!
    * Evaluates the linear form on one interval.

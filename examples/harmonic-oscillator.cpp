@@ -53,6 +53,10 @@ std::vector<Eigenspace> solveHarmonicOscillator() {
       std::is_nothrow_move_constructible_v<decltype(hamiltonOperator)>,
       "Operator is not nothrow movable.");
 
+  static_assert(std::is_nothrow_move_constructible_v<decltype(
+                    integration::BilinearForm{std::move(hamiltonOperator)})>,
+                "BilinearForm is not nothrow movable.");
+
   const DeMat hamiltonian =
       setUpSymmetricMatrix(integration::BilinearForm{hamiltonOperator}, basis);
 

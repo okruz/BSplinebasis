@@ -15,7 +15,6 @@ if (Eigen3_FOUND)
       Eigen3::Eigen
       main_library
   )
-  set_property(TARGET examples_objects PROPERTY CXX_STANDARD 17)
 
 
   target_include_directories(examples_objects PUBLIC
