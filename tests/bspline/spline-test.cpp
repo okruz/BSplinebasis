@@ -26,7 +26,7 @@ static_assert(std::is_nothrow_move_constructible_v<Spline<double, 3>>,
 template <typename T>
 Spline<T, 0> getOne(const Grid<T> &grid) {
   T onet = static_cast<T>(1);
-  Support support(grid, Construction::WHOLE_GRID);
+  auto support = Support<T>::createWholeGrid(grid);
   std::vector<std::array<T, 1>> coeffs(support.size() - 1, {onet});
   return Spline<T, 0>(std::move(support), std::move(coeffs));
 }

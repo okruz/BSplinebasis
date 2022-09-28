@@ -20,8 +20,11 @@ using namespace bspline;
 
 PSpline interpolateFunction(std::vector<data_t> gridPoints,
                             const std::function<data_t(data_t)> &func) {
-  support::Support<data_t> support{Grid<data_t>{std::move(gridPoints)},
-                                   support::Construction::WHOLE_GRID};
+  using namespace bspline::support;
+
+  auto support =
+      Support<data_t>::createWholeGrid(Grid<data_t>{std::move(gridPoints)});
+
   std::vector<data_t> y;
   y.reserve(support.size());
   for (const auto x : support) {

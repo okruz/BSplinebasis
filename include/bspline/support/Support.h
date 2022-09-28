@@ -21,13 +21,6 @@ namespace bspline::support {
 using namespace bspline::exceptions;
 
 /*!
- * This enum allows to signal to some constructors whether
- * an empty support should be constructed or one representing the
- * whole grid.
- */
-enum class Construction { EMPTY, WHOLE_GRID };
-
-/*!
  * Represents the support of a spline as a set of intervals, represented by the
  * the corresponding grid points. It is essentially a view onto the global grid.
  *
@@ -83,14 +76,20 @@ class Support {
    * Constructs an empty support relative to the global grid grid.
    *
    * @param grid The global grid.
-   * @param constr The construction. If this parameter is not provided, an empty
-   * support will be constructed, if it is set to Construction::WHOLE_GRID a
-   * support representing the extend of the whole grid will be constructed.
    */
-  explicit Support(Grid<T> grid, Construction constr = Construction::EMPTY)
-      : _grid(std::move(grid)),
-        _startIndex(0),
-        _endIndex((constr == Construction::EMPTY) ? 0 : _grid.size()){};
+  static Support<T> createEmpty(Grid<T> grid) {
+    return Support<T>{std::move(grid), 0, 0};
+  };
+
+  /*!
+   * Constructs a support representing the complete global grid grid.
+   *
+   * @param grid The global grid.
+   */
+  static Support<T> createWholeGrid(Grid<T> grid) {
+    const auto gridSize = grid.size();
+    return Support<T>{std::move(grid), 0, gridSize};
+  };
 
   /*!
    * Returns the number of grid points contained in this support.
@@ -310,7 +309,8 @@ class Support {
     const bool thisEmpty = empty();
     const bool sEmpty = s.empty();
     if (thisEmpty && sEmpty)
-      return Support(_grid);  // Both Supports are empty, return empty Support
+      return createEmpty(
+          _grid);  // Both Supports are empty, return empty Support
     else if (thisEmpty && !sEmpty)
       return s;
     else if (!thisEmpty && sEmpty)
@@ -335,7 +335,7 @@ class Support {
     const size_t newStartIndex = std::max(_startIndex, s._startIndex);
     const size_t newEndIndex = std::min(_endIndex, s._endIndex);
     if (newStartIndex >= newEndIndex)
-      return Support(_grid);  // no overlap, return empty Support
+      return createEmpty(_grid);  // no overlap, return empty Support
     else
       return Support(_grid, newStartIndex, newEndIndex);
   };

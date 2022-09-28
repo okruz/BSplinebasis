@@ -21,7 +21,6 @@ static_assert(
 template <typename T>
 void testSupport() {
   using Support = bspline::support::Support<T>;
-  using Construction = bspline::support::Construction;
   using BSplineException = bspline::exceptions::BSplineException;
   using Grid = bspline::support::Grid<T>;
   const T tol = static_cast<T>(1.0e-15l);
@@ -58,18 +57,18 @@ void testSupport() {
     BOOST_REQUIRE_THROW(grid.at(grid.size()), BSplineException);
   }
 
-  Support s1(grid1, 0, grid1.size());
-  Support s11(grid11, 0, grid11.size());
-  Support s12(grid1, Construction::WHOLE_GRID);
-  Support s2(grid1);
-  Support s3(grid1, 3, 5);
-  Support s32(grid1, 0, 2);
-  Support spl(grid1, 1, 2);  // point-like support
-  Support s3i = s3.calcIntersection(s32);
-  Support s3u = s3.calcUnion(s32);
+  const Support s1(grid1, 0, grid1.size());
+  const Support s11(grid11, 0, grid11.size());
+  const auto s12 = Support::createWholeGrid(grid1);
+  const auto s2 = Support::createEmpty(grid1);
+  const Support s3(grid1, 3, 5);
+  const Support s32(grid1, 0, 2);
+  const Support spl(grid1, 1, 2);  // point-like support
+  const Support s3i = s3.calcIntersection(s32);
+  const Support s3u = s3.calcUnion(s32);
 
-  Support s4(grid2, 0, grid2.size());
-  Support s5(grid3);
+  const Support s4(grid2, 0, grid2.size());
+  const auto s5 = Support::createEmpty(grid3);
 
   for (const Support &support : {s1, s11, s12, s2, s3, s32, spl, s3i, s3u}) {
     if (!support.empty()) {

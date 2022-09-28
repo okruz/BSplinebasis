@@ -8,9 +8,8 @@
 #include <bspline/interpolation/interpolation.h>
 #include <bspline/support/Support.h>
 
-#include <boost/test/unit_test.hpp>
 #include <boost/test/tools/floating_point_comparison.hpp>
-
+#include <boost/test/unit_test.hpp>
 
 BOOST_AUTO_TEST_SUITE(SplineInterpolationTestSuite)
 #ifdef BSPLINE_INTERPOLATION_USE_EIGEN
@@ -19,11 +18,10 @@ void testInterpolationEigen(T tol) {
   using Spline = bspline::Spline<T, order>;
   using Support = bspline::support::Support<T>;
   using Grid = bspline::support::Grid<T>;
-  using Construction = bspline::support::Construction;
 
   const Grid grid(std::vector<T>{-3.0l, -2.5l, -1.5l, -1.0l, 0.0l, 0.5l, 1.5l,
                                  2.5l, 3.5l, 4.0l, 5.0l});
-  const Support x(grid, Construction::WHOLE_GRID);
+  const auto x = Support::createWholeGrid(grid);
   const std::vector<T> y{-3.0l, -2.5l, -1.5l, -1.0l, 0.0l, -0.5l,
                          -1.5l, -2.5l, -3.5l, -4.0l, 3.0l};
   Spline s = bspline::interpolation::interpolate_using_eigen<T, order>(x, y);
@@ -53,11 +51,10 @@ void testInterpolationArmadillo(double tol) {
   using Spline = bspline::Spline<double, order>;
   using Support = bspline::support::Support<double>;
   using Grid = bspline::support::Grid<double>;
-  using Construction = bspline::support::Construction;
 
   const Grid grid(std::vector<double>{-3.0l, -2.5l, -1.5l, -1.0l, 0.0l, 0.5l,
                                       1.5l, 2.5l, 3.5l, 4.0l, 5.0l});
-  const Support x(grid, Construction::WHOLE_GRID);
+  const auto x = Support::createWholeGrid(grid);
   const std::vector<double> y{-3.0l, -2.5l, -1.5l, -1.0l, 0.0l, -0.5l,
                               -1.5l, -2.5l, -3.5l, -4.0l, 3.0l};
   Spline s = bspline::interpolation::interpolate_using_armadillo<order>(x, y);

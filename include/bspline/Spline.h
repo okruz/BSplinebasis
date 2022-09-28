@@ -137,7 +137,8 @@ class Spline {
    *
    * @param grid The global grid.
    */
-  explicit Spline(Grid<T> grid) : Spline(Support(std::move(grid)), {}){};
+  explicit Spline(Grid<T> grid)
+      : Spline(Support<T>::createEmpty(std::move(grid)), {}){};
 
   /*!
    * Returns the spline's support.
