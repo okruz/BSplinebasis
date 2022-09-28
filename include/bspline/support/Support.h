@@ -1,3 +1,10 @@
+/*
+ * ########################################################################
+ * The contents of this file is free and unencumbered software released into the
+ * public domain. For more information, please refer to <http://unlicense.org/>
+ * ########################################################################
+ */
+
 #ifndef BSPLINE_SUPPORT_SUPPORT_H
 #define BSPLINE_SUPPORT_SUPPORT_H
 
@@ -5,13 +12,6 @@
 #include <bspline/support/Grid.h>
 
 #include <optional>
-
-/*
- * ########################################################################
- * The contents of this file is free and unencumbered software released into the
- * public domain. For more information, please refer to <http://unlicense.org/>
- * ########################################################################
- */
 
 /*!
  * The namspace containing the internal representation of the Spline's support

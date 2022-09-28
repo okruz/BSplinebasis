@@ -1,18 +1,19 @@
-#ifndef BSPLINE_SUPPORT_GRID_H
-#define BSPLINE_SUPPORT_GRID_H
-#include <bspline/exceptions/BSplineException.h>
-#include <bspline/internal/misc.h>
-
-#include <algorithm>
-#include <memory>
-#include <vector>
-
 /*
  * ########################################################################
  * The contents of this file is free and unencumbered software released into the
  * public domain. For more information, please refer to <http://unlicense.org/>
  * ########################################################################
  */
+
+#ifndef BSPLINE_SUPPORT_GRID_H
+#define BSPLINE_SUPPORT_GRID_H
+
+#include <bspline/exceptions/BSplineException.h>
+#include <bspline/internal/misc.h>
+
+#include <algorithm>
+#include <memory>
+#include <vector>
 
 namespace bspline::support {
 using namespace bspline::exceptions;

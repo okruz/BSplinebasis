@@ -1,15 +1,3 @@
-#ifndef BSPLINE_SPLINE_H
-#define BSPLINE_SPLINE_H
-#include <bspline/exceptions/BSplineException.h>
-#include <bspline/internal/misc.h>
-#include <bspline/support/Support.h>
-
-#include <algorithm>
-#include <array>
-#include <optional>
-#include <type_traits>
-#include <vector>
-
 /*
  * template<typename T, size_t order>
  * class Spline
@@ -35,6 +23,19 @@
  * public domain. For more information, please refer to <http://unlicense.org/>
  * ########################################################################
  */
+
+#ifndef BSPLINE_SPLINE_H
+#define BSPLINE_SPLINE_H
+
+#include <bspline/exceptions/BSplineException.h>
+#include <bspline/internal/misc.h>
+#include <bspline/support/Support.h>
+
+#include <algorithm>
+#include <array>
+#include <optional>
+#include <type_traits>
+#include <vector>
 
 /*!
  * Main namespace for this library.

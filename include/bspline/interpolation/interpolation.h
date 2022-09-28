@@ -1,5 +1,3 @@
-#ifndef BSPLINE_INTERPOLATION_INTERPOLATION_H
-#define BSPLINE_INTERPOLATION_INTERPOLATION_H
 /*
  * This file contains additional numerical interpolation routines for the
  * splines. The linear algebra routines can be supplied via the implementation
@@ -13,6 +11,9 @@
  * public domain. For more information, please refer to <http://unlicense.org/>
  * ########################################################################
  */
+
+#ifndef BSPLINE_INTERPOLATION_INTERPOLATION_H
+#define BSPLINE_INTERPOLATION_INTERPOLATION_H
 
 #include <bspline/Spline.h>
 #include <bspline/exceptions/BSplineException.h>

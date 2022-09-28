@@ -1,11 +1,12 @@
-#ifndef BSPLINE_OPERATORS_SPLINEOPERATOR_H
-#define BSPLINE_OPERATORS_SPLINEOPERATOR_H
 /*
  * ########################################################################
  * The contents of this file is free and unencumbered software released into the
  * public domain. For more information, please refer to <http://unlicense.org/>
  * ########################################################################
  */
+
+#ifndef BSPLINE_OPERATORS_SPLINEOPERATOR_H
+#define BSPLINE_OPERATORS_SPLINEOPERATOR_H
 
 #include <bspline/Spline.h>
 #include <bspline/exceptions/BSplineException.h>

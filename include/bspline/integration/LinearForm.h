@@ -1,11 +1,12 @@
-#ifndef BSPLINE_INTEGRATION_LINEARFORM_H
-#define BSPLINE_INTEGRATION_LINEARFORM_H
 /*
  * ########################################################################
  * The contents of this file is free and unencumbered software released into the
  * public domain. For more information, please refer to <http://unlicense.org/>
  * ########################################################################
  */
+
+#ifndef BSPLINE_INTEGRATION_LINEARFORM_H
+#define BSPLINE_INTEGRATION_LINEARFORM_H
 
 #include <bspline/Spline.h>
 #include <bspline/operators/GenericOperators.h>

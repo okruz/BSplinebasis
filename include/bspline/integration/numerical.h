@@ -1,5 +1,3 @@
-#ifndef BSPLINE_INTEGRATION_NUMERICAL_H
-#define BSPLINE_INTEGRATION_NUMERICAL_H
 /*
  * This file contains an additional numerical integration routine for the
  * Splines based on the Gauss-Legendre routines in boost/math/quadrature.
@@ -9,6 +7,9 @@
  * public domain. For more information, please refer to <http://unlicense.org/>
  * ########################################################################
  */
+
+#ifndef BSPLINE_INTEGRATION_NUMERICAL_H
+#define BSPLINE_INTEGRATION_NUMERICAL_H
 
 #include <bspline/Spline.h>
 #include <bspline/exceptions/BSplineException.h>

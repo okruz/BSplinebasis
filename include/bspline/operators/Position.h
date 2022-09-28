@@ -1,11 +1,12 @@
-#ifndef BSPLINE_OPERATORS_POSITION_H
-#define BSPLINE_OPERATORS_POSITION_H
 /*
  * ########################################################################
  * The contents of this file is free and unencumbered software released into the
  * public domain. For more information, please refer to <http://unlicense.org/>
  * ########################################################################
  */
+
+#ifndef BSPLINE_OPERATORS_POSITION_H
+#define BSPLINE_OPERATORS_POSITION_H
 
 #include <bspline/internal/misc.h>
 #include <bspline/operators/GenericOperators.h>

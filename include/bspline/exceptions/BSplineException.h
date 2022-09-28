@@ -1,14 +1,15 @@
-#ifndef BSPLINE_BSPLINEEXCEPTION_H
-#define BSPLINE_BSPLINEEXCEPTION_H
-#include <sstream>
-#include <string>
-
 /*
  * ########################################################################
  * The contents of this file is free and unencumbered software released into the
  * public domain. For more information, please refer to <http://unlicense.org/>
  * ########################################################################
  */
+
+#ifndef BSPLINE_BSPLINEEXCEPTION_H
+#define BSPLINE_BSPLINEEXCEPTION_H
+
+#include <sstream>
+#include <string>
 
 /*!
  * The namespace containing the exceptions and errorCodes.

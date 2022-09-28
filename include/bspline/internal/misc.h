@@ -1,7 +1,3 @@
-#ifndef BSPLINE_MISC_H
-#define BSPLINE_MISC_H
-#include <array>
-
 /*
  * ########################################################################
  * The contents of this file is free and unencumbered software released into the
@@ -9,12 +5,16 @@
  * ########################################################################
  */
 
+#ifndef BSPLINE_MISC_H
+#define BSPLINE_MISC_H
+
+#include <array>
+
 #ifndef BSPLINE_DOXYGEN_IGNORE
 /*!
  * The methods in the internal namespace are internal helper method for this
  * library.
  */
-
 namespace bspline::internal {
 
 /*!

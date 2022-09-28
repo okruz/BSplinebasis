@@ -1,11 +1,12 @@
-#ifndef BSPLINE_EXAMPLES_MISC_H
-#define BSPLINE_EXAMPLES_MISC_H
 /*
  * ########################################################################
  * The contents of this file is free and unencumbered software released into the
  * public domain. For more information, please refer to <http://unlicense.org/>
  * ########################################################################
  */
+
+#ifndef BSPLINE_EXAMPLES_MISC_H
+#define BSPLINE_EXAMPLES_MISC_H
 
 #ifdef EXAMPLES_USE_BOOST_MULTIPRECISION
 // Just as a proof of concept.

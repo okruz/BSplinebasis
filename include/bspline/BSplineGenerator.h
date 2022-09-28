@@ -1,13 +1,3 @@
-#ifndef BSPLINE_BSPLINEGENERATOR_H
-#define BSPLINE_BSPLINEGENERATOR_H
-#include <bspline/Spline.h>
-#include <bspline/exceptions/BSplineException.h>
-#include <bspline/operators/CompoundOperators.h>
-#include <bspline/operators/Position.h>
-#include <bspline/operators/ScalarOperators.h>
-
-#include <algorithm>
-
 /*
  * ########################################################################
  * The contents of this file is free and unencumbered software released into the
@@ -16,6 +6,17 @@
  *
  * [1] https://en.wikipedia.org/wiki/B-spline
  */
+
+#ifndef BSPLINE_BSPLINEGENERATOR_H
+#define BSPLINE_BSPLINEGENERATOR_H
+
+#include <bspline/Spline.h>
+#include <bspline/exceptions/BSplineException.h>
+#include <bspline/operators/CompoundOperators.h>
+#include <bspline/operators/Position.h>
+#include <bspline/operators/ScalarOperators.h>
+
+#include <algorithm>
 
 namespace bspline {
 using namespace bspline::exceptions;

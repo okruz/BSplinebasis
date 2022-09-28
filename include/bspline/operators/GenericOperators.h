@@ -1,11 +1,12 @@
-#ifndef BSPLINE_OPERATORS_GENERICOPERATORS_H
-#define BSPLINE_OPERATORS_GENERICOPERATORS_H
 /*
  * ########################################################################
  * The contents of this file is free and unencumbered software released into the
  * public domain. For more information, please refer to <http://unlicense.org/>
  * ########################################################################
  */
+
+#ifndef BSPLINE_OPERATORS_GENERICOPERATORS_H
+#define BSPLINE_OPERATORS_GENERICOPERATORS_H
 
 #include <bspline/Spline.h>
 
