@@ -143,7 +143,7 @@ class BSplineGenerator {
     if (xipkm1 > xi) {
       const T prefac = static_cast<T>(1) / (xipkm1 - xi);
       const auto op = prefac * (operators::X<1>{} - xi);
-      ret += op * splinei;
+      ret = op * splinei;
     }
 
     const T &xip1 = _knots.at(i + 1);
