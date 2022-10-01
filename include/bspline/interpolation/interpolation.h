@@ -161,7 +161,7 @@ using bspline::support::Support;
 template <typename T, size_t order, class Solver>
 bspline::Spline<T, order> interpolate(
     Support<T> x, const std::vector<T> &y,
-    const std::array<Boundary<T>, order - 1> boundaries =
+    const std::array<Boundary<T>, order - 1> &boundaries =
         internal::defaultBoundaries<T, order>()) {
   static_assert(order >= 1, "Order may not be zero.");
   static_assert(std::is_base_of<internal::ISolver<T>, Solver>::value,
@@ -314,7 +314,7 @@ bspline::Spline<T, order> interpolate(
 template <size_t order>
 bspline::Spline<double, order> interpolate_using_armadillo(
     Support<double> x, const std::vector<double> &y,
-    const std::array<Boundary<double>, order - 1> boundaries =
+    const std::array<Boundary<double>, order - 1> &boundaries =
         internal::defaultBoundaries<double, order>()) {
   class ArmadilloSolver final : public internal::ISolver<double> {
    private:
@@ -357,7 +357,7 @@ bspline::Spline<double, order> interpolate_using_armadillo(
 template <typename T, size_t order>
 bspline::Spline<T, order> interpolate_using_eigen(
     Support<T> x, const std::vector<T> &y,
-    const std::array<Boundary<T>, order - 1> boundaries =
+    const std::array<Boundary<T>, order - 1> &boundaries =
         internal::defaultBoundaries<T, order>()) {
   using DeMat = Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic>;
   using DeVec = Eigen::Matrix<T, Eigen::Dynamic, 1>;
