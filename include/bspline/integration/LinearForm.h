@@ -22,7 +22,7 @@ namespace bspline::integration {
  */
 template <typename O,
           std::enable_if_t<operators::is_operator_v<O>, bool> = true>
-class LinearForm {
+class LinearForm final {
  private:
   /*! Operator applied to the spline.*/
   O _o;

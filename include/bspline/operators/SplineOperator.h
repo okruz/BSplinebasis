@@ -22,7 +22,7 @@ namespace bspline::operators {
  * @tparam order The order of the spline.
  */
 template <typename T, size_t order>
-class SplineOperator : public Operator {
+class SplineOperator final : public Operator {
  private:
   /*! The spline which this operator represents. */
   Spline<T, order> _s;

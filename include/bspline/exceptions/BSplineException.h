@@ -77,7 +77,7 @@ inline std::string getErrorCodeName(ErrorCode errorCode) {
 /*!
  * The main exception class.
  */
-class BSplineException : public std::exception {
+class BSplineException final : public std::exception {
  private:
   /*! The error code. */
   ErrorCode _errorCode;

@@ -54,7 +54,7 @@ using namespace bspline::exceptions;
  * @tparam order Order of the spline.
  */
 template <typename T, size_t order>
-class Spline {
+class Spline final {
  private:
   /*! Number of coefficients per interval. */
   static constexpr size_t ARRAY_SIZE = order + 1;

@@ -27,7 +27,7 @@ using namespace bspline::exceptions;
  * @tparam T Datatype of the grid and spline.
  */
 template <typename T>
-class Support {
+class Support final {
  public:  // Type definitions.
   /*!
    * Represents an interval relative to the global grid represented by _grid.

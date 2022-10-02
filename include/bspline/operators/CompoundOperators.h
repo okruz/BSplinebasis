@@ -19,7 +19,7 @@ namespace bspline::operators {
  */
 template <typename O1, typename O2,
           std::enable_if_t<are_operators_v<O1, O2>, bool> = true>
-class OperatorProduct : public Operator {
+class OperatorProduct final : public Operator {
  private:
   /*! The first (left) operator.*/
   O1 _o1;
@@ -118,7 +118,7 @@ template <
     typename O1, typename O2, AdditionOperation operation,
     std::enable_if_t<are_operators_v<O1, O2> && is_valid_operation_v<operation>,
                      bool> = true>
-class OperatorSum : public Operator {
+class OperatorSum final : public Operator {
  private:
   /*! The first operator.*/
   O1 _o1;

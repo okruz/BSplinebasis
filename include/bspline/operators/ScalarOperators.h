@@ -36,7 +36,7 @@ inline constexpr bool are_scalar_multiplication_types_v =
 template <typename S, typename O,
           std::enable_if_t<are_scalar_multiplication_types_v<S, O>, bool> =
               true>
-class ScalarMultiplication : public Operator {
+class ScalarMultiplication final : public Operator {
  private:
   /*! The scalar to multiply the operator with. */
   S _s;
