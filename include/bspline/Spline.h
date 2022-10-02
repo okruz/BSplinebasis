@@ -539,30 +539,32 @@ auto linearCombination(CoeffIter coeffsBegin, CoeffIter coeffsEnd,
   }
 
   const auto &support0 = splinesBegin->getSupport();
-  size_t startIndex = support0.getStartIndex();
-  size_t endIndex = support0.getEndIndex();
+  std::optional<size_t> startIndex;
+  std::optional<size_t> endIndex;
 
   // Determine the union of all the splines' supports.
-  for (auto it = splinesBegin + 1; it < splinesEnd; it++) {
+  for (auto it = splinesBegin; it < splinesEnd; it++) {
     if (!it->getSupport().hasSameGrid(support0)) {
       throw BSplineException(ErrorCode::DIFFERING_GRIDS);
     }
 
     const size_t si = it->getSupport().getStartIndex();
     const size_t ei = it->getSupport().getEndIndex();
-    const bool isEmpty = it->getSupport().empty();
 
-    if (!isEmpty && si < startIndex) {
-      startIndex = si;
-    }
+    if (!it->getSupport().empty()) {
+      if (!startIndex || si < *startIndex) {
+        startIndex = si;
+      }
 
-    if (!isEmpty && ei > endIndex) {
-      endIndex = ei;
+      if (!endIndex || ei > *endIndex) {
+        endIndex = ei;
+      }
     }
   }
 
   // Set up support and coefficients vector for the returned spline.
-  Support newSupport(support0.getGrid(), startIndex, endIndex);
+  Support newSupport(support0.getGrid(), startIndex.value_or(0),
+                     endIndex.value_or(0));
   std::vector<std::array<T, order + 1>> newCoefficients(
       newSupport.numberOfIntervals(),
       internal::make_array<T, order + 1>(static_cast<T>(0)));
