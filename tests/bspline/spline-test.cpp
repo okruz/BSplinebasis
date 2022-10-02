@@ -20,7 +20,8 @@ using bspline::Spline;
 using namespace bspline::support;
 using namespace bspline;
 
-static_assert(std::is_nothrow_move_constructible_v<Spline<double, 3>>,
+static_assert(std::is_nothrow_move_constructible_v<Spline<double, 3>> &&
+                  std::is_nothrow_move_assignable_v<Spline<double, 3>>,
               "Spline is not nothrow move constructible.");
 
 template <typename T>

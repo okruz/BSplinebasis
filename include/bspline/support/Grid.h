@@ -24,7 +24,7 @@ using namespace bspline::exceptions;
  * @tparam T The datatype of the grid elements.
  */
 template <typename T>
-class Grid {
+class Grid final {
  private:
   /*! The gridpoints. */
   std::shared_ptr<const std::vector<T>> _data;
@@ -102,6 +102,28 @@ class Grid {
                              "The grid points are not steadily increasing.");
     }
   };
+
+  /*!
+   * Default copy constructor.
+   *
+   * @param g Grid to be copied.
+   */
+  Grid(const Grid &g) noexcept = default;
+
+  /*!
+   * Default copy assignment operator.
+   *
+   * @param g Grid to be copied.
+   */
+  Grid &operator=(const Grid &g) noexcept = default;
+
+  /*!
+   * Default destructor.
+   */
+  ~Grid() = default;
+
+  Grid(Grid &&g) = delete;
+  Grid &operator=(Grid &&g) = delete;
 
   /*!
    * Comparison operator.

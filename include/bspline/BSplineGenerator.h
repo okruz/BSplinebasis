@@ -72,10 +72,10 @@ class BSplineGenerator {
    * @throws BSplineException If the grid derived from the knots vector is not
    * logically equivalent to the Grid grid.
    */
-  BSplineGenerator(std::vector<T> knots, Grid<T> grid)
-      : _grid(std::move(grid)), _knots(std::move(knots)) {
+  BSplineGenerator(std::vector<T> knots, const Grid<T> &grid)
+      : _grid(grid), _knots(std::move(knots)) {
     // Check, whether the given knots vector and grid are consistent.
-    Grid<T> secondGrid = generateGrid(_knots);
+    const Grid<T> secondGrid = generateGrid(_knots);
     if (_grid != secondGrid) {
       throw BSplineException(ErrorCode::INCONSISTENT_DATA);
     }
