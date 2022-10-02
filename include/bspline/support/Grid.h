@@ -122,7 +122,18 @@ class Grid final {
    */
   ~Grid() = default;
 
+  /*!
+   * Explicitly deleted move constructor.
+   *
+   * @param g Grid to (not) be moved.
+   */
   Grid(Grid &&g) = delete;
+
+  /*!
+   * Explicitly deleted move assignment operator.
+   *
+   * @param g Grid to (not) be moved.
+   */
   Grid &operator=(Grid &&g) = delete;
 
   /*!
