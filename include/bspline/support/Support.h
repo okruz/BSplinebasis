@@ -342,6 +342,17 @@ class Support final {
   };
 
   /*!
+   * Compares two supports for inequality. For two supports two be equal, they
+   * have to be defined on the same grid, must represent the same subset of the
+   * number line.
+   *
+   * @param s Support to compare against.
+   * @returns False it the two supports are logically equivalent, true
+   * otherwise.
+   */
+  bool operator!=(const Support &s) const { return !(*this == s); };
+
+  /*!
    * Calculates the union of this support with the support s. This is not
    * strictly the set-theoretical union (if the two supports do not overlap),
    * but a support representing one contiguous bit of the number line containing
