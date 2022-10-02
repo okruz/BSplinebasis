@@ -28,7 +28,7 @@ using namespace bspline::exceptions;
  */
 template <typename T>
 class Support final {
- public:  // Type definitions.
+ public:
   /*!
    * Represents an interval relative to the global grid represented by _grid.
    */
@@ -42,7 +42,7 @@ class Support final {
   /*!
    * Iterator type.
    */
-  using const_iterator = typename std::vector<T>::const_iterator;
+  using const_iterator = typename Grid<T>::const_iterator;
 
  private:
   /*! Represents the global grid. */
