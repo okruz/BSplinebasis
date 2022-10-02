@@ -48,12 +48,12 @@ class Support final {
   /*! Represents the global grid. */
   Grid<T> _grid;
   /*! Represents the begin of the Support. */
-  AbsoluteIndex _startIndex = 0u;
+  AbsoluteIndex _startIndex;
   /*!
    * Represents the end of the Support. Points to the element behind the last
    * element of the Support.
    */
-  AbsoluteIndex _endIndex = 0u;
+  AbsoluteIndex _endIndex;
 
  public:
   /*!
@@ -99,8 +99,8 @@ class Support final {
    */
   Support(Support &&s) noexcept
       : _grid{s._grid}, _startIndex{s._startIndex}, _endIndex{s._endIndex} {
-    s._startIndex = 0u;
-    s._endIndex = 0u;
+    s._startIndex = 0;
+    s._endIndex = 0;
   }
 
   /*!
@@ -114,8 +114,8 @@ class Support final {
     _startIndex = s._startIndex;
     _endIndex = s._endIndex;
 
-    s._startIndex = 0u;
-    s._endIndex = 0u;
+    s._startIndex = 0;
+    s._endIndex = 0;
     return *this;
   }
 
