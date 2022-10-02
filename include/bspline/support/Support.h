@@ -48,12 +48,12 @@ class Support {
   /*! Represents the global grid. */
   Grid<T> _grid;
   /*! Represents the begin of the Support. */
-  AbsoluteIndex _startIndex;
+  AbsoluteIndex _startIndex = 0u;
   /*!
    * Represents the end of the Support. Points to the element behind the last
    * element of the Support.
    */
-  AbsoluteIndex _endIndex;
+  AbsoluteIndex _endIndex = 0u;
 
  public:
   /*!
@@ -65,20 +65,67 @@ class Support {
    * @param endIndex The index of the element behind the last grid point which
    * is part of the support.
    */
-  Support(Grid<T> grid, AbsoluteIndex startIndex, AbsoluteIndex endIndex)
-      : _grid(std::move(grid)), _startIndex(startIndex), _endIndex(endIndex) {
+  Support(const Grid<T> &grid, AbsoluteIndex startIndex, AbsoluteIndex endIndex)
+      : _grid(grid), _startIndex(startIndex), _endIndex(endIndex) {
     if (_startIndex > _endIndex || _endIndex > _grid.size()) {
       throw BSplineException(ErrorCode::INCONSISTENT_DATA);
     }
   };
 
   /*!
+   * Default copy constructor.
+   *
+   * @param s The support to copy.
+   */
+  Support(const Support &s) noexcept = default;
+
+  /*!
+   * Default copy assignment operator.
+   *
+   * @param s The support to copy.
+   */
+  Support &operator=(const Support &s) noexcept = default;
+
+  /*!
+   * Default destructor.
+   */
+  ~Support() = default;
+
+  /*!
+   * Move constructor. Leaves the moved-from object as an empty support relative
+   * to the same grid.
+   *
+   * @param s The support to move.
+   */
+  Support(Support &&s) noexcept
+      : _grid{s._grid}, _startIndex{s._startIndex}, _endIndex{s._endIndex} {
+    s._startIndex = 0u;
+    s._endIndex = 0u;
+  }
+
+  /*!
+   * Move assignment operator. Leaves the moved-from object as an empty support
+   * relative to the same grid.
+   *
+   * @param s The support to move.
+   */
+  Support &operator=(Support &&s) noexcept {
+    _grid = s._grid;
+    _startIndex = s._startIndex;
+    _endIndex = s._endIndex;
+
+    s._startIndex = 0u;
+    s._endIndex = 0u;
+    return *this;
+  }
+
+  /*!
    * Constructs an empty support relative to the global grid grid.
    *
    * @param grid The global grid.
    */
-  static Support<T> createEmpty(Grid<T> grid) {
-    return Support<T>{std::move(grid), 0, 0};
+  static Support<T> createEmpty(const Grid<T> &grid) {
+    return Support<T>{grid, 0, 0};
   };
 
   /*!
@@ -86,9 +133,9 @@ class Support {
    *
    * @param grid The global grid.
    */
-  static Support<T> createWholeGrid(Grid<T> grid) {
+  static Support<T> createWholeGrid(const Grid<T> &grid) {
     const auto gridSize = grid.size();
-    return Support<T>{std::move(grid), 0, gridSize};
+    return Support<T>{grid, 0, gridSize};
   };
 
   /*!
@@ -306,15 +353,19 @@ class Support {
     if (!hasSameGrid(s)) {
       throw BSplineException(ErrorCode::DIFFERING_GRIDS);
     }
+
     const bool thisEmpty = empty();
     const bool sEmpty = s.empty();
-    if (thisEmpty && sEmpty)
-      return createEmpty(
-          _grid);  // Both Supports are empty, return empty Support
-    else if (thisEmpty && !sEmpty)
+
+    if (thisEmpty && sEmpty) {
+      // Both Supports are empty, return empty Support.
+      return createEmpty(_grid);
+    } else if (thisEmpty && !sEmpty) {
       return s;
-    else if (!thisEmpty && sEmpty)
+    } else if (!thisEmpty && sEmpty) {
       return *this;
+    }
+
     const size_t newStartIndex = std::min(_startIndex, s._startIndex);
     const size_t newEndIndex = std::max(_endIndex, s._endIndex);
     return Support(_grid, newStartIndex, newEndIndex);
@@ -332,12 +383,16 @@ class Support {
     if (!hasSameGrid(s)) {
       throw BSplineException(ErrorCode::DIFFERING_GRIDS);
     }
+
     const size_t newStartIndex = std::max(_startIndex, s._startIndex);
     const size_t newEndIndex = std::min(_endIndex, s._endIndex);
-    if (newStartIndex >= newEndIndex)
-      return createEmpty(_grid);  // no overlap, return empty Support
-    else
+
+    if (newStartIndex >= newEndIndex) {
+      // No overlap, return empty Support.
+      return createEmpty(_grid);
+    } else {
       return Support(_grid, newStartIndex, newEndIndex);
+    }
   };
 };  // end class Support
 }  // namespace bspline::support
