@@ -23,7 +23,7 @@ namespace internal = bspline::internal;
  * @tparam n Order of the derivative.
  */
 template <size_t n>
-class Derivative : public Operator {
+class Derivative final : public Operator {
  public:
   /*!
    * Returns the order of the output spline for a given input order.

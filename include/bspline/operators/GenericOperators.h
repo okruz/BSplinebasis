@@ -83,7 +83,7 @@ auto transformSpline(const O &op, const Spline<T, order> &spline) {
 /*!
  * Represents the identity operator.
  */
-class IdentityOperator : public Operator {
+class IdentityOperator final : public Operator {
  public:
   /*!
    * Returns the order of the output spline for a given input order.

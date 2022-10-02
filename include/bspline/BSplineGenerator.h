@@ -27,7 +27,7 @@ using namespace bspline::exceptions;
  * @tparam T The datatype of the spline and grid.
  */
 template <typename T>
-class BSplineGenerator {
+class BSplineGenerator final {
  private:
   /*! The global grid.*/
   Grid<T> _grid;

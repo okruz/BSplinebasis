@@ -30,7 +30,7 @@ namespace bspline::integration {
  */
 template <typename O1, typename O2,
           std::enable_if_t<operators::are_operators_v<O1, O2>, bool> = true>
-class BilinearForm {
+class BilinearForm final {
  private:
   /*! Operator applied to the first spline.*/
   O1 _o1;
