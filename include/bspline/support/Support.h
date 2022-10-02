@@ -171,10 +171,11 @@ class Support final {
    * support, std::nullopt else.
    */
   std::optional<RelativeIndex> relativeFromAbsolute(AbsoluteIndex index) const {
-    if (index >= _startIndex && index < _endIndex)
+    if (index >= _startIndex && index < _endIndex) {
       return index - _startIndex;
-    else
+    } else {
       return std::nullopt;
+    }
   };
 
   /*!
@@ -188,10 +189,11 @@ class Support final {
    */
   std::optional<RelativeIndex> intervalIndexFromAbsolute(
       AbsoluteIndex index) const {
-    if (index >= _startIndex && index + 1 < _endIndex)
+    if (index >= _startIndex && index + 1 < _endIndex) {
       return index - _startIndex;
-    else
+    } else {
       return std::nullopt;
+    }
   };
 
   /*!
@@ -217,10 +219,11 @@ class Support final {
    */
   size_t numberOfIntervals() const {
     const size_t si = size();
-    if (si == 0)
+    if (si == 0) {
       return 0;
-    else
+    } else {
       return si - 1;
+    }
   };
 
   /*!
