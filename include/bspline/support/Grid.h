@@ -10,6 +10,7 @@
 
 #include <bspline/exceptions/BSplineException.h>
 #include <bspline/internal/misc.h>
+#include <bspline/internal/test_checks.h>
 
 #include <algorithm>
 #include <memory>
@@ -41,6 +42,22 @@ class Grid final {
       }
     }
     return true;
+  }
+
+  /*!
+   * Checks the validity of this Grid and throws if the Grid is not in a
+   * valid state.
+   *
+   * @throws BSplineException if this object is not in a valid state.
+   */
+  void checkValidity() const {
+    // Check the validity of the provided data.
+    if (!_data || _data->size() < 2) {
+      throw BSplineException(ErrorCode::MISSING_DATA);
+    } else if (!isSteadilyIncreasing()) {
+      throw BSplineException(ErrorCode::INCONSISTENT_DATA,
+                             "The grid points are not steadily increasing.");
+    }
   }
 
  public:
@@ -94,13 +111,7 @@ class Grid final {
    */
   explicit Grid(std::shared_ptr<const std::vector<T>> data)
       : _data(std::move(data)) {
-    // Check the validity of the provided data.
-    if (!_data || _data->size() < 2) {
-      throw BSplineException(ErrorCode::MISSING_DATA);
-    } else if (!isSteadilyIncreasing()) {
-      throw BSplineException(ErrorCode::INCONSISTENT_DATA,
-                             "The grid points are not steadily increasing.");
-    }
+    checkValidity();
   };
 
   /*!
@@ -143,6 +154,7 @@ class Grid final {
    * @returns Returns true if the grids represent the same logical grid.
    */
   bool operator==(const Grid &g) const {
+    DURING_TEST_CHECK_VALIDITY();
     if (_data == g._data) {
       // Fast path: Compare pointers.
       return true;
@@ -165,14 +177,20 @@ class Grid final {
    *
    * @returns The number of grid points.
    */
-  size_t size() const { return _data->size(); };
+  size_t size() const {
+    DURING_TEST_CHECK_VALIDITY();
+    return _data->size();
+  };
 
   /*!
    * Returns a shared pointer to the elements of this grid.
    *
    * @returns A shared pointer to the elements of this grid.
    */
-  std::shared_ptr<const std::vector<T>> getData() const { return _data; };
+  std::shared_ptr<const std::vector<T>> getData() const {
+    DURING_TEST_CHECK_VALIDITY();
+    return _data;
+  };
 
   /*!
    * Checks whether the grids holds any elements. Note: It is not possible to
@@ -180,7 +198,10 @@ class Grid final {
    *
    * @returns True if this grid holds no element.
    */
-  bool empty() const { return _data->empty(); };
+  bool empty() const {
+    DURING_TEST_CHECK_VALIDITY();
+    return _data->empty();
+  };
 
   /*!
    * Returns a reference to the ith element of the grid. Performs no bounds
@@ -189,7 +210,10 @@ class Grid final {
    * @param i The index of the element to be returned.
    * @returns A reference to the ith element.
    */
-  const T &operator[](size_t i) const { return (*_data)[i]; };
+  const T &operator[](size_t i) const {
+    DURING_TEST_CHECK_VALIDITY();
+    return (*_data)[i];
+  };
 
   /*!
    * Returns a reference to the ith element of the grid. Checks the bounds.
@@ -199,6 +223,7 @@ class Grid final {
    * @throws BSplineException If the access is out of bounds.
    */
   const T &at(size_t i) const {
+    DURING_TEST_CHECK_VALIDITY();
     if (i >= size()) {
       throw BSplineException(ErrorCode::INVALID_ACCESS);
     }
@@ -212,6 +237,7 @@ class Grid final {
    * @throws BSplineException If the grid is empty.
    */
   const T &front() const {
+    DURING_TEST_CHECK_VALIDITY();
     if (empty()) {
       throw BSplineException(ErrorCode::INVALID_ACCESS);
     }
@@ -225,6 +251,7 @@ class Grid final {
    * @throws BSplineException If the grid is empty.
    */
   const T &back() const {
+    DURING_TEST_CHECK_VALIDITY();
     if (empty()) {
       throw BSplineException(ErrorCode::INVALID_ACCESS);
     }
@@ -236,14 +263,20 @@ class Grid final {
    *
    * @returns An iterator to the first element.
    */
-  const_iterator begin() const { return _data->begin(); };
+  const_iterator begin() const {
+    DURING_TEST_CHECK_VALIDITY();
+    return _data->begin();
+  };
 
   /*!
    * Returns the end iterator of the grid..
    *
    * @returns An iterator pointing behind the last element.
    */
-  const_iterator end() const { return _data->end(); };
+  const_iterator end() const {
+    DURING_TEST_CHECK_VALIDITY();
+    return _data->end();
+  };
 
   /*!
    * Returns the index corresponding to the element x.
@@ -252,6 +285,7 @@ class Grid final {
    * @throws BSplineException If the element could not be found.
    */
   size_t findElement(const T &x) const {
+    DURING_TEST_CHECK_VALIDITY();
     const auto beginIt = begin();
     const auto endIt = end();
     const auto elementIt = std::lower_bound(beginIt, endIt, x);

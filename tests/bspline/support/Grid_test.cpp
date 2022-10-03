@@ -21,11 +21,13 @@ const std::vector<double> DEFAULT_GRID_DATA{
     -3.0l, -2.5l,  -1.5l,  -1.0l, 0.0l,  0.5l,   1.5l,   2.5l,  3.5l,   4.0l,
     4.35l, 4.55l,  4.95l,  5.4l,  5.7l,  6.1l,   6.35l,  6.5l,  6.85l,  7.0l};
 
+BOOST_AUTO_TEST_SUITE(GridTestSuite)
+
 /*!
  * Passes if the constructor of the Grid throws if we try to construct an empty
  * grid.
  */
-static void constructEmptyGridThrows() {
+BOOST_AUTO_TEST_CASE(ConstructEmptyGridThrows) {
   using Grid = bspline::support::Grid<double>;
   using BSplineException = bspline::exceptions::BSplineException;
 
@@ -41,7 +43,7 @@ static void constructEmptyGridThrows() {
  * Passes if the constructor of the Grid throws if we try to construct a Grid
  * with only one element.
  */
-static void constructGridWithOneElementThrows() {
+BOOST_AUTO_TEST_CASE(ConstructGridWithOneElementThrows) {
   using Grid = bspline::support::Grid<double>;
   using BSplineException = bspline::exceptions::BSplineException;
 
@@ -56,7 +58,7 @@ static void constructGridWithOneElementThrows() {
  * Passes if the constructor of the Grid throws if we try to construct a grid
  * whose grid points are not steadily increasing.
  */
-static void constructNotSteadilyIncreasingThrows() {
+BOOST_AUTO_TEST_CASE(ConstructNotSteadilyIncreasingThrows) {
   using Grid = bspline::support::Grid<double>;
   using BSplineException = bspline::exceptions::BSplineException;
 
@@ -70,8 +72,7 @@ static void constructNotSteadilyIncreasingThrows() {
 /*!
  * Passes if the grid can be copied.
  */
-static void testCopyGrid() {
-  // A Grid cannot be moved, only copied.
+BOOST_AUTO_TEST_CASE(TestCopyGrid) {  // A Grid cannot be moved, only copied.
   using Grid = bspline::support::Grid<double>;
 
   Grid grid1(DEFAULT_GRID_DATA);
@@ -83,7 +84,7 @@ static void testCopyGrid() {
 /*!
  * Passes if the Grid can be iterated over using a range-based for loop.
  */
-static void testIteration() {
+BOOST_AUTO_TEST_CASE(TestIteration) {
   using Grid = bspline::support::Grid<double>;
 
   const Grid grid1(DEFAULT_GRID_DATA);
@@ -100,7 +101,7 @@ static void testIteration() {
 /*!
  * Passes if the (in)equality operators correctly compare grids.
  */
-static void testEquality() {
+BOOST_AUTO_TEST_CASE(TestEquality) {
   using Grid = bspline::support::Grid<double>;
 
   const Grid grid(DEFAULT_GRID_DATA);
@@ -125,7 +126,7 @@ static void testEquality() {
  * elements and throwing exception in the case of an attempted access to
  * non-existant elements.
  */
-static void testAt() {
+BOOST_AUTO_TEST_CASE(TestAt) {
   using Grid = bspline::support::Grid<double>;
   using BSplineException = bspline::exceptions::BSplineException;
 
@@ -147,7 +148,7 @@ static void testAt() {
  * Passes if the method findElement() correctly returns the index of an element
  * in the Grid and throws if the requested element could not be found.
  */
-static void testFindElement() {
+BOOST_AUTO_TEST_CASE(TestFindElement) {
   using Grid = bspline::support::Grid<double>;
   using BSplineException = bspline::exceptions::BSplineException;
 
@@ -166,27 +167,5 @@ static void testFindElement() {
                         BSplineException);
   }
 }
-
-BOOST_AUTO_TEST_SUITE(GridTestSuite)
-
-BOOST_AUTO_TEST_CASE(ConstructEmptyGridThrows) { constructEmptyGridThrows(); }
-
-BOOST_AUTO_TEST_CASE(ConstructGridWithOneElementThrows) {
-  constructGridWithOneElementThrows();
-}
-
-BOOST_AUTO_TEST_CASE(ConstructNotSteadilyIncreasingThrows) {
-  constructNotSteadilyIncreasingThrows();
-}
-
-BOOST_AUTO_TEST_CASE(TestCopyGrid) { testCopyGrid(); }
-
-BOOST_AUTO_TEST_CASE(TestIteration) { testIteration(); }
-
-BOOST_AUTO_TEST_CASE(TestEquality) { testEquality(); }
-
-BOOST_AUTO_TEST_CASE(TestAt) { testAt(); }
-
-BOOST_AUTO_TEST_CASE(TestFindElement) { testFindElement(); }
 
 BOOST_AUTO_TEST_SUITE_END()

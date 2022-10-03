@@ -18,43 +18,6 @@ static_assert(
 
 extern const std::vector<double> DEFAULT_GRID_DATA;
 
-/*!
- * Passes if the Support can be moved and the moved from object represents an
- * empty support.
- */
-static void testMoveSupport() {
-  using Grid = bspline::support::Grid<double>;
-  using Support = bspline::support::Support<double>;
-
-  Grid grid1(DEFAULT_GRID_DATA);
-  auto support1 = Support::createWholeGrid(grid1);
-  auto support2 = std::move(support1);
-
-  BOOST_TEST(support1.hasSameGrid(support2));
-  BOOST_TEST(support1.empty());
-}
-
-/*!
- * Passes if the Support can be iterated over using a range-based for loop.
- */
-static void testIteration() {
-  using Grid = bspline::support::Grid<double>;
-  using Support = bspline::support::Support<double>;
-
-  Grid grid1(DEFAULT_GRID_DATA);
-
-  const Support support1{grid1, 5, 9};
-  const std::vector<double> supportData{DEFAULT_GRID_DATA.begin() + 5,
-                                        DEFAULT_GRID_DATA.begin() + 9};
-  std::vector<double> supportData2;
-  for (const auto &val : support1) {
-    supportData2.push_back(val);
-  }
-  BOOST_TEST((supportData == supportData2));
-  std::vector<double> supportData3{support1.begin(), support1.end()};
-  BOOST_TEST((supportData == supportData3));
-}
-
 template <typename T>
 static void testSupport() {
   using Support = bspline::support::Support<T>;
@@ -152,14 +115,139 @@ static void testSupport() {
 
 BOOST_AUTO_TEST_SUITE(SupportTestSuite)
 
+/*!
+ * Passes if the constructor of the Support throws if we try to construct an
+ * invalid Support.
+ */
+BOOST_AUTO_TEST_CASE(ConstructInvalidThrows) {
+  using Grid = bspline::support::Grid<double>;
+  using Support = bspline::support::Support<double>;
+  using BSplineException = bspline::exceptions::BSplineException;
+
+  const Grid grid(DEFAULT_GRID_DATA);
+
+  BOOST_REQUIRE_NO_THROW(Support s(grid, 0, 0));
+  BOOST_REQUIRE_NO_THROW(Support s(grid, 2, 3));
+  // An empty Support must be instantiated with start and end index set to 0.
+  // Else the indices may not be equal.
+  BOOST_REQUIRE_THROW(Support s(grid, 2, 2), BSplineException);
+  // The end index may not be smaller than the start index.
+  BOOST_REQUIRE_THROW(Support s(grid, 2, 1), BSplineException);
+  // The end index may not be out-of-bounds w.r.t. the grid (must be <=
+  // grid.size()).
+  BOOST_REQUIRE_THROW(Support s(grid, 2, grid.size() + 1), BSplineException);
+  BOOST_REQUIRE_THROW(Support s(grid, 2, 2 * grid.size()), BSplineException);
+}
+
 BOOST_AUTO_TEST_CASE(TestSupport) {
   testSupport<float>();
   testSupport<double>();
   testSupport<long double>();
 }
 
-BOOST_AUTO_TEST_CASE(TestMoveSupport) { testMoveSupport(); }
+/*!
+ * Passes if the Support can be moved and the moved from object represents an
+ * empty support.
+ */
+BOOST_AUTO_TEST_CASE(TestMoveSupport) {
+  using Grid = bspline::support::Grid<double>;
+  using Support = bspline::support::Support<double>;
 
-BOOST_AUTO_TEST_CASE(TestIteration) { testIteration(); }
+  Grid grid1(DEFAULT_GRID_DATA);
+  auto support1 = Support::createWholeGrid(grid1);
+  auto support2 = std::move(support1);
+
+  BOOST_TEST(support1.hasSameGrid(support2));
+  BOOST_TEST(support1.empty());
+}
+
+/*!
+ * Passes if the Support can be iterated over using a range-based for loop.
+ */
+BOOST_AUTO_TEST_CASE(TestIteration) {
+  using Grid = bspline::support::Grid<double>;
+  using Support = bspline::support::Support<double>;
+
+  Grid grid1(DEFAULT_GRID_DATA);
+
+  const Support support1{grid1, 5, 9};
+  const std::vector<double> supportData{DEFAULT_GRID_DATA.begin() + 5,
+                                        DEFAULT_GRID_DATA.begin() + 9};
+  std::vector<double> supportData2;
+  for (const auto &val : support1) {
+    supportData2.push_back(val);
+  }
+  BOOST_TEST((supportData == supportData2));
+  std::vector<double> supportData3{support1.begin(), support1.end()};
+  BOOST_TEST((supportData == supportData3));
+}
+
+/*!
+ * Passes if the (in)equality operators correctly compare grids.
+ */
+BOOST_AUTO_TEST_CASE(TestEquality) {
+  using Grid = bspline::support::Grid<double>;
+  using Support = bspline::support::Support<double>;
+
+  const Grid grid(DEFAULT_GRID_DATA);
+  const Grid gridCopy = grid;
+  const Grid gridEquivalent(DEFAULT_GRID_DATA);
+
+  const Support support{grid, 3, 7};
+  const Support supportCopy{gridCopy, 3, 7};
+  const Support supportEquivalent{gridEquivalent, 3, 7};
+
+  const auto supportEmpty = Support::createEmpty(grid);
+  const Support supportOther{grid, 3, 8};
+  const Support supportOther2{grid, 2, 7};
+
+  BOOST_TEST(support == supportCopy);
+  BOOST_TEST(support == supportEquivalent);
+  BOOST_TEST(!(support != supportCopy));
+  BOOST_TEST(!(support != supportEquivalent));
+
+  BOOST_TEST(support != supportEmpty);
+  BOOST_TEST(!(support == supportEmpty));
+  BOOST_TEST(support != supportOther);
+  BOOST_TEST(!(support == supportOther));
+  BOOST_TEST(support != supportOther2);
+  BOOST_TEST(!(support == supportOther2));
+}
+
+/*!
+ * Passes if the method at() behaves as expected, giving access to existant
+ * elements and throwing exception in the case of an attempted access to
+ * non-existant elements.
+ */
+BOOST_AUTO_TEST_CASE(TestAt) {
+  using Grid = bspline::support::Grid<double>;
+  using Support = bspline::support::Support<double>;
+  using BSplineException = bspline::exceptions::BSplineException;
+
+  const Grid grid(DEFAULT_GRID_DATA);
+  const auto support = Support::createWholeGrid(grid);
+
+  const std::vector<size_t> validIndices{0, DEFAULT_GRID_DATA.size() / 2,
+                                         DEFAULT_GRID_DATA.size() - 1};
+  for (size_t validIndex : validIndices) {
+    BOOST_REQUIRE_NO_THROW(support.at(validIndex));
+    BOOST_TEST(support.at(validIndex) == DEFAULT_GRID_DATA.at(validIndex));
+  }
+
+  BOOST_REQUIRE_THROW(support.at(DEFAULT_GRID_DATA.size()), BSplineException);
+  BOOST_REQUIRE_THROW(support.at(DEFAULT_GRID_DATA.size() + 5),
+                      BSplineException);
+  BOOST_REQUIRE_THROW(support.at(2 * DEFAULT_GRID_DATA.size()),
+                      BSplineException);
+
+  const Support support2{grid, 5, grid.size()};
+  const std::vector<size_t> validIndices2{0, DEFAULT_GRID_DATA.size() - 6};
+  for (size_t validIndex : validIndices2) {
+    BOOST_REQUIRE_NO_THROW(support2.at(validIndex));
+    BOOST_TEST(support2.at(validIndex) == DEFAULT_GRID_DATA.at(validIndex + 5));
+  }
+  BOOST_REQUIRE_THROW(support2.at(DEFAULT_GRID_DATA.size() - 5),
+                      BSplineException);
+}
 
 BOOST_AUTO_TEST_SUITE_END()

@@ -84,7 +84,12 @@ class Spline final {
   };
 
   /**
-   * Performs consistency checks on the internal data.
+   * Performs consistency checks on the provided data.
+   *
+   * @param support The support to check.
+   * @param coefficients The coefficients to check.
+   * @throws BSplineException if the provided data do not represent a valid
+   * internal state of a spline.
    */
   void checkValidity(
       const Support<T> &support,
@@ -95,6 +100,13 @@ class Spline final {
          coefficients.size() == support.numberOfIntervals());
     if (!isValid) throw BSplineException(ErrorCode::INCONSISTENT_DATA);
   };
+
+  /**
+   * Performs consistency checks on this Spline object
+   *
+   * @throws BSplineException if this object is not in a valid state.
+   */
+  void checkValidity() const { checkValidity(_support, _coefficients); };
 
   /*!
    * Resets the data of the spline and performs sanity checks.
@@ -144,13 +156,17 @@ class Spline final {
   /*!
    * Returns the spline's support.
    */
-  const Support<T> &getSupport() const noexcept { return _support; };
+  const Support<T> &getSupport() const noexcept {
+    DURING_TEST_CHECK_VALIDITY();
+    return _support;
+  };
 
   /*!
    * Returns the polynomial coefficients of the spline for each interval.
    */
   const std::vector<std::array<T, ARRAY_SIZE>> &getCoefficients()
       const noexcept {
+    DURING_TEST_CHECK_VALIDITY();
     return _coefficients;
   };
 
@@ -162,6 +178,7 @@ class Spline final {
    * @returns The value of the spline at point x.
    */
   T operator()(const T &x) const {
+    DURING_TEST_CHECK_VALIDITY();
     const auto intervalIndex = findInterval(x);
 
     if (!intervalIndex) return static_cast<T>(0);
@@ -178,7 +195,10 @@ class Spline final {
    *
    * @throws BSplineException If the spline's support is empty.
    */
-  const T &front() const { return _support.front(); };
+  const T &front() const {
+    DURING_TEST_CHECK_VALIDITY();
+    return _support.front();
+  };
 
   /*!
    * Returns the end of the support of this spline. If the spline is empty, an
@@ -186,7 +206,10 @@ class Spline final {
    *
    * @throws BSplineException If the spline's support is empty.
    */
-  const T &back() const { return _support.back(); };
+  const T &back() const {
+    DURING_TEST_CHECK_VALIDITY();
+    return _support.back();
+  };
 
   /*!
    * Checks whether the supports of the two splines overlap.
@@ -198,6 +221,7 @@ class Spline final {
    */
   template <size_t order2>
   bool checkOverlap(const Spline<T, order2> &m2) const {
+    DURING_TEST_CHECK_VALIDITY();
     if (!_support.containsIntervals() || !m2.getSupport().containsIntervals())
       return false;
     const bool isNotOverlapping = m2.getSupport().back() <= _support.front() ||
@@ -213,6 +237,7 @@ class Spline final {
    * values.
    */
   bool isZero() const {
+    DURING_TEST_CHECK_VALIDITY();
     static const T ZERO = static_cast<T>(0);
     if (!_support.containsIntervals()) return true;
     for (const auto &cs : _coefficients) {
@@ -233,6 +258,7 @@ class Spline final {
    * @returns A new, scaled spline.
    */
   Spline<T, order> operator/(const T &d) const {
+    DURING_TEST_CHECK_VALIDITY();
     return (*this) * (static_cast<T>(1) / d);
   };
 
@@ -243,6 +269,7 @@ class Spline final {
    * @returns A new, scaled spline.
    */
   Spline<T, order> operator*(const T &d) const {
+    DURING_TEST_CHECK_VALIDITY();
     Spline<T, order> ret(*this);
     for (auto &cs : ret._coefficients) {
       for (auto &c : cs) {
@@ -260,6 +287,7 @@ class Spline final {
    * @returns A reference to this spline.
    */
   Spline<T, order> &operator*=(const T &d) {
+    DURING_TEST_CHECK_VALIDITY();
     for (auto &cs : _coefficients) {
       for (auto &c : cs) {
         c *= d;
@@ -276,6 +304,7 @@ class Spline final {
    * @returns A reference to this spline.
    */
   Spline<T, order> &operator/=(const T &d) {
+    DURING_TEST_CHECK_VALIDITY();
     (*this) *= (static_cast<T>(1) / d);
     return *this;
   };
@@ -284,7 +313,10 @@ class Spline final {
    * Unary minus operator.
    * @returns A new, scaled spline.
    */
-  Spline<T, order> operator-() const { return (*this) * static_cast<T>(-1); };
+  Spline<T, order> operator-() const {
+    DURING_TEST_CHECK_VALIDITY();
+    return (*this) * static_cast<T>(-1);
+  };
 
   /*!
    * Copy assign of spline to this spline object. The operation is only well
@@ -297,6 +329,7 @@ class Spline final {
    */
   template <size_t ordera>
   Spline<T, order> &operator=(const Spline<T, ordera> &a) {
+    DURING_TEST_CHECK_VALIDITY();
     // The case ordera == order should be handled by the default assignment
     // operator which is automatically generated.
     static_assert(
@@ -327,6 +360,7 @@ class Spline final {
    */
   template <size_t ordera>
   Spline<T, order + ordera> operator*(const Spline<T, ordera> &a) const {
+    DURING_TEST_CHECK_VALIDITY();
     static constexpr size_t NEW_ORDER = order + ordera;
     static constexpr size_t NEW_ARRAY_SIZE = NEW_ORDER + 1;
 
@@ -371,6 +405,7 @@ class Spline final {
   template <size_t ordera>
   Spline<T, std::max(order, ordera)> operator+(
       const Spline<T, ordera> &a) const {
+    DURING_TEST_CHECK_VALIDITY();
     static constexpr size_t NEW_ORDER = std::max(order, ordera);
     static constexpr size_t NEW_ARRAY_SIZE = NEW_ORDER + 1;
 
@@ -417,6 +452,7 @@ class Spline final {
    */
   template <size_t ordera>
   Spline<T, order> &operator+=(const Spline<T, ordera> &a) {
+    DURING_TEST_CHECK_VALIDITY();
     static_assert(
         ordera <= order,
         "The operators += and -= are only defined if the order of the rhs "

@@ -55,6 +55,24 @@ class Support final {
    */
   AbsoluteIndex _endIndex;
 
+  /*!
+   * Checks the validity of this Support and throws if the Support is not in a
+   * valid state.
+   *
+   * @throws BSplineException if this object is not in a valid state.
+   */
+  void checkValidity() const {
+    const bool isEmpty = _startIndex == 0 && _endIndex == 0;
+    const bool containsElement = _endIndex > _startIndex;
+    const bool withinBounds = _endIndex <= _grid.size();
+
+    const bool valid = isEmpty || (containsElement && withinBounds);
+
+    if (!valid) {
+      throw BSplineException(ErrorCode::INCONSISTENT_DATA);
+    }
+  }
+
  public:
   /*!
    * Constructs a support relative to the global grid grid.
@@ -67,9 +85,7 @@ class Support final {
    */
   Support(const Grid<T> &grid, AbsoluteIndex startIndex, AbsoluteIndex endIndex)
       : _grid(grid), _startIndex(startIndex), _endIndex(endIndex) {
-    if (_startIndex > _endIndex || _endIndex > _grid.size()) {
-      throw BSplineException(ErrorCode::INCONSISTENT_DATA);
-    }
+    checkValidity();
   };
 
   /*!
@@ -101,6 +117,8 @@ class Support final {
       : _grid{s._grid}, _startIndex{s._startIndex}, _endIndex{s._endIndex} {
     s._startIndex = 0;
     s._endIndex = 0;
+    DURING_TEST_CHECK_VALIDITY();
+    DURING_TEST_CHECK_VALIDITY_OF(s);
   }
 
   /*!
@@ -116,6 +134,8 @@ class Support final {
 
     s._startIndex = 0;
     s._endIndex = 0;
+    DURING_TEST_CHECK_VALIDITY();
+    DURING_TEST_CHECK_VALIDITY_OF(s);
     return *this;
   }
 
@@ -143,14 +163,20 @@ class Support final {
    *
    * @returns The number of grid points contained in this support.
    */
-  size_t size() const { return _endIndex - _startIndex; };
+  size_t size() const {
+    DURING_TEST_CHECK_VALIDITY();
+    return _endIndex - _startIndex;
+  };
 
   /*!
    * Checks whether the number of grid points contained in the support is zero.
    *
    * @returns True if this support contains no grid points, false otherwise.
    */
-  bool empty() const { return (_startIndex == _endIndex); };
+  bool empty() const {
+    DURING_TEST_CHECK_VALIDITY();
+    return (_startIndex == _endIndex);
+  };
 
   /*!
    * Checks whether the support contains any intervals. The number of intervals
@@ -158,7 +184,10 @@ class Support final {
    *
    * @returns false if the support is empty or point-like, true otherwise.
    */
-  bool containsIntervals() const { return (size() > 1); };
+  bool containsIntervals() const {
+    DURING_TEST_CHECK_VALIDITY();
+    return (size() > 1);
+  };
 
   /*!
    *
@@ -171,6 +200,7 @@ class Support final {
    * support, std::nullopt else.
    */
   std::optional<RelativeIndex> relativeFromAbsolute(AbsoluteIndex index) const {
+    DURING_TEST_CHECK_VALIDITY();
     if (index >= _startIndex && index < _endIndex) {
       return index - _startIndex;
     } else {
@@ -189,6 +219,7 @@ class Support final {
    */
   std::optional<RelativeIndex> intervalIndexFromAbsolute(
       AbsoluteIndex index) const {
+    DURING_TEST_CHECK_VALIDITY();
     if (index >= _startIndex && index + 1 < _endIndex) {
       return index - _startIndex;
     } else {
@@ -206,6 +237,7 @@ class Support final {
    * @returns The absolute index corresponding to the relative index.
    */
   AbsoluteIndex absoluteFromRelative(RelativeIndex index) const {
+    DURING_TEST_CHECK_VALIDITY();
     if (index >= size()) {
       throw BSplineException(ErrorCode::UNDETERMINED);
     }
@@ -218,6 +250,7 @@ class Support final {
    * @returns The number of intervals contained in this support.
    */
   size_t numberOfIntervals() const {
+    DURING_TEST_CHECK_VALIDITY();
     const size_t si = size();
     if (si == 0) {
       return 0;
@@ -231,21 +264,30 @@ class Support final {
    *
    * @returns A reference to the global grid.
    */
-  const Grid<T> &getGrid() const { return _grid; };
+  const Grid<T> &getGrid() const {
+    DURING_TEST_CHECK_VALIDITY();
+    return _grid;
+  };
 
   /*!
    * Returns the _startIndex.
    *
    * @returns The start index.
    */
-  AbsoluteIndex getStartIndex() const { return _startIndex; };
+  AbsoluteIndex getStartIndex() const {
+    DURING_TEST_CHECK_VALIDITY();
+    return _startIndex;
+  };
 
   /*!
    * Returns the _endIndex.
    *
    * @returns The end index.
    */
-  AbsoluteIndex getEndIndex() const { return _endIndex; }
+  AbsoluteIndex getEndIndex() const {
+    DURING_TEST_CHECK_VALIDITY();
+    return _endIndex;
+  }
 
   /*!
    * Allows access to the grid points contained in the support. Performs no
@@ -256,6 +298,7 @@ class Support final {
    * checked.
    */
   const T &operator[](RelativeIndex index) const {
+    DURING_TEST_CHECK_VALIDITY();
     return _grid[_startIndex + index];
   };
 
@@ -269,6 +312,7 @@ class Support final {
    * checked.
    */
   const T &at(RelativeIndex index) const {
+    DURING_TEST_CHECK_VALIDITY();
     if (_startIndex + index >= _endIndex) {
       throw BSplineException(ErrorCode::INVALID_ACCESS);
     }
@@ -282,6 +326,7 @@ class Support final {
    * @returns A reference to the first grid point contained in this support.
    */
   const T &front() const {
+    DURING_TEST_CHECK_VALIDITY();
     if (empty()) {
       throw BSplineException(ErrorCode::INVALID_ACCESS);
     }
@@ -296,6 +341,7 @@ class Support final {
 
    */
   const T &back() const {
+    DURING_TEST_CHECK_VALIDITY();
     if (empty()) {
       throw BSplineException(ErrorCode::INVALID_ACCESS);
     }
@@ -307,14 +353,20 @@ class Support final {
    *
    * @returns An iterator to the first element.
    */
-  const_iterator begin() const { return _grid.begin() + _startIndex; };
+  const_iterator begin() const {
+    DURING_TEST_CHECK_VALIDITY();
+    return _grid.begin() + _startIndex;
+  };
 
   /*!
    * Returns the end iterator of the support..
    *
    * @returns An iterator pointing behind the last element.
    */
-  const_iterator end() const { return _grid.begin() + _endIndex; };
+  const_iterator end() const {
+    DURING_TEST_CHECK_VALIDITY();
+    return _grid.begin() + _endIndex;
+  };
 
   /*!
    * Checks whether the global grids, the two supports are defined on, are
@@ -324,7 +376,10 @@ class Support final {
    * @returns True if the support s is defined on a logically equivalent grid,
    * false otherwise.
    */
-  bool hasSameGrid(const Support &s) const { return _grid == s._grid; };
+  bool hasSameGrid(const Support &s) const {
+    DURING_TEST_CHECK_VALIDITY();
+    return _grid == s._grid;
+  };
 
   /*!
    * Compares two supports for equality. For two supports two be equal, they
@@ -336,6 +391,7 @@ class Support final {
    * otherwise.
    */
   bool operator==(const Support &s) const {
+    DURING_TEST_CHECK_VALIDITY();
     return hasSameGrid(s) &&
            ((_startIndex == s._startIndex && _endIndex == s._endIndex) ||
             (empty() && s.empty()));
@@ -350,7 +406,10 @@ class Support final {
    * @returns False it the two supports are logically equivalent, true
    * otherwise.
    */
-  bool operator!=(const Support &s) const { return !(*this == s); };
+  bool operator!=(const Support &s) const {
+    DURING_TEST_CHECK_VALIDITY();
+    return !(*this == s);
+  };
 
   /*!
    * Calculates the union of this support with the support s. This is not
@@ -364,6 +423,8 @@ class Support final {
    * @returns The support representing the union of the two supports.
    */
   Support calcUnion(const Support &s) const {
+    DURING_TEST_CHECK_VALIDITY();
+    DURING_TEST_CHECK_VALIDITY_OF(s);
     if (!hasSameGrid(s)) {
       throw BSplineException(ErrorCode::DIFFERING_GRIDS);
     }
@@ -394,6 +455,8 @@ class Support final {
    * @returns The support representing the intersection of the two supports.
    */
   Support calcIntersection(const Support &s) const {
+    DURING_TEST_CHECK_VALIDITY();
+    DURING_TEST_CHECK_VALIDITY_OF(s);
     if (!hasSameGrid(s)) {
       throw BSplineException(ErrorCode::DIFFERING_GRIDS);
     }

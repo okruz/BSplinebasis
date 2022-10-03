@@ -10,6 +10,10 @@ if (Boost_unit_test_framework_FOUND)
     bspline/support/Support_test.cpp
     bspline/spline-test.cpp
   )
+  
+  target_compile_definitions(test PUBLIC 
+    BSPLINE_ADD_TEST_CHECKS
+  )
 
   target_include_directories(test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
   target_link_libraries(test 
