@@ -6,7 +6,8 @@ if (Boost_unit_test_framework_FOUND)
 
   add_executable(test
     main.cpp
-    bspline/support/support-test.cpp
+    bspline/support/Grid_test.cpp
+    bspline/support/Support_test.cpp
     bspline/spline-test.cpp
   )
 

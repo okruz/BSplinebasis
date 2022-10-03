@@ -11,37 +11,21 @@
 #include <boost/test/unit_test.hpp>
 #include <type_traits>
 
-static_assert(!std::is_move_constructible_v<bspline::support::Grid<double>> &&
-                  !std::is_move_assignable_v<bspline::support::Grid<double>>,
-              "Grid is movable.");
 static_assert(
     std::is_nothrow_move_constructible_v<bspline::support::Support<double>> &&
         std::is_nothrow_move_assignable_v<bspline::support::Support<double>>,
     "Support is not nothrow move constructible.");
 
-void testCopyGrid() {
-  // A Grid cannot be moved, only copied.
-  using Grid = bspline::support::Grid<double>;
+static const std::vector<double> DEFAULT_GRID_DATA{
+    -7.0l, -6.85l, -6.55l, -6.3l, -6.0l, -5.75l, -5.53l, -5.2l, -4.75l, -4.5l,
+    -3.0l, -2.5l,  -1.5l,  -1.0l, 0.0l,  0.5l,   1.5l,   2.5l,  3.5l,   4.0l,
+    4.35l, 4.55l,  4.95l,  5.4l,  5.7l,  6.1l,   6.35l,  6.5l,  6.85l,  7.0l};
 
-  Grid grid1(std::vector<double>{-7.0l,  -6.85l, -6.55l, -6.3l, -6.0l, -5.75l,
-                                 -5.53l, -5.2l,  -4.75l, -4.5l, -3.0l, -2.5l,
-                                 -1.5l,  -1.0l,  0.0l,   0.5l,  1.5l,  2.5l,
-                                 3.5l,   4.0l,   4.35l,  4.55l, 4.95l, 5.4l,
-                                 5.7l,   6.1l,   6.35l,  6.5l,  6.85l, 7.0l});
-  auto grid2 = grid1;
-  BOOST_TEST((grid1.getData() != nullptr && grid2.getData() != nullptr));
-  BOOST_TEST((grid1 == grid2));
-}
-
-void testMoveSupport() {
+static void testMoveSupport() {
   using Grid = bspline::support::Grid<double>;
   using Support = bspline::support::Support<double>;
 
-  Grid grid1(std::vector<double>{-7.0l,  -6.85l, -6.55l, -6.3l, -6.0l, -5.75l,
-                                 -5.53l, -5.2l,  -4.75l, -4.5l, -3.0l, -2.5l,
-                                 -1.5l,  -1.0l,  0.0l,   0.5l,  1.5l,  2.5l,
-                                 3.5l,   4.0l,   4.35l,  4.55l, 4.95l, 5.4l,
-                                 5.7l,   6.1l,   6.35l,  6.5l,  6.85l, 7.0l});
+  Grid grid1(DEFAULT_GRID_DATA);
   auto support1 = Support::createWholeGrid(grid1);
   auto support2 = std::move(support1);
 
@@ -49,28 +33,15 @@ void testMoveSupport() {
   BOOST_TEST(support1.empty());
 }
 
-void testIteration() {
+static void testIteration() {
   using Grid = bspline::support::Grid<double>;
   using Support = bspline::support::Support<double>;
 
-  const std::vector<double> gridData{
-      -7.0l, -6.85l, -6.55l, -6.3l, -6.0l, -5.75l, -5.53l, -5.2l, -4.75l, -4.5l,
-      -3.0l, -2.5l,  -1.5l,  -1.0l, 0.0l,  0.5l,   1.5l,   2.5l,  3.5l,   4.0l,
-      4.35l, 4.55l,  4.95l,  5.4l,  5.7l,  6.1l,   6.35l,  6.5l,  6.85l,  7.0l};
-
-  Grid grid1(gridData);
-
-  std::vector<double> gridData2;
-  for (const auto &val : grid1) {
-    gridData2.push_back(val);
-  }
-  BOOST_TEST((gridData == gridData2));
-  std::vector<double> gridData3{grid1.begin(), grid1.end()};
-  BOOST_TEST((gridData == gridData3));
+  Grid grid1(DEFAULT_GRID_DATA);
 
   const Support support1{grid1, 5, 9};
-  const std::vector<double> supportData{gridData.begin() + 5,
-                                        gridData.begin() + 9};
+  const std::vector<double> supportData{DEFAULT_GRID_DATA.begin() + 5,
+                                        DEFAULT_GRID_DATA.begin() + 9};
   std::vector<double> supportData2;
   for (const auto &val : support1) {
     supportData2.push_back(val);
@@ -81,7 +52,7 @@ void testIteration() {
 }
 
 template <typename T>
-void testSupport() {
+static void testSupport() {
   using Support = bspline::support::Support<T>;
   using BSplineException = bspline::exceptions::BSplineException;
   using Grid = bspline::support::Grid<T>;
@@ -182,8 +153,6 @@ BOOST_AUTO_TEST_CASE(TestSupport) {
   testSupport<double>();
   testSupport<long double>();
 }
-
-BOOST_AUTO_TEST_CASE(TestCopyGrid) { testCopyGrid(); }
 
 BOOST_AUTO_TEST_CASE(TestMoveSupport) { testMoveSupport(); }
 
