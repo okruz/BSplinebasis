@@ -14,13 +14,14 @@
 static_assert(
     std::is_nothrow_move_constructible_v<bspline::support::Support<double>> &&
         std::is_nothrow_move_assignable_v<bspline::support::Support<double>>,
-    "Support is not nothrow move constructible.");
+    "Support is not nothrow movable.");
 
-static const std::vector<double> DEFAULT_GRID_DATA{
-    -7.0l, -6.85l, -6.55l, -6.3l, -6.0l, -5.75l, -5.53l, -5.2l, -4.75l, -4.5l,
-    -3.0l, -2.5l,  -1.5l,  -1.0l, 0.0l,  0.5l,   1.5l,   2.5l,  3.5l,   4.0l,
-    4.35l, 4.55l,  4.95l,  5.4l,  5.7l,  6.1l,   6.35l,  6.5l,  6.85l,  7.0l};
+extern const std::vector<double> DEFAULT_GRID_DATA;
 
+/*!
+ * Passes if the Support can be moved and the moved from object represents an
+ * empty support.
+ */
 static void testMoveSupport() {
   using Grid = bspline::support::Grid<double>;
   using Support = bspline::support::Support<double>;
@@ -33,6 +34,9 @@ static void testMoveSupport() {
   BOOST_TEST(support1.empty());
 }
 
+/*!
+ * Passes if the Support can be iterated over using a range-based for loop.
+ */
 static void testIteration() {
   using Grid = bspline::support::Grid<double>;
   using Support = bspline::support::Support<double>;

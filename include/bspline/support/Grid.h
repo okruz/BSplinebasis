@@ -59,7 +59,7 @@ class Grid final {
    * @param end The iterator referencing the element behind the last element to
    * be copied into the grid.
    * @tparam Iter The type of the two iterators.
-   * @throws BSplineException If the grid is not empty but contains only a
+   * @throws BSplineException If the grid is empty or contains only a
    * single element, or if the elements are not in steadily increasing order.
    */
   template <typename Iter>
@@ -70,7 +70,7 @@ class Grid final {
    * Constructs a grid from a std::vector.
    *
    * @param v The input vector.
-   * @throws BSplineException If the grid is not empty but contains only a
+   * @throws BSplineException If the grid is empty or contains only a
    * single element, or if the elements are not in steadily increasing order.
    */
   explicit Grid(std::vector<T> v)
@@ -80,7 +80,7 @@ class Grid final {
    * Constructs a grid from a std::initializer_list.
    *
    * @param v The input initializer_list.
-   * @throws BSplineException If the grid is not empty but contains only a
+   * @throws BSplineException If the grid is empty or contains only a
    * single element, or if the elements are not in steadily increasing order.
    */
   explicit Grid(const std::initializer_list<T> &v) : Grid(v.begin(), v.end()){};
@@ -89,7 +89,7 @@ class Grid final {
    * Constructs a grid from a std::shared_ptr<const std::vector<T>>.
    *
    * @param data A shared pointer to the grid elements.
-   * @throws BSplineException If the grid is not empty but contains only a
+   * @throws BSplineException If the grid is empty or contains only a
    * single element, or if the elements are not in steadily increasing order.
    */
   explicit Grid(std::shared_ptr<const std::vector<T>> data)
@@ -175,7 +175,8 @@ class Grid final {
   std::shared_ptr<const std::vector<T>> getData() const { return _data; };
 
   /*!
-   * Checks whether the grids holds any elements.
+   * Checks whether the grids holds any elements. Note: It is not possible to
+   * construct an empty Grid, so this method will always return false.
    *
    * @returns True if this grid holds no element.
    */
