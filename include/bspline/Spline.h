@@ -548,14 +548,13 @@ auto linearCombination(CoeffIter coeffsBegin, CoeffIter coeffsEnd,
       throw BSplineException(ErrorCode::DIFFERING_GRIDS);
     }
 
-    const size_t si = it->getSupport().getStartIndex();
-    const size_t ei = it->getSupport().getEndIndex();
-
     if (!it->getSupport().empty()) {
+      const size_t si = it->getSupport().getStartIndex();
       if (!startIndex || si < *startIndex) {
         startIndex = si;
       }
 
+      const size_t ei = it->getSupport().getEndIndex();
       if (!endIndex || ei > *endIndex) {
         endIndex = ei;
       }
