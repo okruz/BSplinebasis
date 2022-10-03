@@ -392,6 +392,7 @@ class Support final {
    */
   bool operator==(const Support &s) const {
     DURING_TEST_CHECK_VALIDITY();
+    DURING_TEST_CHECK_VALIDITY_OF(s);
     return hasSameGrid(s) &&
            ((_startIndex == s._startIndex && _endIndex == s._endIndex) ||
             (empty() && s.empty()));

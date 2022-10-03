@@ -155,6 +155,7 @@ class Grid final {
    */
   bool operator==(const Grid &g) const {
     DURING_TEST_CHECK_VALIDITY();
+    DURING_TEST_CHECK_VALIDITY_OF(g);
     if (_data == g._data) {
       // Fast path: Compare pointers.
       return true;
