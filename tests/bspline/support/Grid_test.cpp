@@ -166,6 +166,9 @@ BOOST_AUTO_TEST_CASE(TestFindElement) {
     BOOST_REQUIRE_THROW(grid.findElement(DEFAULT_GRID_DATA.at(i) + 1.0e-4),
                         BSplineException);
   }
+
+  const double tooSmall = DEFAULT_GRID_DATA.front() - 1.0e-4;
+  BOOST_REQUIRE_THROW(grid.findElement(tooSmall), BSplineException);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
