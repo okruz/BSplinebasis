@@ -36,8 +36,8 @@ enum class ErrorCode {
 inline std::string getErrorMessage(ErrorCode errorCode) {
   switch (errorCode) {
     case ErrorCode::DIFFERING_GRIDS:
-      return "The requested operation is not implemented for splines defined "
-             "on different grids.";
+      return "The requested operation is not implemented for objects defined "
+             "on non-equivalent grids.";
     case ErrorCode::INCONSISTENT_DATA:
       return "The data provided is inconsistent.";
     case ErrorCode::MISSING_DATA:
@@ -126,9 +126,7 @@ class BSplineException final : public std::exception {
    *
    * @returns The what string.
    */
-  virtual const char *what() const noexcept override {
-    return _whatString.c_str();
-  };
+  const char *what() const noexcept override { return _whatString.c_str(); };
 
   /*!
    * Returns the error code of this exception.
