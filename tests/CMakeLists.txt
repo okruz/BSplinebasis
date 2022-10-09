@@ -8,7 +8,7 @@ if (Boost_unit_test_framework_FOUND)
     main.cpp
     bspline/support/Grid_test.cpp
     bspline/support/Support_test.cpp
-    bspline/spline-test.cpp
+    bspline/Spline_test.cpp
   )
   
   target_compile_definitions(test PUBLIC 

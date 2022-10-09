@@ -35,6 +35,7 @@ Spline<T, 0> getOne(const Grid<T> &grid) {
 template <typename T, size_t order>
 void testIntegration(T tol) {
   using namespace bspline::integration;
+  using namespace bspline::operators;
 
   using Spline = bspline::Spline<T, order>;
   using Spline0 = bspline::Spline<T, 0>;
@@ -51,14 +52,15 @@ void testIntegration(T tol) {
   const auto f1 = [](const T & /*x*/) { return static_cast<T>(1); };
   const auto fx = [](const T &x) { return x; };
 
-  integration::ScalarProduct sp;
-  integration::BilinearForm bfx{operators::X<1>{}};
-  integration::BilinearForm bfx2{operators::X<2>{}};
-  integration::BilinearForm bfx_dx{operators::X<1>{} * operators::Dx<1>{}};
-  integration::BilinearForm bfdx{operators::Dx<1>{}};
-  integration::BilinearForm bfdx2{operators::Dx<2>{}};
-  integration::BilinearForm bfx2_dx2{operators::X<2>{} * operators::Dx<2>{}};
-  integration::LinearForm lf{};
+  ScalarProduct sp;
+  BilinearForm bfx{X<1>{}};
+  BilinearForm bfx2{X<2>{}};
+  BilinearForm bfx_dx{X<1>{} * Dx<1>{}};
+  BilinearForm bfdx{Dx<1>{}};
+  BilinearForm bfdx2{Dx<2>{}};
+  BilinearForm bfdxdx{Dx<1>{}, Dx<1>{}};
+  BilinearForm bfx2_dx2{X<2>{} * Dx<2>{}};
+  LinearForm lf{};
 
   for (const auto &s1 : splines) {
     for (const auto &s2 : splines) {
@@ -70,6 +72,9 @@ void testIntegration(T tol) {
       BOOST_CHECK_SMALL(bfx_dx.evaluate(s1, s2) - integrate_x_dx<T>(s1, s2),
                         static_cast<T>(2) * tol);
       BOOST_CHECK_SMALL(bfdx2.evaluate(s1, s2) - integrate_dx2<T>(s1, s2), tol);
+      // using \int dx a(x) d^2/dx^2 b(x) = -\int dx (d/dx a(x)) (d/dx b(x)).
+      BOOST_CHECK_SMALL(bfdx2.evaluate(s1, s2) + bfdxdx.evaluate(s1, s2),
+                        static_cast<T>(25) * tol);
       BOOST_CHECK_SMALL(bfx2_dx2.evaluate(s1, s2) - integrate_x2_dx2<T>(s1, s2),
                         static_cast<T>(150) * tol);
       BOOST_CHECK_SMALL(sp.evaluate(s1, s2) - integrate<2 * order>(f1, s1, s2),
