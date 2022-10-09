@@ -72,7 +72,7 @@ BOOST_AUTO_TEST_CASE(ConstructNotSteadilyIncreasingThrows) {
 /*!
  * Passes if the grid can be copied.
  */
-BOOST_AUTO_TEST_CASE(TestCopyGrid) {  // A Grid cannot be moved, only copied.
+BOOST_AUTO_TEST_CASE(CopyGrid) {  // A Grid cannot be moved, only copied.
   using Grid = bspline::support::Grid<double>;
 
   Grid grid1(DEFAULT_GRID_DATA);
@@ -84,7 +84,7 @@ BOOST_AUTO_TEST_CASE(TestCopyGrid) {  // A Grid cannot be moved, only copied.
 /*!
  * Passes if the Grid can be iterated over using a range-based for loop.
  */
-BOOST_AUTO_TEST_CASE(TestIteration) {
+BOOST_AUTO_TEST_CASE(Iteration) {
   using Grid = bspline::support::Grid<double>;
 
   const Grid grid1(DEFAULT_GRID_DATA);
@@ -101,7 +101,7 @@ BOOST_AUTO_TEST_CASE(TestIteration) {
 /*!
  * Passes if the (in)equality operators correctly compare grids.
  */
-BOOST_AUTO_TEST_CASE(TestEquality) {
+BOOST_AUTO_TEST_CASE(Equality) {
   using Grid = bspline::support::Grid<double>;
 
   const Grid grid(DEFAULT_GRID_DATA);
@@ -126,7 +126,7 @@ BOOST_AUTO_TEST_CASE(TestEquality) {
  * elements and throwing exception in the case of an attempted access to
  * non-existant elements.
  */
-BOOST_AUTO_TEST_CASE(TestAt) {
+BOOST_AUTO_TEST_CASE(At) {
   using Grid = bspline::support::Grid<double>;
   using BSplineException = bspline::exceptions::BSplineException;
 
@@ -145,10 +145,22 @@ BOOST_AUTO_TEST_CASE(TestAt) {
 }
 
 /*!
+ * Passes if front() and back() return the expected elements.
+ */
+BOOST_AUTO_TEST_CASE(FrontAndBack) {
+  using Grid = bspline::support::Grid<double>;
+
+  const Grid grid(DEFAULT_GRID_DATA);
+
+  BOOST_TEST(grid.front() == DEFAULT_GRID_DATA.front());
+  BOOST_TEST(grid.back() == DEFAULT_GRID_DATA.back());
+}
+
+/*!
  * Passes if the method findElement() correctly returns the index of an element
  * in the Grid and throws if the requested element could not be found.
  */
-BOOST_AUTO_TEST_CASE(TestFindElement) {
+BOOST_AUTO_TEST_CASE(FindElement) {
   using Grid = bspline::support::Grid<double>;
   using BSplineException = bspline::exceptions::BSplineException;
 

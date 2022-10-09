@@ -149,7 +149,7 @@ BOOST_AUTO_TEST_CASE(TestSupport) {
  * Passes if the Support can be moved and the moved from object represents an
  * empty support.
  */
-BOOST_AUTO_TEST_CASE(TestMoveSupport) {
+BOOST_AUTO_TEST_CASE(MoveSupport) {
   using Grid = bspline::support::Grid<double>;
   using Support = bspline::support::Support<double>;
 
@@ -158,13 +158,18 @@ BOOST_AUTO_TEST_CASE(TestMoveSupport) {
   auto support2 = std::move(support1);
 
   BOOST_TEST(support1.hasSameGrid(support2));
+  BOOST_TEST(support2.size() == DEFAULT_GRID_DATA.size());
+  BOOST_TEST(!support2.empty());
   BOOST_TEST(support1.empty());
+  BOOST_TEST(support1.size() == 0);
+  const bool iteratorsCoincide = support1.begin() == support1.end();
+  BOOST_TEST(iteratorsCoincide);
 }
 
 /*!
  * Passes if the Support can be iterated over using a range-based for loop.
  */
-BOOST_AUTO_TEST_CASE(TestIteration) {
+BOOST_AUTO_TEST_CASE(Iteration) {
   using Grid = bspline::support::Grid<double>;
   using Support = bspline::support::Support<double>;
 
@@ -183,9 +188,47 @@ BOOST_AUTO_TEST_CASE(TestIteration) {
 }
 
 /*!
+ * Passes if the method front() behaves as expected.
+ */
+BOOST_AUTO_TEST_CASE(Front) {
+  using Grid = bspline::support::Grid<double>;
+  using Support = bspline::support::Support<double>;
+  using BSplineException = bspline::exceptions::BSplineException;
+
+  Grid grid1(DEFAULT_GRID_DATA);
+
+  const auto whole = Support::createWholeGrid(grid1);
+  const Support partial{grid1, 5, 9};
+  const auto empty = Support::createEmpty(grid1);
+
+  BOOST_TEST(whole.front() == DEFAULT_GRID_DATA.front());
+  BOOST_TEST(partial.front() == DEFAULT_GRID_DATA.at(5));
+  BOOST_REQUIRE_THROW(empty.front(), BSplineException);
+}
+
+/*!
+ * Passes if the method back() behaves as expected.
+ */
+BOOST_AUTO_TEST_CASE(Back) {
+  using Grid = bspline::support::Grid<double>;
+  using Support = bspline::support::Support<double>;
+  using BSplineException = bspline::exceptions::BSplineException;
+
+  Grid grid1(DEFAULT_GRID_DATA);
+
+  const auto whole = Support::createWholeGrid(grid1);
+  const Support partial{grid1, 5, 9};
+  const auto empty = Support::createEmpty(grid1);
+
+  BOOST_TEST(whole.back() == DEFAULT_GRID_DATA.back());
+  BOOST_TEST(partial.back() == DEFAULT_GRID_DATA.at(8));
+  BOOST_REQUIRE_THROW(empty.back(), BSplineException);
+}
+
+/*!
  * Passes if the (in)equality operators correctly compare grids.
  */
-BOOST_AUTO_TEST_CASE(TestEquality) {
+BOOST_AUTO_TEST_CASE(Equality) {
   using Grid = bspline::support::Grid<double>;
   using Support = bspline::support::Support<double>;
 
@@ -219,7 +262,7 @@ BOOST_AUTO_TEST_CASE(TestEquality) {
  * elements and throwing exception in the case of an attempted access to
  * non-existant elements.
  */
-BOOST_AUTO_TEST_CASE(TestAt) {
+BOOST_AUTO_TEST_CASE(At) {
   using Grid = bspline::support::Grid<double>;
   using Support = bspline::support::Support<double>;
   using BSplineException = bspline::exceptions::BSplineException;
