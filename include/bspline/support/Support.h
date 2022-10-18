@@ -117,8 +117,6 @@ class Support final {
       : _grid{s._grid}, _startIndex{s._startIndex}, _endIndex{s._endIndex} {
     s._startIndex = 0;
     s._endIndex = 0;
-    DURING_TEST_CHECK_VALIDITY();
-    DURING_TEST_CHECK_VALIDITY_OF(s);
   }
 
   /*!
@@ -134,8 +132,7 @@ class Support final {
 
     s._startIndex = 0;
     s._endIndex = 0;
-    DURING_TEST_CHECK_VALIDITY();
-    DURING_TEST_CHECK_VALIDITY_OF(s);
+
     return *this;
   }
 
