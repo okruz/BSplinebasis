@@ -11,6 +11,8 @@
 #include <limits>
 #include <vector>
 
+#include "bspline/interpolation/interpolation.h"
+#include "diffusion.h"
 #include "harmonic-oscillator.h"
 #include "hydrogen.h"
 #include "spline-potential.h"
@@ -18,6 +20,7 @@
 using namespace bspline::examples::hydrogen;
 using namespace bspline::examples::harmonic_oscillator;
 using namespace bspline::examples::spline_potential;
+using namespace bspline::examples::diffusion;
 using namespace bspline::examples;
 
 static void harmonicOscillator() {
@@ -124,10 +127,43 @@ static void radialHydrogen() {
   }
 }
 
+static void diffusionEquation() {
+  std::cout.precision(std::numeric_limits<data_t>::max_digits10);
+  std::vector<data_t> gridPoints;
+  std::vector<data_t> diffCoeffVals;
+  for (int i = -100; i <= 100; i++) {
+    gridPoints.push_back(static_cast<data_t>(i) / 10);
+    if (abs(i) <= 33) {
+      diffCoeffVals.push_back(static_cast<data_t>(1) / 3);
+    } else {
+      diffCoeffVals.push_back(static_cast<data_t>(1));
+    }
+  }
+  bspline::support::Grid<data_t> grid(std::move(gridPoints));
+  auto support = bspline::support::Support<data_t>::createWholeGrid(grid);
+
+  const auto diffCoeff =
+      bspline::interpolation::interpolate_using_eigen<data_t,
+                                                      PSpline::spline_order>(
+          support, diffCoeffVals);
+  const auto solution = solveDiffusionSteadyState(
+      diffCoeff, static_cast<data_t>(0), static_cast<data_t>(10));
+
+  {
+    std::ofstream out("diffusion.txt");
+    out.precision(std::numeric_limits<data_t>::max_digits10);
+    for (data_t x = static_cast<data_t>(-10); x <= static_cast<data_t>(10);
+         x += static_cast<data_t>(1) / 100) {
+      out << x << "\t" << diffCoeff(x) << "\t" << solution(x) << "\n";
+    }
+  }
+}
+
 static void printUsage(const std::string &command) {
   std::cout << "Usage:\n\t" << command
             << " <example>\n\tWhere <example> is either "
-               "\"harmonic_oscillator\", \"hydrogen\" or \"spline_potential\"."
+               "\"harmonic_oscillator\", \"hydrogen\", \"spline_potential\" or "
+               "\"diffusion\"."
             << std::endl;
 }
 
@@ -145,6 +181,8 @@ int main(int argc, char **argv) {
     radialHydrogen();
   } else if (example == "spline_potential") {
     splinePotential();
+  } else if (example == "diffusion") {
+    diffusionEquation();
   } else {
     printUsage(argv[0]);
     return 1;

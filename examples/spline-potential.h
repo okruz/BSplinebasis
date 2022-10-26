@@ -18,11 +18,6 @@
 namespace bspline::examples::spline_potential {
 
 /**
- * The (cubic) potential spline.
- */
-using PSpline = bspline::Spline<data_t, 3>;
-
-/**
  * Solves the 1D Schroedinger equation with a potential represented by a
  * spline.
  * @param[in] v The spline representing the potential v(x).

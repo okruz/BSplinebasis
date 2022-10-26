@@ -5,6 +5,7 @@ if (Eigen3_FOUND)
     harmonic-oscillator.cpp
     spline-potential.cpp
     hydrogen.cpp
+    diffusion.cpp
   )
 
   target_compile_definitions(examples_objects PUBLIC 

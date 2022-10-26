@@ -32,10 +32,16 @@ using data_t = double;
 #endif
 
 using DeMat = Eigen::Matrix<data_t, Eigen::Dynamic, Eigen::Dynamic>;
+using DeVec = Eigen::Matrix<data_t, Eigen::Dynamic, 1>;
 
 constexpr size_t SPLINE_ORDER = 10;
 
 using Spline = bspline::Spline<data_t, SPLINE_ORDER>;
+
+/**
+ * The (cubic) potential spline.
+ */
+using PSpline = bspline::Spline<data_t, 3>;
 
 struct Eigenspace {
   data_t energy;
