@@ -17,11 +17,11 @@ using namespace bspline::operators;
 
 static_assert(std::is_nothrow_move_constructible_v<Operator> &&
                   std::is_nothrow_move_assignable_v<Operator>,
-              "Spline is not nothrow move constructible.");
+              "Operator is not nothrow moveable.");
 
 static_assert(std::is_nothrow_move_constructible_v<IdentityOperator> &&
                   std::is_nothrow_move_assignable_v<IdentityOperator>,
-              "Spline is not nothrow move constructible.");
+              "IdentityOperator is not nothrow moveable");
 
 template <typename T, size_t order>
 static void testSplineMultiplication() {
