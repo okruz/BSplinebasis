@@ -59,16 +59,18 @@ class BilinearForm final {
       }
     }
 
-    T result = static_cast<T>(0);
-    T power_of_dxhalf = static_cast<T>(2) * dxhalf;
+    // Use Horner's scheme to evaluate.
+    constexpr int endIndex = static_cast<int>(coefficients.size()) - 1;
+    static_assert(endIndex >= 0);
+
+    T result = coefficients[endIndex] / static_cast<T>(2 * endIndex + 1);
     const T dxhalf_squared = dxhalf * dxhalf;
 
-    for (size_t i = 0; i < coefficients.size(); i++) {
-      const size_t order = i * 2;
-      result += power_of_dxhalf * coefficients[i] / static_cast<T>(order + 1);
-      power_of_dxhalf *= dxhalf_squared;
+    for (int i = endIndex - 1; i >= 0; i--) {
+      result =
+          result * dxhalf_squared + coefficients[i] / static_cast<T>(2 * i + 1);
     }
-    return result;
+    return static_cast<T>(2) * dxhalf * result;
   }
 
  public:

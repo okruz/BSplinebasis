@@ -38,15 +38,18 @@ class LinearForm final {
    */
   template <typename T, size_t size>
   static T evaluateInterval(const std::array<T, size> &a, const T &dxhalf) {
-    T result = static_cast<T>(0);
-    T power_of_dxhalf = static_cast<T>(2) * dxhalf;
+    // Use Horner's scheme to evaluate.
+    constexpr int endIndex =
+        static_cast<int>(size) - static_cast<int>(size % 2 == 0 ? 2 : 1);
+    static_assert(endIndex >= 0);
+
+    T result = a.at(endIndex) / static_cast<T>(endIndex + 1);
     const T dxhalf_squared = dxhalf * dxhalf;
 
-    for (size_t i = 0; i < size; i += 2) {
-      result += power_of_dxhalf * a[i] / static_cast<T>(i + 1);
-      power_of_dxhalf *= dxhalf_squared;
+    for (int i = endIndex - 2; i >= 0; i -= 2) {
+      result = dxhalf_squared * result + a[i] / static_cast<T>(i + 1);
     }
-    return result;
+    return static_cast<T>(2) * dxhalf * result;
   }
 
  public:

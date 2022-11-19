@@ -97,11 +97,11 @@ std::array<T, sizeout> changearraysize(const std::array<T, sizein> &in) {
  */
 template <typename T, size_t size>
 T evaluateInterval(const T &x, const std::array<T, size> &coeffs, const T &xm) {
-  T result = static_cast<T>(0), xpot = static_cast<T>(1);
+  // Use Horner's scheme to evaluate.
   const T dx = x - xm;
-  for (const T &c : coeffs) {
-    result += c * xpot;
-    xpot *= dx;
+  T result = coeffs.back();
+  for (auto it = coeffs.rbegin() + 1; it != coeffs.rend(); it++) {
+    result = dx * result + (*it);
   }
   return result;
 }
