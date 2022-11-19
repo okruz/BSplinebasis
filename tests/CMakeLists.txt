@@ -9,6 +9,7 @@ if (Boost_unit_test_framework_FOUND)
     bspline/support/Grid_test.cpp
     bspline/support/Support_test.cpp
     bspline/Spline_test.cpp
+    bspline/operators/GenericOperators_test.cpp
   )
   
   target_compile_definitions(test PUBLIC 

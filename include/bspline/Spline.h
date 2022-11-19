@@ -491,6 +491,24 @@ class Spline final {
       const Spline<T, ordera> &a) const {
     return (*this) + (static_cast<T>(-1) * a);
   }
+
+  /*!
+   * Comares Two splines for equality.
+   *
+   * @param other The spline to compare this spline to.
+   * @returns true if the splines are identical, false otherwise.
+   */
+  bool operator==(const Spline &other) const {
+    return _support == other._support && _coefficients == other._coefficients;
+  }
+
+  /*!
+   * Comares Two splines for inequality.
+   *
+   * @param other The spline to compare this spline to.
+   * @returns false if the splines are identical, true otherwise.
+   */
+  bool operator!=(const Spline &other) const { return !(*this == other); }
 };  // class Spline
 
 /*!

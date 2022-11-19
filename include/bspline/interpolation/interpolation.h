@@ -312,7 +312,7 @@ bspline::Spline<T, order> interpolate(
  * @returns The spline interpolating the input data.
  */
 template <size_t order>
-bspline::Spline<double, order> interpolate_using_armadillo(
+bspline::Spline<double, order> interpolateUsingArmadillo(
     Support<double> x, const std::vector<double> &y,
     const std::array<Boundary<double>, order - 1> &boundaries =
         internal::defaultBoundaries<double, order>()) {
@@ -355,7 +355,7 @@ bspline::Spline<double, order> interpolate_using_armadillo(
  * @returns The spline interpolating the input data.
  */
 template <typename T, size_t order>
-bspline::Spline<T, order> interpolate_using_eigen(
+bspline::Spline<T, order> interpolateUsingEigen(
     Support<T> x, const std::vector<T> &y,
     const std::array<Boundary<T>, order - 1> &boundaries =
         internal::defaultBoundaries<T, order>()) {

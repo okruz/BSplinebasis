@@ -23,7 +23,7 @@ namespace bspline::examples::diffusion {
  * be continuous.
  * @param startValue The concentration at the begin of the domain.
  * @param endValue The concentration at the end of the domain.
- * @return Returns the (real) eigenenergies and the corresponding wavefunctions.
+ * @return Returns the (real) eigenenergies and the steady-state solution.
  */
 Spline solveDiffusionSteadyState(PSpline diffusionCoeff, data_t startValue,
                                  data_t endValue);

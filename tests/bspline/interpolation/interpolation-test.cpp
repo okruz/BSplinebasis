@@ -24,7 +24,7 @@ void testInterpolationEigen(T tol) {
   const auto x = Support::createWholeGrid(grid);
   const std::vector<T> y{-3.0l, -2.5l, -1.5l, -1.0l, 0.0l, -0.5l,
                          -1.5l, -2.5l, -3.5l, -4.0l, 3.0l};
-  Spline s = bspline::interpolation::interpolate_using_eigen<T, order>(x, y);
+  Spline s = bspline::interpolation::interpolateUsingEigen<T, order>(x, y);
   for (size_t i = 0; i < x.size(); i++) {
     BOOST_CHECK_SMALL(s(x[i]) - y[i], tol);
   }
@@ -57,7 +57,7 @@ void testInterpolationArmadillo(double tol) {
   const auto x = Support::createWholeGrid(grid);
   const std::vector<double> y{-3.0l, -2.5l, -1.5l, -1.0l, 0.0l, -0.5l,
                               -1.5l, -2.5l, -3.5l, -4.0l, 3.0l};
-  Spline s = bspline::interpolation::interpolate_using_armadillo<order>(x, y);
+  Spline s = bspline::interpolation::interpolateUsingArmadillo<order>(x, y);
   for (size_t i = 0; i < x.size(); i++) {
     BOOST_CHECK_SMALL(s(x[i]) - y[i], tol);
   }

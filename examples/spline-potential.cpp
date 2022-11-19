@@ -30,7 +30,7 @@ PSpline interpolateFunction(std::vector<data_t> gridPoints,
   for (const auto x : support) {
     y.push_back(func(x));
   }
-  return interpolation::interpolate_using_eigen<data_t, PSpline::spline_order>(
+  return interpolation::interpolateUsingEigen<data_t, PSpline::spline_order>(
       std::move(support), y);
 }
 

@@ -143,8 +143,8 @@ static void diffusionEquation() {
   auto support = bspline::support::Support<data_t>::createWholeGrid(grid);
 
   const auto diffCoeff =
-      bspline::interpolation::interpolate_using_eigen<data_t,
-                                                      PSpline::spline_order>(
+      bspline::interpolation::interpolateUsingEigen<data_t,
+                                                    PSpline::spline_order>(
           support, diffCoeffVals);
   const auto solution = solveDiffusionSteadyState(
       diffCoeff, static_cast<data_t>(0), static_cast<data_t>(10));
