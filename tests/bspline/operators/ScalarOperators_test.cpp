@@ -103,12 +103,14 @@ BOOST_AUTO_TEST_CASE(MultiplySplineTest) {
   testSplineMultiplication<double, 15>(dtol);
   testSplineMultiplication<double, 20>(dtol);
 
-  constexpr long double ldtol = 1.0e-18;
-  testSplineMultiplication<long double, 3>(ldtol);
-  testSplineMultiplication<long double, 5>(ldtol);
-  testSplineMultiplication<long double, 10>(ldtol);
-  testSplineMultiplication<long double, 15>(ldtol);
-  testSplineMultiplication<long double, 20>(ldtol);
+  if constexpr (sizeof(long double) != sizeof(double)) {
+    constexpr long double ldtol = 1.0e-18l;
+    testSplineMultiplication<long double, 3>(ldtol);
+    testSplineMultiplication<long double, 5>(ldtol);
+    testSplineMultiplication<long double, 10>(ldtol);
+    testSplineMultiplication<long double, 15>(ldtol);
+    testSplineMultiplication<long double, 20>(ldtol);
+  }
 }
 
 BOOST_AUTO_TEST_SUITE_END()

@@ -76,11 +76,14 @@ BOOST_AUTO_TEST_CASE(MultiplySplineTest) {
   testSplineMultiplication<double, 10>();
   testSplineMultiplication<double, 15>();
   testSplineMultiplication<double, 20>();
-  testSplineMultiplication<long double, 3>();
-  testSplineMultiplication<long double, 5>();
-  testSplineMultiplication<long double, 10>();
-  testSplineMultiplication<long double, 15>();
-  testSplineMultiplication<long double, 20>();
+
+  if constexpr (sizeof(long double) != sizeof(double)) {
+    testSplineMultiplication<long double, 3>();
+    testSplineMultiplication<long double, 5>();
+    testSplineMultiplication<long double, 10>();
+    testSplineMultiplication<long double, 15>();
+    testSplineMultiplication<long double, 20>();
+  }
 }
 
 BOOST_AUTO_TEST_SUITE_END()
