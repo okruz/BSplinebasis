@@ -493,7 +493,7 @@ class Spline final {
   }
 
   /*!
-   * Comares Two splines for equality.
+   * Compares two splines for equality.
    *
    * @param other The spline to compare this spline to.
    * @returns true if the splines are identical, false otherwise.
@@ -503,7 +503,7 @@ class Spline final {
   }
 
   /*!
-   * Comares Two splines for inequality.
+   * Compares two splines for inequality.
    *
    * @param other The spline to compare this spline to.
    * @returns false if the splines are identical, true otherwise.
