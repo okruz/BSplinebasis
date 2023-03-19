@@ -84,4 +84,31 @@ BOOST_AUTO_TEST_CASE(DerivativeAndPositionOperatorTest) {
   BOOST_CHECK_SMALL(diffNorm(Dx<5>{} * oneSixthXCubed, zero), tol);
 }
 
+/**
+ * Passes if the splines derived from the application of the position operator
+ * to the identity spline yield the correct function values upon evaluation.
+ */
+BOOST_AUTO_TEST_CASE(PositionOperatorTest) {
+  constexpr double tol = 1.0e-14;
+  constexpr size_t numSteps = 1000;
+  const auto one = getOne<double>();
+  const auto zero = 0.0 * one;
+  const auto x = X<1>{} * one;
+  const auto xSquared = X<2>{} * one;
+  const auto xCubed = X<3>{} * one;
+
+  const auto start = one.getSupport().front();
+  const auto end = one.getSupport().back();
+  const auto step = (end - start) / numSteps;
+
+  for (size_t i = 0; i <= numSteps; i++) {
+    // Make sure param <= end (it might else be larger due to rounding errors).
+    const auto param = std::min(start + i * step, end);
+    BOOST_CHECK_SMALL(zero(param) - 0.0, tol);
+    BOOST_CHECK_SMALL(one(param) - 1.0, tol);
+    BOOST_CHECK_SMALL(x(param) - param, tol);
+    BOOST_CHECK_SMALL(xSquared(param) - std::pow(param, 2), tol);
+    BOOST_CHECK_SMALL(xCubed(param) - std::pow(param, 3), tol);
+  }
+}
 BOOST_AUTO_TEST_SUITE_END()
