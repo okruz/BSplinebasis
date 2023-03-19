@@ -23,6 +23,10 @@ static_assert(std::is_nothrow_move_constructible_v<Derivative<2>> &&
                   std::is_nothrow_move_assignable_v<Derivative<2>>,
               "Derivative is not nothrow moveable.");
 
+static_assert(std::is_nothrow_move_constructible_v<Position<2>> &&
+                  std::is_nothrow_move_assignable_v<Position<2>>,
+              "Position is not nothrow moveable.");
+
 template <typename T, size_t order>
 static T diffNorm(const Spline<T, order> &s1, const Spline<T, order> &s2) {
   const auto diff = s1 - s2;
@@ -46,24 +50,38 @@ static Spline<T, 0> getOne() {
   return getOne(grid);
 }
 
-BOOST_AUTO_TEST_SUITE(DerivativeTestSuite)
+BOOST_AUTO_TEST_SUITE(DerivativeAndPositionOperatorTestSuite)
 /**
  * Passes if the derivative operator correctly reverts the effect of the
  * position operator.
  */
-BOOST_AUTO_TEST_CASE(PositionOperatorTest) {
+BOOST_AUTO_TEST_CASE(DerivativeAndPositionOperatorTest) {
   constexpr double tol = 5.0e-16;
   const auto one = getOne<double>();
+  const auto zero = 0.0 * one;
   const auto x = X<1>{} * one;
   const auto halfXSquared = (0.5 * X<2>{}) * one;
   const auto oneSixthXCubed = ((1.0 / 6.0) * X<3>{}) * one;
 
+  BOOST_CHECK_SMALL(diffNorm(Dx<1>{} * zero, zero), tol);
+
+  BOOST_CHECK_SMALL(diffNorm(Dx<1>{} * one, zero), tol);
+  BOOST_CHECK_SMALL(diffNorm(Dx<2>{} * one, zero), tol);
+
   BOOST_CHECK_SMALL(diffNorm(Dx<1>{} * x, one), tol);
+  BOOST_CHECK_SMALL(diffNorm(Dx<2>{} * x, zero), tol);
+  BOOST_CHECK_SMALL(diffNorm(Dx<3>{} * x, zero), tol);
+
   BOOST_CHECK_SMALL(diffNorm(Dx<1>{} * halfXSquared, x), tol);
   BOOST_CHECK_SMALL(diffNorm(Dx<2>{} * halfXSquared, one), tol);
+  BOOST_CHECK_SMALL(diffNorm(Dx<3>{} * halfXSquared, zero), tol);
+  BOOST_CHECK_SMALL(diffNorm(Dx<4>{} * halfXSquared, zero), tol);
+
   BOOST_CHECK_SMALL(diffNorm(Dx<1>{} * oneSixthXCubed, halfXSquared), tol);
   BOOST_CHECK_SMALL(diffNorm(Dx<2>{} * oneSixthXCubed, x), tol);
   BOOST_CHECK_SMALL(diffNorm(Dx<3>{} * oneSixthXCubed, one), tol);
+  BOOST_CHECK_SMALL(diffNorm(Dx<4>{} * oneSixthXCubed, zero), tol);
+  BOOST_CHECK_SMALL(diffNorm(Dx<5>{} * oneSixthXCubed, zero), tol);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
