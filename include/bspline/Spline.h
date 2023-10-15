@@ -46,10 +46,12 @@ using namespace support;
 using namespace bspline::exceptions;
 
 /*!
+ *
  * Spline class representing spline of datatype T and order order.
  * The coefficients of the spline are defined with respect to the center point
  * xm of each interval.
  *
+ * @brief The central spine class of the library.
  * @tparam T Datatype of the spline.
  * @tparam order Order of the spline.
  */
@@ -67,6 +69,7 @@ class Spline final {
    * Finds the interval in which x lies by binary search. Used during the
    * evaluation of the spline.
    *
+   * @brief Finds the index of x in the spline's support.
    * @param x Point, whose interval will be searched.
    * @return The index corresponding to the beginning of the interval which
    * contains x or -1 if x is not part of the spline's support.
@@ -84,7 +87,7 @@ class Spline final {
   };
 
   /**
-   * Performs consistency checks on the provided data.
+   * @brief Performs consistency checks on the provided data.
    *
    * @param support The support to check.
    * @param coefficients The coefficients to check.
@@ -102,14 +105,14 @@ class Spline final {
   };
 
   /**
-   * Performs consistency checks on this Spline object
+   * @brief Performs consistency checks on this Spline object
    *
    * @throws BSplineException if this object is not in a valid state.
    */
   void checkValidity() const { checkValidity(_support, _coefficients); };
 
   /*!
-   * Resets the data of the spline and performs sanity checks.
+   * @brief Resets the data of the spline and performs sanity checks.
    *
    * @param intervals The grid points representing the intervals on which the
    * spline is defined.
@@ -124,17 +127,17 @@ class Spline final {
 
  public:
   /*!
-   * Provides acces to the data type T of the spline.
+   * @brief Provides acces to the data type T of the spline.
    */
   using data_type = T;
 
   /*!
-   * Provides access to the order of the spline.
+   * @brief Provides access to the order of the spline.
    */
   static constexpr size_t spline_order = order;
 
   /*!
-   * Constructor setting the data. Performs sanity checks.
+   * @brief Constructor setting the data. Performs sanity checks.
    *
    * @param support The spline's support.
    * @param coefficients Polynomial coefficients of the spline on each interval.
@@ -146,7 +149,7 @@ class Spline final {
   };
 
   /**
-   * Constructs an empty spline on the global grid.
+   * @brief Constructs an empty spline on the global grid.
    *
    * @param grid The global grid.
    */
@@ -154,7 +157,8 @@ class Spline final {
       : Spline(Support<T>::createEmpty(std::move(grid)), {}){};
 
   /*!
-   * Returns the spline's support.
+   * @brief Returns the spline's support.
+   * @returns This spline's support.
    */
   const Support<T> &getSupport() const noexcept {
     DURING_TEST_CHECK_VALIDITY();
@@ -163,6 +167,10 @@ class Spline final {
 
   /*!
    * Returns the polynomial coefficients of the spline for each interval.
+   *
+   * @brief The spline's polynomial coefficients.
+   * @returns A refrence to a vector of arrays containing this spline's
+   * polynomial coefficients.
    */
   const std::vector<std::array<T, ARRAY_SIZE>> &getCoefficients()
       const noexcept {
@@ -171,11 +179,12 @@ class Spline final {
   };
 
   /*!
-   * Evaluates the spline at point x.
+   * @brief Evaluates the spline at point x.
    *
    * @param x Point at which to evaluate the spline. If x is outside of the
    * support of the spline, zero is returned.
-   * @returns The value of the spline at point x.
+   * @returns The value of the spline at point x. If x is outside the spline's
+   * support, zero is returned.
    */
   T operator()(const T &x) const {
     DURING_TEST_CHECK_VALIDITY();
@@ -193,7 +202,9 @@ class Spline final {
    * Returns the beginning of the support of this spline. If the spline is
    * empty, an exception is thrown.
    *
+   * @brief Returns the begin of the spline's support.
    * @throws BSplineException If the spline's support is empty.
+   * @returns The begin of the spline's support.
    */
   const T &front() const {
     DURING_TEST_CHECK_VALIDITY();
@@ -204,7 +215,9 @@ class Spline final {
    * Returns the end of the support of this spline. If the spline is empty, an
    * exception is thrown.
    *
+   * @brief Returns the end of the spline's support.
    * @throws BSplineException If the spline's support is empty.
+   * @returns The end of the spline's support.
    */
   const T &back() const {
     DURING_TEST_CHECK_VALIDITY();
@@ -212,7 +225,7 @@ class Spline final {
   };
 
   /*!
-   * Checks whether the supports of the two splines overlap.
+   * @brief Checks whether the supports of the two splines overlap.
    *
    * @param m2 Other spline against which to check.
    * @tparam order2 Order of spline m2.
@@ -233,6 +246,8 @@ class Spline final {
    * Checks whether this spline returns zero for all x. Can be the case, either
    * if the support contains no intervals (i.e. the vector intervals is empty)
    * or if all coefficients are zero.
+   *
+   * @brief Checks whether this spline is a zero over the whole number line.
    * @returns True if the evaluation of the spline returns zero for all input
    * values.
    */
@@ -254,6 +269,7 @@ class Spline final {
   /*!
    * Scalar-division operator. Divides this spline by the scalar d.
    *
+   * @brief Scalar-division operator.
    * @param d Scalar by which to divide this spline.
    * @returns A new, scaled spline.
    */
@@ -265,6 +281,7 @@ class Spline final {
   /*!
    * Scalar-multiplication operator. Multiplies this spline with the scalar d.
    *
+   * @brief Scalar-multiplication operator.
    * @param d Scalar by which to multiply this spline.
    * @returns A new, scaled spline.
    */
@@ -283,6 +300,7 @@ class Spline final {
    * In-place scalar-multiplication operator. Multiplies this spline with the
    * scalar d in-place.
    *
+   * @brief In-place scalar-multiplication operator.
    * @param d Scalar by which to multiply this spline.
    * @returns A reference to this spline.
    */
@@ -300,6 +318,7 @@ class Spline final {
    * In-place scalar-division operator. Divides this spline by the scalar d
    * in-place.
    *
+   * @brief In-place scalar-division operator.
    * @param d Scalar by which to divide this spline.
    * @returns A reference to this spline.
    */
@@ -310,7 +329,7 @@ class Spline final {
   };
 
   /*!
-   * Unary minus operator.
+   * @brief Unary minus operator.
    * @returns A new, scaled spline.
    */
   Spline<T, order> operator-() const {
@@ -323,6 +342,7 @@ class Spline final {
    * defined if the order of the spline to be assigned is lower than or equal to
    * the order of this spline object.
    *
+   * @brief Copy assign operator.
    * @param a Spline to be assigned.
    * @tparam ordera Order of spline a.
    * @returns A reference to this spline.
@@ -353,6 +373,7 @@ class Spline final {
    * Spline-spline multiplication operator. Returns a spline of order order +
    * ordera.
    *
+   * @brief Spline-spline multiplication operator.
    * @param a Spline to be multiplied with this spline.
    * @tparam ordera Order of spline a.
    * @throws BSplineException If the two splines are defined on different grids.
@@ -397,6 +418,7 @@ class Spline final {
   /*!
    * Addition operator. Adds spline a to this spline.
    *
+   * @brief Spline addition operator.
    * @param a Spline to be added.
    * @tparam ordera Order of spline a.
    * @throws BSplineException If the two splines are defined on different grids.
@@ -445,6 +467,7 @@ class Spline final {
    * only well defined if the order of spline a is lower than or equal to the
    * order of this spline object.
    *
+   * @brief In-place addition operator.
    * @param a Spline to be added.
    * @tparam ordera Order of spline a.
    * @throws BSplineException If the two splines are defined on different grids.
@@ -466,6 +489,7 @@ class Spline final {
    * The operation is only well defined if the order of the spline to be
    * subtracted is lower than or equal to the order of this spline object.
    *
+   * @brief Binary in-place subtraction operator.
    * @param a Spline to be subtracted.
    * @tparam ordera Order of spline a.
    * @throws BSplineException If the two splines are defined on different grids.
@@ -480,6 +504,7 @@ class Spline final {
   /*!
    * Binary subtraction operator. Subtracts spline a from this spline.
    *
+   * @brief Binary subtraction operator.
    * @param a Spline to be subtracted.
    * @tparam ordera Order of spline a.
    * @throws BSplineException If the two splines are defined on different grids.
@@ -493,7 +518,7 @@ class Spline final {
   }
 
   /*!
-   * Compares two splines for equality.
+   * @brief Compares two splines for equality.
    *
    * @param other The spline to compare this spline to.
    * @returns true if the splines are identical, false otherwise.
@@ -503,7 +528,7 @@ class Spline final {
   }
 
   /*!
-   * Compares two splines for inequality.
+   * @brief Compares two splines for inequality.
    *
    * @param other The spline to compare this spline to.
    * @returns false if the splines are identical, true otherwise.
@@ -512,7 +537,7 @@ class Spline final {
 };  // class Spline
 
 /*!
- * Deduction guide for spline constructed from array.
+ * @brief Deduction guide for spline constructed from array.
  */
 template <typename T, size_t ARRAY_SIZE>
 Spline(Support<T> support, std::vector<std::array<T, ARRAY_SIZE>> coefficients)
@@ -522,7 +547,7 @@ Spline(Support<T> support, std::vector<std::array<T, ARRAY_SIZE>> coefficients)
 //########################################################################
 
 /*!
- * Commutation of spline scalar multiplication operator.
+ * @brief Commutation of spline scalar multiplication operator.
  *
  * @param d Scalar to be multiplied.
  * @param b Spline to be multiplied.
@@ -539,6 +564,7 @@ inline Spline<T, order> operator*(const T &d, const Spline<T, order> &b) {
  * Calculates the linear combination of splines. Is more efficient than
  * successive scalar multiplications and spline additions.
  *
+ * @brief Calculates the linear combination.
  * @param coeffsBegin The iterator referencing the first element of the
  * coefficient collection.
  * @param coeffsEnd The iterator referencing the end of the coefficient
@@ -657,6 +683,7 @@ auto linearCombination(CoeffIter coeffsBegin, CoeffIter coeffsEnd,
  * Calculates the linear combination of splines. Is more efficient than
  * successive scalar multiplications and spline additions.
  *
+ * @brief Calculates the linear combination.
  * @param coeffs The coefficient collection.
  * @param splines The spline collection.
  * @tparam CoeffCollection A collection of coefficients of type T. Must provide

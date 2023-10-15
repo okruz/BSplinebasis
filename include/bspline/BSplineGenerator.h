@@ -22,7 +22,10 @@ namespace bspline {
 using namespace bspline::exceptions;
 
 /*!
- * Generates the BSplines on a grid.
+ * @brief Generates the BSplines on a grid.
+ *
+ * Factory class generating all BSplines of a given order for a given knots
+ * vector.
  *
  * @tparam T The datatype of the spline and grid.
  */
@@ -37,6 +40,8 @@ class BSplineGenerator final {
   std::vector<T> _knots;
 
   /*!
+   * @brief Generates a Grid<T> from knots vector for comparison.
+   *
    * Generates a Grid<T> from a knots vector. Contrary to the knots vector, the
    * grid may not contain any element more than once. The number of times an
    * element is contained in the knots vector controls the continuity of the
@@ -54,7 +59,7 @@ class BSplineGenerator final {
 
  public:
   /*!
-   * Constructor generating the grid from the knots vector.
+   * @brief Constructor generating the grid from the knots vector.
    *
    * @param knots The knots, the BSplines shall be generated on.
    * @throws BSplineException If the knots are not in increasing order.
@@ -63,7 +68,7 @@ class BSplineGenerator final {
       : _grid(generateGrid(knots)), _knots(std::move(knots)){};
 
   /*!
-   * Constructor using the provided grid instance.
+   * @brief Constructor using the provided grid instance.
    *
    * @param knots The knots, the BSplines shall be generated on.
    * @param grid The Grid instance to use. Must be logically equivalent to the
@@ -82,12 +87,13 @@ class BSplineGenerator final {
   };
 
   /*!
-   * Returns the grid.
+   * @brief Returns the grid.
+   * @returns The _grid member of this instance.
    */
   Grid<T> getGrid() const { return _grid; };
 
   /*!
-   * Generates all BSplines with respect to the knots vector.
+   * @brief Generates all BSplines with respect to the knots vector.
    * @tparam order Order of the BSplines to generate.
    * @throws BSplineException If the knots vector does not contain enough
    * entries to generate a spline of the requested order.
@@ -122,6 +128,8 @@ class BSplineGenerator final {
    * relation \f[B_{i,k}(x) = \frac{x - x_i}{x_{i + k -1} - x_i}\ B_{i, k-1}(x)
    * + \frac{x_{i+k}-x}{x_{i+k}-x_{i+1}}\,B_{i+1,k-1}(x)\f].
    *
+   * @brief Applies the recursion relation to generate the next order of
+   * BSplines.
    * @param i Index of the knot at which to generate the BSpline.
    * @param splinei The spline of the next lower order at index i.
    * @param splineip1 The spline of the next lower order at index i + 1.
@@ -158,7 +166,7 @@ class BSplineGenerator final {
   }
 
   /*!
-   * Generates all zeroth order BSplines.
+   * @brief Generates all zeroth order BSplines.
    *
    * @returns The zeroth order BSplines defined on the knots vector.
    */
@@ -189,7 +197,7 @@ class BSplineGenerator final {
 };
 
 /*!
- * Convenience method to generate a set of BSplines.
+ * @brief Convenience method to generate a set of BSplines.
  *
  * @param knots The knots vector to generate the splines from.
  * @tparam order The order of the BSplines to generate.

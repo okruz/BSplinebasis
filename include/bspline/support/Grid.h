@@ -20,9 +20,8 @@ namespace bspline::support {
 using namespace bspline::exceptions;
 
 /*!
- * Represents a global grid.
- *
- * @tparam T The datatype of the grid elements.
+ * @brief Represents a global Grid.
+ * @tparam T The datatype of the Grid elements.
  */
 template <typename T>
 class Grid final {
@@ -31,9 +30,8 @@ class Grid final {
   std::shared_ptr<const std::vector<T>> _data;
 
   /*!
-   * Checks whether grid points are steadily increasing.
-   *
-   * @returns True if the grid points are steadily increasing, false otherwise.
+   * @brief Checks whether Grid points are steadily increasing.
+   * @returns True if the Grid points are steadily increasing, false otherwise.
    */
   bool isSteadilyIncreasing() const {
     for (size_t i = 1; i < _data->size(); i++) {
@@ -48,6 +46,7 @@ class Grid final {
    * Checks the validity of this Grid and throws if the Grid is not in a
    * valid state.
    *
+   * @brief Checks whether this Grid fulfills the classes invariants.
    * @throws BSplineException if this object is not in a valid state.
    */
   void checkValidity() const {
@@ -62,21 +61,20 @@ class Grid final {
 
  public:
   /*!
-   * Iterator type.
+   * @brief Iterator type.
    */
   using const_iterator = typename std::vector<T>::const_iterator;
 
   Grid() = delete;
 
   /*!
-   * Constructs a grid from a set of begin and end iterators.
-   *
+   * @brief Constructs a Grid from a set of begin and end iterators.
    * @param begin The iterator referencing the first element to be copied into
-   * the grid.
+   * the Grid.
    * @param end The iterator referencing the element behind the last element to
-   * be copied into the grid.
+   * be copied into the Grid.
    * @tparam Iter The type of the two iterators.
-   * @throws BSplineException If the grid is empty or contains only a
+   * @throws BSplineException If the Grid is empty or contains only a
    * single element, or if the elements are not in steadily increasing order.
    */
   template <typename Iter>
@@ -84,29 +82,26 @@ class Grid final {
       : Grid(std::make_shared<const std::vector<T>>(begin, end)) {}
 
   /*!
-   * Constructs a grid from a std::vector.
-   *
+   * @brief Constructs a Grid from a std::vector.
    * @param v The input vector.
-   * @throws BSplineException If the grid is empty or contains only a
+   * @throws BSplineException If the Grid is empty or contains only a
    * single element, or if the elements are not in steadily increasing order.
    */
   explicit Grid(std::vector<T> v)
       : Grid(std::make_shared<const std::vector<T>>(std::move(v))){};
 
   /*!
-   * Constructs a grid from a std::initializer_list.
-   *
+   * @brief Constructs a Grid from a std::initializer_list.
    * @param v The input initializer_list.
-   * @throws BSplineException If the grid is empty or contains only a
+   * @throws BSplineException If the Grid is empty or contains only a
    * single element, or if the elements are not in steadily increasing order.
    */
   explicit Grid(const std::initializer_list<T> &v) : Grid(v.begin(), v.end()){};
 
   /*!
-   * Constructs a grid from a std::shared_ptr<const std::vector<T>>.
-   *
-   * @param data A shared pointer to the grid elements.
-   * @throws BSplineException If the grid is empty or contains only a
+   * @brief Constructs a Grid from a std::shared_ptr<const std::vector<T>>.
+   * @param data A shared pointer to the Grid elements.
+   * @throws BSplineException If the Grid is empty or contains only a
    * single element, or if the elements are not in steadily increasing order.
    */
   explicit Grid(std::shared_ptr<const std::vector<T>> data)
@@ -115,43 +110,38 @@ class Grid final {
   };
 
   /*!
-   * Default copy constructor.
-   *
+   * @brief Default copy constructor.
    * @param g Grid to be copied.
    */
   Grid(const Grid &g) noexcept = default;
 
   /*!
-   * Default copy assignment operator.
-   *
+   * @brief Default copy assignment operator.
    * @param g Grid to be copied.
    */
   Grid &operator=(const Grid &g) noexcept = default;
 
   /*!
-   * Default destructor.
+   * @brief Default destructor.
    */
   ~Grid() = default;
 
   /*!
-   * Explicitly deleted move constructor.
-   *
+   * @brief Explicitly deleted move constructor.
    * @param g Grid to (not) be moved.
    */
   Grid(Grid &&g) = delete;
 
   /*!
-   * Explicitly deleted move assignment operator.
-   *
+   * @brief Explicitly deleted move assignment operator.
    * @param g Grid to (not) be moved.
    */
   Grid &operator=(Grid &&g) = delete;
 
   /*!
-   * Comparison operator.
-   *
-   * @param g The grid to compare this grid with.
-   * @returns Returns true if the grids represent the same logical grid.
+   * @brief Comparison operator.
+   * @param g The Grid to compare this Grid with.
+   * @returns Returns true if the Grids represent the same logical Grid.
    */
   bool operator==(const Grid &g) const {
     DURING_TEST_CHECK_VALIDITY();
@@ -166,17 +156,15 @@ class Grid final {
   }
 
   /*!
-   * Negated comparison operator.
-   *
-   * @param g The grid to compare this grid with.
-   * @returns Returns false if the grids represent the same logical grid.
+   * @brief Negated comparison operator.
+   * @param g The Grid to compare this Grid with.
+   * @returns Returns false if the Grids represent the same logical Grid.
    */
   bool operator!=(const Grid &g) const { return !(*this == g); }
 
   /*!
-   * Returns the number of elements of the grid.
-   *
-   * @returns The number of grid points.
+   * @brief Returns the number of elements of the Grid.
+   * @returns The number of Grid points.
    */
   size_t size() const {
     DURING_TEST_CHECK_VALIDITY();
@@ -184,9 +172,10 @@ class Grid final {
   };
 
   /*!
-   * Returns a shared pointer to the elements of this grid.
+   * Returns a shared pointer to the elements of this Grid.
    *
-   * @returns A shared pointer to the elements of this grid.
+   * @brief Gives access to the underlying data.
+   * @returns A shared pointer to the elements of this Grid.
    */
   std::shared_ptr<const std::vector<T>> getData() const {
     DURING_TEST_CHECK_VALIDITY();
@@ -194,10 +183,11 @@ class Grid final {
   };
 
   /*!
-   * Checks whether the grids holds any elements. Note: It is not possible to
+   * Checks whether the Grids holds any elements. Note: It is not possible to
    * construct an empty Grid, so this method will always return false.
    *
-   * @returns True if this grid holds no element.
+   * @brief Checks whether the spline is empty.
+   * @returns True if this Grid holds no element.
    */
   bool empty() const {
     DURING_TEST_CHECK_VALIDITY();
@@ -205,9 +195,10 @@ class Grid final {
   };
 
   /*!
-   * Returns a reference to the ith element of the grid. Performs no bounds
+   * Returns a reference to the ith element of the Grid. Performs no bounds
    * checks.
    *
+   * @brief Gives access to the i-th element of the Grid.
    * @param i The index of the element to be returned.
    * @returns A reference to the ith element.
    */
@@ -217,8 +208,9 @@ class Grid final {
   };
 
   /*!
-   * Returns a reference to the ith element of the grid. Checks the bounds.
+   * Returns a reference to the ith element of the Grid. Checks the bounds.
    *
+   * @brief Gives access to the i-th element of the Grid.
    * @param i The index of the element to be returned.
    * @returns A reference to the ith element.
    * @throws BSplineException If the access is out of bounds.
@@ -232,10 +224,9 @@ class Grid final {
   };
 
   /*!
-   * Returns a reference to the first element of the grid.
-   *
+   * @brief Returns a reference to the first element of the Grid.
    * @returns A reference to the first element.
-   * @throws BSplineException If the grid is empty.
+   * @throws BSplineException If the Grid is empty.
    */
   const T &front() const {
     DURING_TEST_CHECK_VALIDITY();
@@ -246,10 +237,9 @@ class Grid final {
   };
 
   /*!
-   * Returns a reference to the last element of the grid.
-   *
+   * @brief Returns a reference to the last element of the Grid.
    * @returns A reference to the last element.
-   * @throws BSplineException If the grid is empty.
+   * @throws BSplineException If the Grid is empty.
    */
   const T &back() const {
     DURING_TEST_CHECK_VALIDITY();
@@ -260,8 +250,7 @@ class Grid final {
   };
 
   /*!
-   * Returns the begin iterator of the grid.
-   *
+   * @brief Returns the begin iterator of the Grid.
    * @returns An iterator to the first element.
    */
   const_iterator begin() const {
@@ -270,8 +259,7 @@ class Grid final {
   };
 
   /*!
-   * Returns the end iterator of the grid..
-   *
+   * @brief Returns the end iterator of the Grid..
    * @returns An iterator pointing behind the last element.
    */
   const_iterator end() const {
@@ -280,8 +268,7 @@ class Grid final {
   };
 
   /*!
-   * Returns the index corresponding to the element x.
-   *
+   * @brief Returns the index corresponding to the element x.
    * @param x The element to be searched for.
    * @throws BSplineException If the element could not be found.
    */
