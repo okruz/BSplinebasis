@@ -91,6 +91,15 @@ class LinearForm final {
     }
     return result;
   }
+
+  /*!
+   * <b>Alias for LinearForm::evaluate().</b>
+   * @copydoc LinearForm::evaluate()
+   */
+  template <typename T, size_t order>
+  T operator()(const Spline<T, order> &a) const {
+    return evaluate(a);
+  }
 };
 
 /*!

@@ -133,6 +133,15 @@ class BilinearForm final {
     }
     return result;
   }
+
+  /*!
+   * <b>Alias for BilinearForm::evaluate().</b>
+   * @copydoc BilinearForm::evaluate()
+   */
+  template <typename T, size_t ordera, size_t orderb>
+  T operator()(const Spline<T, ordera> &a, const Spline<T, orderb> &b) const {
+    return evaluate(a, b);
+  }
 };
 
 /*!

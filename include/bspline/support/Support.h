@@ -14,27 +14,27 @@
 #include <optional>
 
 /*!
- * The namspace containing the internal representation of the Spline's support
- * and the global grid.
+ * The namespace containing the internal representation of the Spline's Support
+ * and the global Grid.
  *
- * @brief Namespace for the spline's grid and support.
+ * @brief Namespace for the Spline's Grid and Support.
  */
 namespace bspline::support {
 using namespace bspline::exceptions;
 
 /*!
  * Represents the support of a spline as a set of intervals, represented by the
- * the corresponding grid points. It is essentially a view onto the global grid.
+ * the corresponding grid points. It is essentially a view onto the global Grid.
  *
- * @brief Represents the spline's support.
- * @tparam T Datatype of the grid and spline.
+ * @brief Represents the Spline's Support.
+ * @tparam T Datatype of the Grid and Spline.
  */
 template <typename T>
 class Support final {
  public:
   /*!
-   * Represents an interval relative to the global grid represented by _grid.
-   * @brief Represents an index relative to the global grid.
+   * Represents an interval relative to the global Grid represented by _grid.
+   * @brief Represents an index relative to the global Grid.
    */
   using AbsoluteIndex = size_t;
 
@@ -50,7 +50,7 @@ class Support final {
   using const_iterator = typename Grid<T>::const_iterator;
 
  private:
-  /*! Represents the global grid. */
+  /*! Represents the global Grid. */
   Grid<T> _grid;
   /*! Represents the begin of the Support. */
   AbsoluteIndex _startIndex;
@@ -81,8 +81,8 @@ class Support final {
 
  public:
   /*!
-   * @brief Constructs a Support relative to the global grid grid.
-   * @param grid The global grid.
+   * @brief Constructs a Support relative to the global Grid grid.
+   * @param grid The global Grid.
    * @param startIndex The index of the first grid point which is part of the
    * Support.
    * @param endIndex The index of the element behind the last grid point which
@@ -112,7 +112,7 @@ class Support final {
 
   /*!
    * Move constructor. Leaves the moved-from object as an empty Support relative
-   * to the same grid.
+   * to the same Grid.
    *
    * @brief Move constructor.
    * @param s The Support to move.
@@ -125,7 +125,7 @@ class Support final {
 
   /*!
    * Move assignment operator. Leaves the moved-from object as an empty Support
-   * relative to the same grid.
+   * relative to the same Grid.
    *
    * @brief Move assignment operator.
    * @param s The Support to move.
@@ -142,8 +142,8 @@ class Support final {
   }
 
   /*!
-   * @brief Constructs an empty Support relative to the global grid grid.
-   * @param grid The global grid.
+   * @brief Constructs an empty Support relative to the global Grid grid.
+   * @param grid The global Grid.
    */
   static Support<T> createEmpty(const Grid<T> &grid) {
     return Support<T>{grid, 0, 0};
@@ -193,11 +193,11 @@ class Support final {
   /*!
    *
    * Returns the index relative to this Support from an index relative to the
-   * global grid. If the global index does not correspond to a grid point
+   * global Grid. If the global index does not correspond to a grid point
    * contained in this Support, std::nullopt is returned.
    *
    * @brief Converts an AbsoluteIndex into a RelativeIndex.
-   * @param index The AbsoluteIndex referring to an interval on the global grid.
+   * @param index The AbsoluteIndex referring to an interval on the global Grid.
    * @returns The relative index if the corresponding grid point is part of this
    * Support, std::nullopt else.
    */
@@ -212,11 +212,11 @@ class Support final {
 
   /*!
    * Returns the index relative to this Support from an index relative to the
-   * global grid. If the global index does not correspond to an interval
+   * global Grid. If the global index does not correspond to an interval
    * contained in this Support, std::nullopt is returned.
    *
    * @brief Converts an AbsoluteIndex into a RelativeIndex.
-   * @param index The AbsoluteIndex referring to an interval on the global grid.
+   * @param index The AbsoluteIndex referring to an interval on the global Grid.
    * @returns The relative index if the corresponding interval is part of this
    * Support, std::nullopt else.
    */
@@ -231,11 +231,11 @@ class Support final {
   };
 
   /*!
-   * Returns the index relative to the global grid from an inde relative to this
+   * Returns the index relative to the global Grid from an inde relative to this
    * Support.
    *
    * @brief Converts a RelativeIndex into an AbsoluteIndex.
-   * @param index The AbsoluteIndex referring to an interval on the global grid.
+   * @param index The AbsoluteIndex referring to an interval on the global Grid.
    * @throws BSplineException If the relative index is out of bounds for this
    * Support.
    * @returns The absolute index corresponding to the relative index.
@@ -263,8 +263,8 @@ class Support final {
   };
 
   /*!
-   * @brief Returns the global grid.
-   * @returns A reference to the global grid.
+   * @brief Returns the global Grid.
+   * @returns A reference to the global Grid.
    */
   const Grid<T> &getGrid() const {
     DURING_TEST_CHECK_VALIDITY();
@@ -376,7 +376,7 @@ class Support final {
    *
    * @brief Checks whether two Supports are defined on the same Grids.
    * @param s Support to check against.
-   * @returns True if the Support s is defined on a logically equivalent grid,
+   * @returns True if the Support s is defined on a logically equivalent Grid,
    * false otherwise.
    */
   bool hasSameGrid(const Support &s) const {
@@ -386,7 +386,7 @@ class Support final {
 
   /*!
    * Compares two Supports for equality. For two Supports two be equal, they
-   * have to be defined on the same grid, must represent the same subset of the
+   * have to be defined on the same Grid, must represent the same subset of the
    * number line.
    *
    * @brief Logically compares to Supports.
@@ -404,7 +404,7 @@ class Support final {
 
   /*!
    * Compares two Supports for inequality. For two Supports two be equal, they
-   * have to be defined on the same grid, must represent the same subset of the
+   * have to be defined on the same Grid, must represent the same subset of the
    * number line.
    *
    * @brief Logically compares to Supports.
@@ -426,7 +426,7 @@ class Support final {
    * @brief Calculates the union of the two Supports.
    * @param s The Support to calculate the union with.
    * @throws BSplineException If the two Supports are defined on (logically)
-   * different grids.
+   * different Grids.
    * @returns The Support representing the union of the two Supports.
    */
   Support calcUnion(const Support &s) const {
@@ -459,7 +459,7 @@ class Support final {
    * @brief Calculates the intersection of the two Supports.
    * @param s The Support to calculate the intersection with.
    * @throws BSplineException If the two Supports are defined on (logically)
-   * different grids.
+   * different Grids.
    * @returns The Support representing the intersection of the two Supports.
    */
   Support calcIntersection(const Support &s) const {

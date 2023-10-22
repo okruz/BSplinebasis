@@ -84,6 +84,8 @@ void testIntegration(T tol) {
     }
     BOOST_CHECK_SMALL(lf.evaluate(s1) - integrate<T>(s1), tol);
     BOOST_CHECK_SMALL(lf.evaluate(s1 * s1) - sp.evaluate(s1, s1), tol);
+    BOOST_CHECK_SMALL(lf(s1) - integrate<T>(s1), tol);
+    BOOST_CHECK_SMALL(lf(s1 * s1) - sp.evaluate(s1, s1), tol);
   }
 }
 

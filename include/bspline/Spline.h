@@ -51,7 +51,7 @@ using namespace bspline::exceptions;
  * The coefficients of the spline are defined with respect to the center point
  * xm of each interval.
  *
- * @brief The central spine class of the library.
+ * @brief The central Spline class of the library.
  * @tparam T Datatype of the spline.
  * @tparam order Order of the spline.
  */
