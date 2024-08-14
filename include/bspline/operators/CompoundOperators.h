@@ -12,7 +12,7 @@
 
 namespace bspline::operators {
 /*!
- * Represents the product of two operators.
+ * @brief Represents the product of two operators.
  *
  * @tparam O1 The type of the first (left) operator.
  * @tparam O2 The type of the second (right) operator.
@@ -28,7 +28,7 @@ class OperatorProduct final : public Operator {
 
  public:
   /*!
-   * Creates an OperatorProduct from two operators.
+   * @brief Creates an OperatorProduct from two operators.
    *
    * @param o1 The first (left) operator.
    * @param o2 The second (right) ooperator.
@@ -36,7 +36,7 @@ class OperatorProduct final : public Operator {
   OperatorProduct(O1 o1, O2 o2) : _o1(std::move(o1)), _o2(std::move(o2)){};
 
   /*!
-   * Returns the order of the output spline for a given input order.
+   * @brief Returns the order of the output spline for a given input order.
    *
    * @param inputOrder the order of the input spline.
    * @returns The output spline-order for a given input input order.
@@ -46,6 +46,8 @@ class OperatorProduct final : public Operator {
   }
 
   /*!
+   * @brief Applies operator to one interval.
+   *
    * Applies the operator to a set of coefficients (representing a polynomial on
    * one interval).
    *
@@ -68,6 +70,8 @@ class OperatorProduct final : public Operator {
 };
 
 /*!
+ * @brief Operator multiplication operator.
+ *
  * The multiplication operator for two operators, returning an OperatorProduct.
  *
  * @param o1 The first (left) operator.
@@ -96,6 +100,8 @@ enum class AdditionOperation {
 };
 
 /*!
+ * @brief Validates operation.
+ *
  * Checks whether the operation is a valid oeration for OperatorSum.
  *
  * @tparam operation The operation type to be checked.
@@ -107,6 +113,7 @@ inline constexpr bool is_valid_operation_v = (operation ==
                                               AdditionOperation::SUBTRACTION);
 
 /*!
+ * @brief Operator sum.
  * Represents the sum or difference of two operators.
  *
  * @tparam O1 The type of the first operator.
@@ -126,6 +133,8 @@ class OperatorSum final : public Operator {
   O2 _o2;
 
   /*!
+   * @brief Adds arrays of differing size.
+   *
    * Adds the smaller array to the larger array in place and returns the larger
    * array.
    *
@@ -151,7 +160,7 @@ class OperatorSum final : public Operator {
 
  public:
   /*!
-   * Creates an OperatorSum from two operators.
+   * @brief Creates an OperatorSum from two operators.
    *
    * @param o1 The first operator.
    * @param o2 The second ooperator.
@@ -159,7 +168,7 @@ class OperatorSum final : public Operator {
   OperatorSum(O1 o1, O2 o2) : _o1(std::move(o1)), _o2(std::move(o2)){};
 
   /*!
-   * Returns the order of the output spline for a given input order.
+   * @brief Returns the order of the output spline for a given input order.
    *
    * @param inputOrder the order of the input spline.
    * @returns The output spline-order for a given input input order.
@@ -169,6 +178,8 @@ class OperatorSum final : public Operator {
   }
 
   /*!
+   * @brief Applies opertor to interval.
+   *
    * Applies the operator to a set of coefficients (representing a polynomial on
    * one interval).
    *
@@ -200,6 +211,8 @@ class OperatorSum final : public Operator {
 };
 
 /*!
+ * @brief Operator sum.
+ *
  * The addition operator for two operators, returning an OperatorSum.
  *
  * @param o1 The first operator.
@@ -216,6 +229,8 @@ auto operator+(O1 &&o1, O2 &&o2) {
 }
 
 /*!
+ * @brief Operator difference.
+ *
  * The subtraction operator for two operators, returning an OperatorSum.
  *
  * @param o1 The first operator.

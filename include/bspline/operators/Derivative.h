@@ -18,6 +18,8 @@ namespace bspline::operators {
 namespace internal = bspline::internal;
 
 /*!
+ * @brief Derivative operator.
+ *
  * Represents the derivative operator \f$\mathrm{d}^n/\mathrm{d}x^n\f$.
  *
  * @tparam n Order of the derivative.
@@ -26,7 +28,7 @@ template <size_t n>
 class Derivative final : public Operator {
  public:
   /*!
-   * Returns the order of the output spline for a given input order.
+   * @brief Returns the order of the output spline for a given input order.
    *
    * @param inputOrder the order of the input spline.
    * @returns The output spline-order for a given input input order.
@@ -36,6 +38,8 @@ class Derivative final : public Operator {
   }
 
   /*!
+   * @brief Applies operator to one interval.
+   *
    * Applies the operator to a set of coefficients (representing a polynomial on
    * one interval).
    *
@@ -72,6 +76,8 @@ class Derivative final : public Operator {
 };
 
 /*!
+ * @brief Convenient alias for derivative operator.
+ *
  * Alias for the derivative operator \f$\mathrm{d}^n/\mathrm{d}x^n\f$.
  *
  * @tparam n Order of the derivative.

@@ -11,17 +11,20 @@
 #include <bspline/Spline.h>
 
 /*!
- * Operator definitions.
+ * @brief Operator definitions.
  */
 namespace bspline::operators {
 
 /*!
- * Marker interface for operators. All proper operators must derive from this
- * interface.
+ * @brief Marker interface for operators.
+ *
+ * All proper operators must derive from this interface.
  */
 class Operator {};
 
 /*!
+ * @brief Checks whether O is an operator.
+ *
  * Indicates whether the template parameter is an operator
  * type.
  *
@@ -32,6 +35,8 @@ inline constexpr bool is_operator_v =
     std::is_base_of_v<Operator, std::remove_cv_t<std::remove_reference_t<O>>>;
 
 /*!
+ * @brief Checks whether O1 and O2 are operators.
+ *
  * Indicates whether both template parameters are operator
  * types.
  *
@@ -42,6 +47,8 @@ template <typename O1, typename O2>
 inline constexpr bool are_operators_v = is_operator_v<O1> &&is_operator_v<O2>;
 
 /*!
+ * @brief Applies operator to spline.
+ *
  * Helper method that applies an operator to a spline based on the
  * transformation of the coefficients on a single interval.
  *
@@ -81,19 +88,25 @@ auto transformSpline(const O &op, const Spline<T, order> &spline) {
 // ########################## IdentityOperator ##############################
 
 /*!
+ * @brief Multiplicative identity operator.
+ *
  * Represents the identity operator.
  */
 class IdentityOperator final : public Operator {
  public:
   /*!
-   * Returns the order of the output spline for a given input order.
+   * @brief Order of the resulting Spline.
    *
-   * @param inputOrder the order of the input spline.
-   * @returns The output spline-order for a given input input order.
+   * Returns the order of the output Spline for a given input order.
+   *
+   * @param inputOrder the order of the input Spline.
+   * @returns The output Spline-order for a given input input order.
    */
   static constexpr size_t outputOrder(size_t inputOrder) { return inputOrder; }
 
   /*!
+   * @brief Applies operator on one interval.
+   *
    * Applies the operator to a set of coefficients (representing a polynomial on
    * one interval).
    *
@@ -115,7 +128,7 @@ class IdentityOperator final : public Operator {
 };
 
 /*!
- * Applies an operator to a spline.
+ * @brief Applies an operator to a spline.
  *
  * @param o The operator.
  * @param s The spline.

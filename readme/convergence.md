@@ -7,7 +7,7 @@ The image shows the relative deviations between the analytically known and the n
 * **red:** double precision
 * **blue:** quadruple precision (using `boost::multiprecision::cpp_bin_float_quad`)
 
-The horizontal lines mark the epsilons for the two data types, respectively. All calculations where performed on a quadratic grid stretching over `-15 <= x <= 15` and using `n` basis functions.
+The horizontal lines mark the epsilons for the two data types, respectively. All calculations were performed on a quadratic grid stretching over `-15 <= x <= 15` and using `n` basis functions.
 
 ![Accuracy](accuracy.png?raw=true "Accuracy")
 
