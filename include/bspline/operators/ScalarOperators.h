@@ -17,6 +17,8 @@
 namespace bspline::operators {
 
 /*!
+ * @brief Validates ScalarOperator template parameters.
+ *
  * Indicates whether the argument types may be arguments of a scalar
  * multiplication (i.e. a scalar multiplied with an operator).
  *
@@ -28,6 +30,8 @@ inline constexpr bool are_scalar_multiplication_types_v =
     !is_spline_v<T> && !is_operator_v<T> && is_operator_v<O>;
 
 /*!
+ * @brief Multiplication operator for Operator and scalar.
+ *
  * Represents the multiplication of an operator with a scalar.
  *
  * @tparam S type of the scalar.
@@ -45,6 +49,8 @@ class ScalarMultiplication final : public Operator {
 
  public:
   /*!
+   * @brief Multiplication of scalar and Operator.
+   *
    * Constructor constructing an ScalarMultiplication from a scalar and an
    * operator.
    *
@@ -54,14 +60,16 @@ class ScalarMultiplication final : public Operator {
   ScalarMultiplication(S s, O o) : _s(std::move(s)), _o(std::move(o)){};
 
   /*!
+   * @brief Multiplication of scalar and a default constructed Operator.
+   *
    * Constructor constructing an ScalarMultiplication from a scalar alone.
    *
    * @param s The scalar to be multiplied.
    */
-  ScalarMultiplication(S s) : _s(s), _o(IdentityOperator{}){};
+  ScalarMultiplication(S s) : _s(s), _o(O{}){};
 
   /*!
-   * Returns the order of the output spline for a given input order.
+   * @brief Returns the order of the output spline for a given input order.
    *
    * @param inputOrder the order of the input spline.
    * @returns The output spline-order for a given input input order.
@@ -71,6 +79,8 @@ class ScalarMultiplication final : public Operator {
   }
 
   /*!
+   * @brief Applies operator to one interval.
+   *
    * Applies the operator to a set of coefficients (representing a polynomial on
    * one interval).
    *
@@ -97,6 +107,8 @@ class ScalarMultiplication final : public Operator {
 };
 
 /*!
+ * @brief ScalarMultiplication with default constructed operator.
+ *
  * Deduction guide for a ScalarMultiplication constructed from a scalar alone.
  *
  * @tparam S The type of the scalar.
@@ -105,7 +117,9 @@ template <typename S>
 ScalarMultiplication(S s) -> ScalarMultiplication<S, IdentityOperator>;
 
 /*!
- * The scalar multiplication operator for an operator.
+ * @brief Scalar-Opertator multiplication.
+ *
+ * Deduction guide for a ScalarMultiplication of a scalar and an Operator.
  *
  * @param s The scalar to be multiplied.
  * @param o The operator to be multiplied.
@@ -121,7 +135,7 @@ ScalarMultiplication<S, O> operator*(const S &s, O &&o) {
 }
 
 /*!
- * The scalar multiplication operator for an operator.
+ * @brief The scalar multiplication operator for an operator.
  *
  * @param o The operator to be multiplied.
  * @param s The scalar to be multiplied.
@@ -137,7 +151,7 @@ ScalarMultiplication<S, O> operator*(O &&o, const S &s) {
 }
 
 /*!
- * The scalar division operator for an operator.
+ * @brief The scalar division operator for an operator.
  *
  * @param o The operator to be divided.
  * @param s The divisor.
@@ -169,7 +183,7 @@ auto operator+(O &&o, const S &s) {
 }
 
 /*!
- * The scalar addition operator for an operator.
+ * @brief The scalar addition operator for an operator.
  *
  * @param s The scalar to be added.
  * @param o The operator to be added.
@@ -185,7 +199,7 @@ auto operator+(const S &s, O &&o) {
 }
 
 /*!
- * The scalar subtraction operator for an operator.
+ * @brief The scalar subtraction operator for an operator.
  *
  * @param o The operator.
  * @param s The scalar to be subtracted.
@@ -217,6 +231,8 @@ auto operator-(const S &s, O &&o) {
 }
 
 /*!
+ * @brief Unitary minus operator.
+ *
  * The unitary minus operator for an operator. Returns an
  * ScalarMultiplication<int, O>.
  *

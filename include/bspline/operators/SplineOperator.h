@@ -16,7 +16,7 @@
 namespace bspline::operators {
 
 /*!
- * Implements the operator representation of a Spline.
+ * @brief Operator representation of a Spline.
  *
  * @tparam T The data type of the spline.
  * @tparam order The order of the spline.
@@ -29,14 +29,14 @@ class SplineOperator final : public Operator {
 
  public:
   /*!
-   * Constructor constructing a SplineOperator from a Spline.
+   * @brief Constructor constructing a SplineOperator from a Spline.
    *
    * @param s The spline.
    */
   SplineOperator(Spline<T, order> s) : _s(std::move(s)){};
 
   /*!
-   * Returns the order of the output spline for a given input order.
+   * @brief Returns the order of the output spline for a given input order.
    *
    * @param inputOrder the order of the input spline.
    * @returns The output spline-order for a given input input order.
@@ -46,6 +46,8 @@ class SplineOperator final : public Operator {
   }
 
   /*!
+   * @brief Applies operator to a Spline.
+   *
    * Applies the operator to a set of coefficients (representing a polynomial on
    * one interval).
    *

@@ -18,6 +18,8 @@ namespace bspline::operators {
 namespace internal = bspline::internal;
 
 /*!
+ * @brief Position operator.
+ *
  * Represents a power of the position operator \f$x^n\f$.
  *
  * @tparam n Order of the power.
@@ -45,7 +47,7 @@ class Position final : public Operator {
 
  public:
   /*!
-   * Returns the order of the output spline for a given input order.
+   * @brief Returns the order of the output spline for a given input order.
    *
    * @param inputOrder the order of the input spline.
    * @returns The output spline-order for a given input input order.
@@ -55,6 +57,8 @@ class Position final : public Operator {
   }
 
   /*!
+   * @brief Applies operator to one interval.
+   *
    * Applies the operator to a set of coefficients (representing a polynomial on
    * one interval).
    *
@@ -91,6 +95,8 @@ class Position final : public Operator {
 };
 
 /*!
+ * @brief Alias for Position operator.
+ *
  * Alias for the power \f$x^n\f$ of the position operator.
  *
  * @tparam n Order of the power of the position operator.
