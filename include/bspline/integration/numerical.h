@@ -23,6 +23,8 @@ using bspline::support::Support;
 using namespace bspline::exceptions;
 
 /*!
+ * @brief Calculates matrix element of user-provided function.
+ *
  * Calculates the 1D integral \f[I=\int\limits_{-\infty}^{\infty} \mathrm{d}x~
  * m_1(x)\, f(x)\, m_2(x).\f] The integral is evaluated numerically on each
  * interval using boost's Gauss-Legendre scheme of order ordergl.

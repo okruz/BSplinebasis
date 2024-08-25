@@ -12,6 +12,8 @@
 #include <bspline/operators/GenericOperators.h>
 
 /*!
+ * @brief Integration routines for Splines.
+ *
  * Nampespace containing the integration routines. Analytical integration is
  * represented by the linear and bilinear forms. There is also code for
  * numerical integration using the boost fixed poind Gauss-Legendre scheme.
@@ -19,6 +21,8 @@
 namespace bspline::integration {
 
 /*!
+ * @brief A bilinear form with user-provided operators.
+ *
  * Represents the bilinear form \f[\left\langle a,\, b\right\rangle =
  * \left\langle \hat{O}_1\,a\,\middle|\,\hat{O}_2\,b\right\rangle =
  * \int\limits_{-\infty}^{\infty} \mathrm{d}x~\left[\hat{O}_1\,a(x)\right]
@@ -38,7 +42,7 @@ class BilinearForm final {
   O2 _o2;
 
   /*!
-   * Evaluates the bilinear form on one interval.
+   * @brief Evaluates the bilinear form on one interval.
    *
    * @param a The coefficients  of the first polynomial.
    * @param b The coefficients of the second polynomial.
@@ -75,6 +79,8 @@ class BilinearForm final {
 
  public:
   /*!
+   * @brief Constructor with two user-provided operators.
+   *
    * Constructor constructing a BilinearForm from the two operatos.
    * @param o1 The operator acting on the first (left) spline.
    * @param o2 The operator acting on the second (right) spline.
@@ -82,6 +88,8 @@ class BilinearForm final {
   BilinearForm(O1 o1, O2 o2) : _o1(std::move(o1)), _o2(std::move(o2)){};
 
   /*!
+   * @brief Constructor with one user-provided operator.
+   *
    * Constructor constructing a BilinearForm from only the \f$\hat{O}_2\f$
    * operator. The \f$\hat{O}_1\f$-operator is default constructed.
    *
@@ -90,12 +98,14 @@ class BilinearForm final {
   explicit BilinearForm(O2 o2) : _o1(O1{}), _o2(std::move(o2)){};
 
   /*!
+   * @brief Constructor without a user-provided operator.
+   *
    * Default constructor which default constructs both operators.
    */
   BilinearForm() : _o1(O1{}), _o2(O2{}){};
 
   /*!
-   * Evaluates the bilinear form for two particular splines.
+   * @brief Evaluates the bilinear form for two particular splines.
    *
    * @param a The first (left) spline.
    * @param b The second (right) spline.
@@ -145,6 +155,8 @@ class BilinearForm final {
 };
 
 /*!
+ * @brief Deduction guide for matrix element.
+ *
  * Deduction guide for a bilinear form which corresponds to the matrix element
  * of the operator \f$\hat{O}_2\f$. \f[\left\langle a,\, b\right\rangle  =
  * \left\langle a\,\middle|\,\hat{O}_2\,\middle|\,b\right\rangle =
@@ -156,6 +168,8 @@ template <typename O2>
 BilinearForm(O2 o2) -> BilinearForm<operators::IdentityOperator, O2>;
 
 /*!
+ * @brief Deduction guide for scalar product.
+ *
  * Deduction guide for a bilinear form which corresponds to the scalar product.
  * \f[\left\langle a,\, b\right\rangle = \left\langle
  * a\,\middle|\,b\right\rangle = \int\limits_{-\infty}^{\infty} \mathrm{d}x~a(x)

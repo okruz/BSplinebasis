@@ -29,18 +29,22 @@
 #endif
 
 /*!
- * Interpolate data using the bspline::Spline
+ * @brief Code to interpolate data using the bspline::Spline.
  */
 namespace bspline::interpolation {
 using namespace bspline::exceptions;
 
 /*!
+ * @brief Node marker for boundary conditions.
+ *
  * Represents either the first or last node of the interpolation grid. Used to
  * define boundary conditions.
  */
 enum class Node { FIRST, LAST };
 
 /*!
+ * @brief A boundary condition.
+ *
  * Represents a boundary condition, i.e. one fixed derivative on either the
  * first or last node of the interpolation grid.
  */
@@ -143,6 +147,8 @@ using bspline::support::Support;
 #endif  // BSPLINE_DOXYGEN_IGNORE
 
 /*!
+ * @brief Interpolation using generic Solver.
+ *
  * Interpolates the data given by x and y with a spline of order order. order-1
  * additional conditions are needed for a well defined problem. These can be
  * supplied by fixing derivatives on the first and last node.
@@ -297,6 +303,8 @@ bspline::Spline<T, order> interpolate(
 #ifdef BSPLINE_INTERPOLATION_USE_ARMADILLO
 
 /*!
+ * @brief Interpolation using armadillo Solver.
+ *
  * Wrapper method around interpolate() using armadillo for the linear algebra
  * routines. Supports only double precision. This method will only be activated
  * if the macro BSPLINE_INTERPOLATION_USE_ARMADILLO is defined.
@@ -339,6 +347,8 @@ bspline::Spline<double, order> interpolateUsingArmadillo(
 
 #ifdef BSPLINE_INTERPOLATION_USE_EIGEN
 /*!
+ * @brief Interpolation using eigen solver.
+ *
  * Wrapper method around interpolate() using eigen for the linear algebra
  * routines. This method will only be activated if the macro
  * BSPLINE_INTERPOLATION_USE_EIGEN is defined.

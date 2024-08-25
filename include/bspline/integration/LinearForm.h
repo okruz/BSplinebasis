@@ -14,6 +14,8 @@
 namespace bspline::integration {
 
 /*!
+ * @brief A linear form with a user-provided operator.
+ *
  * Represents the linear form \f[\left\langle
  * a\right\rangle=\int\limits_{-\infty}^{\infty}\mathrm{d}x~\left[\hat{O}\,\,
  * a(x)\right]\f] with the operator \f$\hat{O}\f$ applied to the spline.
@@ -28,7 +30,7 @@ class LinearForm final {
   O _o;
 
   /*!
-   * Evaluates the linear form on one interval.
+   * @brief Evaluates the linear form on one interval.
    *
    * @param a The coefficients  of the polynomial.
    * @param dxhalf The half width of the interval.
@@ -54,19 +56,19 @@ class LinearForm final {
 
  public:
   /*!
-   * Constructor constructing a LinearForm from an operator.
+   * @brief Constructor constructing a LinearForm from an operator.
    *
    * @param o The operator acting on the spline.
    */
   explicit LinearForm(O o) : _o(std::move(o)){};
 
   /*!
-   * Default constructor constructing a LinearForm.
+   * @brief Default constructor constructing a LinearForm.
    */
   LinearForm() : _o(O{}){};
 
   /*!
-   * Evaluates the linear form for a particular spline.
+   * @brief Evaluates the linear form for a particular spline.
    *
    * @param a The  spline.
    * @tparam T The datatype of the splines.
@@ -103,6 +105,8 @@ class LinearForm final {
 };
 
 /*!
+ * @brief Deduction guide for an integral over a Spline.
+ *
  * Deduction guide for a linear form which represents the integral over the
  * spline \f[\left\langle
  * a\right\rangle=\int\limits_{-\infty}^{\infty}\mathrm{d}x~a(x).\f]

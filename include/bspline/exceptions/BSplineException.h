@@ -12,12 +12,14 @@
 #include <string>
 
 /*!
+ * @brief Exceptions and error codes.
+ *
  * The namespace containing the exceptions and errorCodes.
  */
 namespace bspline::exceptions {
 
 /*!
- * The error codes, which may be expected.
+ * @brief The error codes, which may be expected.
  */
 enum class ErrorCode {
   DIFFERING_GRIDS,
@@ -28,6 +30,8 @@ enum class ErrorCode {
 };
 
 /*!
+ * @brief Default error messages.
+ *
  * Returns the default error message for an error code.
  *
  * @param errorCode The errorCode for which the default message is requested.
@@ -52,7 +56,7 @@ inline std::string getErrorMessage(ErrorCode errorCode) {
 }
 
 /*!
- * Returns the errorCode name.
+ * @brief Returns the errorCode name.
  *
  * @param errorCode The errorCode for which the name is requested.
  * @returns The name of the errorCode as a string.
@@ -75,7 +79,7 @@ inline std::string getErrorCodeName(ErrorCode errorCode) {
 }
 
 /*!
- * The main exception class.
+ * @brief The main exception class.
  */
 class BSplineException final : public std::exception {
  private:
@@ -85,6 +89,8 @@ class BSplineException final : public std::exception {
   std::string _whatString;
 
   /*!
+   * @brief Generates what string.
+   *
    * Generates the std::string returned in the what() method.
    *
    * @param errorCode The errorCode to generate the what string for.
@@ -101,7 +107,7 @@ class BSplineException final : public std::exception {
 
  public:
   /*!
-   * Uses the default error message corresponding to the error code.
+   * @brief Constructs exception with default error message.
    *
    * @param errorCode The errorCode.
    */
@@ -111,7 +117,7 @@ class BSplineException final : public std::exception {
             generateWhatString(errorCode, getErrorMessage(errorCode))){};
 
   /*!
-   * Uses a custom error message.
+   * @brief Constructs exception with custom error message.
    *
    * @param errorCode The errorCode.
    * @param message The custom error message.
@@ -122,14 +128,14 @@ class BSplineException final : public std::exception {
         _whatString(generateWhatString(errorCode, message)){};
 
   /*!
-   * Returns a string representation of the exception.
+   * @brief Returns a string representation of the exception.
    *
    * @returns The what string.
    */
   const char *what() const noexcept override { return _whatString.c_str(); };
 
   /*!
-   * Returns the error code of this exception.
+   * @brief Returns the error code of this exception.
    *
    * @returns the errorCode.
    */
