@@ -38,7 +38,7 @@
 #include <vector>
 
 /*!
- * Main namespace for this library.
+ * @brief Main namespace for this library.
  */
 namespace bspline {
 
