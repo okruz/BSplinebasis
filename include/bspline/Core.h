@@ -24,10 +24,13 @@
  * analytical problems. It provides facilities for the generation, evaluation
  * and integration of the BSplines.
  *
- * The Spline class as well as the generation facilities can be found in the
- * top-level @link bspline @endlink namespace. The namespace
- * bspline::integration contains the code for the evaluation of integrals over
- * the Splines, most notably the BilinearForm and LinearForm. The operators
- * defined in the bspline::operators namespace can be applied to the Splines
- * either directly or during the evaluation of the integrals.
+ * The @link bspline::Spline Spline @endlink class as well as the generation
+ * facilities can be found in the top-level @link bspline @endlink namespace.
+ * The namespace bspline::integration contains the code for the evaluation of
+ * integrals over the Splines, most notably the @link
+ * bspline::integration::BilinearForm BilinearForm @endlink and @link
+ * bspline::integration::LinearForm LinearForm @endlink. The operators defined
+ * in the bspline::operators namespace can be applied to the @link
+ * bspline::Spline Splines @endlink either directly or during the evaluation of
+ * the integrals.
  */
