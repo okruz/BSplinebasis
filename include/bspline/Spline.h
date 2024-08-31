@@ -600,8 +600,8 @@ auto linearCombination(CoeffIter coeffsBegin, CoeffIter coeffsEnd,
 
   {
     // The number of coefficients and splines.
-    const int coeffsSize = std::distance(coeffsBegin, coeffsEnd);
-    const int splinesSize = std::distance(splinesBegin, splinesEnd);
+    const auto coeffsSize = std::distance(coeffsBegin, coeffsEnd);
+    const auto splinesSize = std::distance(splinesBegin, splinesEnd);
 
     // Check, the data is consistent.
     if (coeffsSize != splinesSize) {
