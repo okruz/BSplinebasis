@@ -1,0 +1,10 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node1" href="$classbspline_1_1operators_1_1Operator.html" title="Marker interface for operators." alt="" coords="5,224,144,265"/>
+<area shape="rect" id="node2" href="$classbspline_1_1operators_1_1Derivative.html" title="Derivative operator." alt="" coords="212,5,351,47"/>
+<area shape="rect" id="node3" href="$classbspline_1_1operators_1_1IdentityOperator.html" title="Multiplicative identity operator." alt="" coords="212,71,351,112"/>
+<area shape="rect" id="node4" href="$classbspline_1_1operators_1_1OperatorProduct.html" title="Represents the product of two operators." alt="" coords="195,137,368,193"/>
+<area shape="rect" id="node5" href="$classbspline_1_1operators_1_1OperatorSum.html" title="Operator sum. Represents the sum or difference of two operators." alt="" coords="192,217,371,273"/>
+<area shape="rect" id="node6" href="$classbspline_1_1operators_1_1Position.html" title="Position operator." alt="" coords="212,297,351,339"/>
+<area shape="rect" id="node7" href="$classbspline_1_1operators_1_1ScalarMultiplication.html" title="Multiplication operator for Operator and scalar." alt="" coords="202,363,361,419"/>
+<area shape="rect" id="node8" href="$classbspline_1_1operators_1_1SplineOperator.html" title="Operator representation of a Spline." alt="" coords="204,443,359,499"/>
+</map>
