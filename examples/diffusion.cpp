@@ -25,8 +25,7 @@ static std::vector<data_t> setUpKnotsVector(
 
   // Adding a knot multiple times alters the continuity properties of the
   // generated splines at the corresponding grid point (see literature on
-  // BSplines). This guarantees that the radial wavefunctions have the correct
-  // scaling in the vicinity of r=0 (at least for sufficiently low L).
+  // BSplines).
   for (size_t i = 0; i < SPLINE_ORDER; i++) ret.push_back(support.front());
 
   for (const auto &val : support) ret.push_back(val);
@@ -58,8 +57,8 @@ Spline solveDiffusionSteadyState(PSpline diffusionCoeff, data_t startValue,
   basis.erase(basis.end());
 
   const integration::BilinearForm bilinearForm{
-      (static_cast<data_t>(1) / 2) *
-      (Dx<1>{} * SplineOperator{std::move(diffusionCoeff)} * Dx<1>{})};
+      Dx<1>{}, (static_cast<data_t>(-1) / 2) *
+                   (SplineOperator{std::move(diffusionCoeff)} * Dx<1>{})};
 
   DeVec b = DeVec::Zero(basis.size());
   const integration::ScalarProduct sp{};
