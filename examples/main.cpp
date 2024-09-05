@@ -11,7 +11,6 @@
 #include <limits>
 #include <vector>
 
-#include "bspline/interpolation/interpolation.h"
 #include "diffusion.h"
 #include "harmonic-oscillator.h"
 #include "hydrogen.h"
@@ -130,22 +129,22 @@ static void radialHydrogen() {
 static void diffusionEquation() {
   std::cout.precision(std::numeric_limits<data_t>::max_digits10);
   std::vector<data_t> gridPoints;
-  std::vector<data_t> diffCoeffVals;
+  std::vector<std::array<data_t, DSpline::spline_order + 1>> diffCoeffVals;
   for (int i = -100; i <= 100; i++) {
     gridPoints.push_back(static_cast<data_t>(i) / 10);
+    if (i == -100) {
+      continue;
+    }
     if (abs(i) <= 33) {
-      diffCoeffVals.push_back(static_cast<data_t>(1) / 3);
+      diffCoeffVals.push_back({static_cast<data_t>(1) / 3});
     } else {
-      diffCoeffVals.push_back(static_cast<data_t>(1));
+      diffCoeffVals.push_back({static_cast<data_t>(1)});
     }
   }
   bspline::support::Grid<data_t> grid(std::move(gridPoints));
   auto support = bspline::support::Support<data_t>::createWholeGrid(grid);
 
-  const auto diffCoeff =
-      bspline::interpolation::interpolateUsingEigen<data_t,
-                                                    PSpline::spline_order>(
-          support, diffCoeffVals);
+  const DSpline diffCoeff{support, std::move(diffCoeffVals)};
   const auto solution = solveDiffusionSteadyState(
       diffCoeff, static_cast<data_t>(0), static_cast<data_t>(10));
 

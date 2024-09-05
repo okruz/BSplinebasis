@@ -45,7 +45,7 @@ static std::vector<Spline> setUpBasis(const support::Support<data_t> &support) {
   return generator.template generateBSplines<SPLINE_ORDER>();
 }
 
-Spline solveDiffusionSteadyState(PSpline diffusionCoeff, data_t startValue,
+Spline solveDiffusionSteadyState(DSpline diffusionCoeff, data_t startValue,
                                  data_t endValue) {
   // Get the basis.
   std::vector<Spline> basis = setUpBasis(diffusionCoeff.getSupport());

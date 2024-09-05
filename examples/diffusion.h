@@ -17,15 +17,19 @@
 namespace bspline::examples::diffusion {
 
 /**
+ * Spline definition for the diffusion coefficient.
+ */
+using DSpline = bspline::Spline<data_t, 0>;
+
+/**
  * Solves the steady state of the diffusion equation with the given (spatially
  * inhomogeneous) diffusion coefficient and the boundary values.
- * @param diffusionCoeff A spline representing the diffusion coefficient. Must
- * be continuous.
+ * @param diffusionCoeff A spline representing the diffusion coefficient.
  * @param startValue The concentration at the begin of the domain.
  * @param endValue The concentration at the end of the domain.
  * @return Returns the (real) eigenenergies and the steady-state solution.
  */
-Spline solveDiffusionSteadyState(PSpline diffusionCoeff, data_t startValue,
+Spline solveDiffusionSteadyState(DSpline diffusionCoeff, data_t startValue,
                                  data_t endValue);
 
 }  // namespace bspline::examples::diffusion
