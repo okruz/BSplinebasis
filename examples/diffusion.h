@@ -27,7 +27,7 @@ using DSpline = bspline::Spline<data_t, 0>;
  * @param diffusionCoeff A spline representing the diffusion coefficient.
  * @param startValue The concentration at the begin of the domain.
  * @param endValue The concentration at the end of the domain.
- * @return Returns the (real) eigenenergies and the steady-state solution.
+ * @return Returns a spline representing the steady-state concentration.
  */
 Spline solveDiffusionSteadyState(DSpline diffusionCoeff, data_t startValue,
                                  data_t endValue);
