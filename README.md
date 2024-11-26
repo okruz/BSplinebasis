@@ -31,7 +31,7 @@ using Spline = bspline::Spline<double, SPLINE_ORDER>;
 const std::vector<double> knots{0.0, 1.0, 2.0, 3.0, 4.0, 5.0};
 
 // Generate Splines.
-const std::vector<Spline> = bspline::generateBSplines<SPLINE_ORDER>(knots);
+const std::vector<Spline> splines = bspline::generateBSplines<SPLINE_ORDER>(knots);
 ```
 
 The corresponding splines are shown in the following graphic. The splines are third order splines and two times continuously differentiable.
