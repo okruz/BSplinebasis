@@ -60,11 +60,11 @@ using namespace bspline::integration;
 const auto hamiltonOperator =  0.5 * (-Dx<2>{} + X<2>{});
 
 const BilinearForm bilinearForm{hamiltonOperator};
-const double matrixElement = bilinearForm.evaluate(spline1, spline2);
+const double matrixElement = bilinearForm(spline1, spline2);
 
 // Typedef for BilinearForm(IdentityOperator{});
 const ScalarProduct scalarProduct;
-const double overlapMatrixElement = scalarProduct.evaluate(spline1, spline2);
+const double overlapMatrixElement = scalarProduct(spline1, spline2);
 ```
 
 A full implementation of the solution of the harmonic oscillator and the radial hydrogen problem can be found in the folder `examples/`.
