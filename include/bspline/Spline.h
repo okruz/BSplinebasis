@@ -114,8 +114,8 @@ class Spline final {
   /*!
    * @brief Resets the data of the spline and performs sanity checks.
    *
-   * @param intervals The grid points representing the intervals on which the
-   * spline is defined.
+   * @param support The support representing the intervals on which the spline
+   * is defined.
    * @param coefficients Polynomial coefficients on each of the intervals.
    */
   void setData(Support<T> support,
