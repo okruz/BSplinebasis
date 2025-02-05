@@ -72,7 +72,7 @@ class Spline final {
    * @brief Finds the index of x in the spline's support.
    * @param x Point, whose interval will be searched.
    * @return The index corresponding to the beginning of the interval which
-   * contains x or -1 if x is not part of the spline's support.
+   * contains x or std::nullopt if x is not part of the spline's support.
    */
   std::optional<size_t> findInterval(const T &x) const {
     if (_support.size() < 2 || x > _support.back() || x < _support.front())
@@ -263,8 +263,8 @@ class Spline final {
     return true;
   };
 
-  //######################## Operator definitions ########################
-  //######################################################################
+  // ######################## Operator definitions ########################
+  // ######################################################################
 
   /*!
    * Scalar-division operator. Divides this spline by the scalar d.
@@ -543,8 +543,8 @@ template <typename T, size_t ARRAY_SIZE>
 Spline(Support<T> support, std::vector<std::array<T, ARRAY_SIZE>> coefficients)
     -> Spline<T, ARRAY_SIZE - 1>;
 
-//################### End of defintion of Spline class ###################
-//########################################################################
+// ################### End of defintion of Spline class ###################
+// ########################################################################
 
 /*!
  * @brief Commutation of spline scalar multiplication operator.
