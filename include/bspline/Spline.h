@@ -127,12 +127,12 @@ class Spline final {
 
  public:
   /*!
-   * @brief Provides acces to the data type T of the spline.
+   * @brief The data type T of the spline.
    */
   using data_type = T;
 
   /*!
-   * @brief Provides access to the order of the spline.
+   * @brief The order of the spline.
    */
   static constexpr size_t spline_order = order;
 
