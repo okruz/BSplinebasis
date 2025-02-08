@@ -121,6 +121,9 @@ class Support final {
       : _grid{s._grid}, _startIndex{s._startIndex}, _endIndex{s._endIndex} {
     s._startIndex = 0;
     s._endIndex = 0;
+
+    DURING_TEST_CHECK_VALIDITY();
+    DURING_TEST_CHECK_VALIDITY_OF(s);
   }
 
   /*!
@@ -137,6 +140,8 @@ class Support final {
 
     s._startIndex = 0;
     s._endIndex = 0;
+    DURING_TEST_CHECK_VALIDITY();
+    DURING_TEST_CHECK_VALIDITY_OF(s);
 
     return *this;
   }
@@ -182,7 +187,7 @@ class Support final {
    * Checks whether the Support contains any intervals. The number of intervals
    * is the number of grid points minus one (size() - 1).
    *
-   * @brief Returns whether this Support is empty or point-like.
+   * @brief Returns false if this Support is empty or point-like.
    * @returns false if the Support is empty or point-like, true otherwise.
    */
   bool containsIntervals() const {
@@ -414,6 +419,7 @@ class Support final {
    */
   bool operator!=(const Support &s) const {
     DURING_TEST_CHECK_VALIDITY();
+    DURING_TEST_CHECK_VALIDITY_OF(s);
     return !(*this == s);
   };
 
