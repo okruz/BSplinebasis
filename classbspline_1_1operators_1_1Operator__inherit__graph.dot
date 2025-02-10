@@ -1,0 +1,23 @@
+digraph "bspline::operators::Operator"
+{
+ // LATEX_PDF_SIZE
+  bgcolor="transparent";
+  edge [fontname=Helvetica,fontsize=10,labelfontname=Helvetica,labelfontsize=10];
+  node [fontname=Helvetica,fontsize=10,shape=box,height=0.2,width=0.4];
+  rankdir="LR";
+  Node1 [id="Node000001",label="bspline::operators\l::Operator",height=0.2,width=0.4,color="gray40", fillcolor="grey60", style="filled", fontcolor="black",tooltip="Marker interface for operators."];
+  Node1 -> Node2 [id="edge1_Node000001_Node000002",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node2 [id="Node000002",label="bspline::operators\l::Derivative\< n \>",height=0.2,width=0.4,color="gray40", fillcolor="white", style="filled",URL="$classbspline_1_1operators_1_1Derivative.html",tooltip="Derivative operator."];
+  Node1 -> Node3 [id="edge2_Node000001_Node000003",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node3 [id="Node000003",label="bspline::operators\l::IdentityOperator",height=0.2,width=0.4,color="gray40", fillcolor="white", style="filled",URL="$classbspline_1_1operators_1_1IdentityOperator.html",tooltip="Multiplicative identity operator."];
+  Node1 -> Node4 [id="edge3_Node000001_Node000004",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node4 [id="Node000004",label="bspline::operators\l::OperatorProduct\< O1,\l O2, \>",height=0.2,width=0.4,color="gray40", fillcolor="white", style="filled",URL="$classbspline_1_1operators_1_1OperatorProduct.html",tooltip="Represents the product of two operators."];
+  Node1 -> Node5 [id="edge4_Node000001_Node000005",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node5 [id="Node000005",label="bspline::operators\l::OperatorSum\< O1, O2,\l operation, \>",height=0.2,width=0.4,color="gray40", fillcolor="white", style="filled",URL="$classbspline_1_1operators_1_1OperatorSum.html",tooltip="Operator sum. Represents the sum or difference of two operators."];
+  Node1 -> Node6 [id="edge5_Node000001_Node000006",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node6 [id="Node000006",label="bspline::operators\l::Position\< n \>",height=0.2,width=0.4,color="gray40", fillcolor="white", style="filled",URL="$classbspline_1_1operators_1_1Position.html",tooltip="Position operator."];
+  Node1 -> Node7 [id="edge6_Node000001_Node000007",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node7 [id="Node000007",label="bspline::operators\l::ScalarMultiplication\l\< S, O, \>",height=0.2,width=0.4,color="gray40", fillcolor="white", style="filled",URL="$classbspline_1_1operators_1_1ScalarMultiplication.html",tooltip="Multiplication operator for Operator and scalar."];
+  Node1 -> Node8 [id="edge7_Node000001_Node000008",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node8 [id="Node000008",label="bspline::operators\l::SplineOperator\< T,\l order \>",height=0.2,width=0.4,color="gray40", fillcolor="white", style="filled",URL="$classbspline_1_1operators_1_1SplineOperator.html",tooltip="Operator representation of a Spline."];
+}
