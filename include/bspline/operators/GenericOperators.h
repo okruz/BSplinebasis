@@ -22,15 +22,14 @@ namespace bspline::operators {
  * type.
  */
 template <typename O>
-concept Operator = requires(O o, size_t inputOrder) {
-  { O::outputOrder(inputOrder) } -> std::same_as<size_t>;
-  // TODO: Can this be encoded with a concept?
-  /*  template <typename T, size_t size>
-    {
-      o.transform(const std::array<T, size> &input, const support::Grid<T>
-    &grid, size_t intervalIndex) const } -> std::same_as<typename std::array<T,
-    size>>;*/
-};
+concept Operator =
+    requires(O o, size_t inputOrder, const std::array<double, 4> &input,
+             const support::Grid<double> &grid, size_t intervalIndex) {
+      { O::outputOrder(inputOrder) } -> std::same_as<size_t>;
+      {
+        o.transform(input, grid, intervalIndex)
+      } -> std::same_as<std::array<double, O::outputOrder(4 - 1) + 1>>;
+    };
 
 /*!
  * @brief Applies operator to spline.

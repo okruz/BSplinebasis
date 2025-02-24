@@ -18,6 +18,9 @@
  */
 namespace bspline::operators {
 
+/*!
+ * @brief Defines an Scalar suitable for scalar multiplication.
+ */
 template <typename S>
 concept Scalar = std::is_floating_point_v<S> || std::is_integral_v<S>;
 
