@@ -25,7 +25,7 @@ namespace internal = bspline::internal;
  * @tparam n Order of the power.
  */
 template <size_t n>
-class Position final : public Operator {
+class Position final {
  private:
   /*!
    * Expands \f$(x + x_m)^n\f$.

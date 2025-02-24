@@ -22,8 +22,7 @@ namespace bspline::integration {
  *
  * @tparam O The type of the operator applied to the spline.
  */
-template <typename O,
-          std::enable_if_t<operators::is_operator_v<O>, bool> = true>
+template <operators::Operator O>
 class LinearForm final {
  private:
   /*! Operator applied to the spline.*/
@@ -111,7 +110,7 @@ class LinearForm final {
  * spline \f[\left\langle
  * a\right\rangle=\int\limits_{-\infty}^{\infty}\mathrm{d}x~a(x).\f]
  */
-LinearForm()->LinearForm<operators::IdentityOperator>;
+LinearForm() -> LinearForm<operators::IdentityOperator>;
 
 }  // namespace bspline::integration
 #endif  // BSPLINE_INTEGRATION_LINEARFORM_H

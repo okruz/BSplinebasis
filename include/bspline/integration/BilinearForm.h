@@ -32,8 +32,7 @@ namespace bspline::integration {
  * @tparam O1 The type of the operator applied to the first spline.
  * @tparam O2 The type of the operator applied to the second spline.
  */
-template <typename O1, typename O2,
-          std::enable_if_t<operators::are_operators_v<O1, O2>, bool> = true>
+template <operators::Operator O1, operators::Operator O2>
 class BilinearForm final {
  private:
   /*! Operator applied to the first spline.*/
@@ -164,7 +163,7 @@ class BilinearForm final {
  *
  * @tparam O2 Type of the operator applied to the second spline.
  */
-template <typename O2>
+template <operators::Operator O2>
 BilinearForm(O2 o2) -> BilinearForm<operators::IdentityOperator, O2>;
 
 /*!
@@ -176,7 +175,7 @@ BilinearForm(O2 o2) -> BilinearForm<operators::IdentityOperator, O2>;
  * \,\,b(x)\ \f]
  */
 BilinearForm()
-    ->BilinearForm<operators::IdentityOperator, operators::IdentityOperator>;
+    -> BilinearForm<operators::IdentityOperator, operators::IdentityOperator>;
 
 /*!
  * Short hand for a scalar product \f[\left\langle a,\, b\right\rangle =

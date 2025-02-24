@@ -11,23 +11,15 @@
 #include <bspline/Spline.h>
 #include <bspline/operators/CompoundOperators.h>
 
+#include <concepts>
+
 /*!
  * Operator definitions.
  */
 namespace bspline::operators {
 
-/*!
- * @brief Validates ScalarOperator template parameters.
- *
- * Indicates whether the argument types may be arguments of a scalar
- * multiplication (i.e. a scalar multiplied with an operator).
- *
- * @tparam T Scalar type.
- * @tparam O Operator type.
- */
-template <typename T, typename O>
-inline constexpr bool are_scalar_multiplication_types_v =
-    !is_spline_v<T> && !is_operator_v<T> && is_operator_v<O>;
+template <typename S>
+concept Scalar = std::is_floating_point_v<S> || std::is_integral_v<S>;
 
 /*!
  * @brief Multiplication operator for Operator and scalar.
@@ -37,10 +29,8 @@ inline constexpr bool are_scalar_multiplication_types_v =
  * @tparam S type of the scalar.
  * @tparam O type of the operator to be multiplied with the scalar.
  */
-template <typename S, typename O,
-          std::enable_if_t<are_scalar_multiplication_types_v<S, O>, bool> =
-              true>
-class ScalarMultiplication final : public Operator {
+template <Scalar S, Operator O>
+class ScalarMultiplication final {
  private:
   /*! The scalar to multiply the operator with. */
   S _s;
@@ -113,7 +103,7 @@ class ScalarMultiplication final : public Operator {
  *
  * @tparam S The type of the scalar.
  */
-template <typename S>
+template <Scalar S>
 ScalarMultiplication(S s) -> ScalarMultiplication<S, IdentityOperator>;
 
 /*!
@@ -127,9 +117,7 @@ ScalarMultiplication(S s) -> ScalarMultiplication<S, IdentityOperator>;
  * @tparam O The type of the operator to be multiplied.
  * @returns The scaled operator.
  */
-template <
-    typename S, typename O,
-    std::enable_if_t<are_scalar_multiplication_types_v<S, O>, bool> = true>
+template <Scalar S, Operator O>
 ScalarMultiplication<S, O> operator*(const S &s, O &&o) {
   return ScalarMultiplication(s, std::forward<O>(o));
 }
@@ -143,9 +131,7 @@ ScalarMultiplication<S, O> operator*(const S &s, O &&o) {
  * @tparam O The type of the operator to be multiplied.
  * @returns The scaled operator.
  */
-template <
-    typename S, typename O,
-    std::enable_if_t<are_scalar_multiplication_types_v<S, O>, bool> = true>
+template <Scalar S, Operator O>
 ScalarMultiplication<S, O> operator*(O &&o, const S &s) {
   return ScalarMultiplication(s, std::forward<O>(o));
 }
@@ -159,9 +145,7 @@ ScalarMultiplication<S, O> operator*(O &&o, const S &s) {
  * @tparam O The type of the operator to be divided.
  * @returns The scaled operator.
  */
-template <
-    typename S, typename O,
-    std::enable_if_t<are_scalar_multiplication_types_v<S, O>, bool> = true>
+template <Scalar S, Operator O>
 ScalarMultiplication<S, O> operator/(O &&o, const S &s) {
   return ScalarMultiplication(static_cast<S>(1) / s, std::forward<O>(o));
 }
@@ -175,9 +159,7 @@ ScalarMultiplication<S, O> operator/(O &&o, const S &s) {
  * @tparam O The type of the operator.
  * @returns The shifted operator.
  */
-template <
-    typename S, typename O,
-    std::enable_if_t<are_scalar_multiplication_types_v<S, O>, bool> = true>
+template <Scalar S, Operator O>
 auto operator+(O &&o, const S &s) {
   return std::forward<O>(o) + ScalarMultiplication{s};
 }
@@ -191,9 +173,7 @@ auto operator+(O &&o, const S &s) {
  * @tparam O The type of the operator.
  * @returns The shifted operator.
  */
-template <
-    typename S, typename O,
-    std::enable_if_t<are_scalar_multiplication_types_v<S, O>, bool> = true>
+template <Scalar S, Operator O>
 auto operator+(const S &s, O &&o) {
   return ScalarMultiplication{s} + std::forward<O>(o);
 }
@@ -207,9 +187,7 @@ auto operator+(const S &s, O &&o) {
  * @tparam O The type of the operator.
  * @returns The shifted operator.
  */
-template <
-    typename S, typename O,
-    std::enable_if_t<are_scalar_multiplication_types_v<S, O>, bool> = true>
+template <Scalar S, Operator O>
 auto operator-(O &&o, const S &s) {
   return std::forward<O>(o) - ScalarMultiplication{s};
 }
@@ -223,9 +201,7 @@ auto operator-(O &&o, const S &s) {
  * @tparam O The type of the operator.
  * @returns The shifted and inverted operator.
  */
-template <
-    typename S, typename O,
-    std::enable_if_t<are_scalar_multiplication_types_v<S, O>, bool> = true>
+template <Scalar S, Operator O>
 auto operator-(const S &s, O &&o) {
   return ScalarMultiplication{s} - std::forward<O>(o);
 }
@@ -240,7 +216,7 @@ auto operator-(const S &s, O &&o) {
  * @tparam O The type of the operator to be negated.
  * @returns The inverted operator.
  */
-template <typename O, std::enable_if_t<is_operator_v<O>, bool> = true>
+template <Operator O>
 ScalarMultiplication<int, O> operator-(O &&o) {
   return ScalarMultiplication<int, O>(-1, std::forward<O>(o));
 }

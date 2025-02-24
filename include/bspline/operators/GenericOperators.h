@@ -16,35 +16,21 @@
 namespace bspline::operators {
 
 /*!
- * @brief Marker interface for operators.
- *
- * All proper operators must derive from this interface.
- */
-class Operator {};
-
-/*!
- * @brief Checks whether O is an operator.
+ * @brief Defines an operator.
  *
  * Indicates whether the template parameter is an operator
  * type.
- *
- * @tparam O Template parameter.
  */
 template <typename O>
-inline constexpr bool is_operator_v =
-    std::is_base_of_v<Operator, std::remove_cv_t<std::remove_reference_t<O>>>;
-
-/*!
- * @brief Checks whether O1 and O2 are operators.
- *
- * Indicates whether both template parameters are operator
- * types.
- *
- * @tparam O1 First template parameter.
- * @tparam O2 Second template parameter.
- */
-template <typename O1, typename O2>
-inline constexpr bool are_operators_v = is_operator_v<O1> &&is_operator_v<O2>;
+concept Operator = requires(O o, size_t inputOrder) {
+  { O::outputOrder(inputOrder) } -> std::same_as<size_t>;
+  // TODO: Can this be encoded with a concept?
+  /*  template <typename T, size_t size>
+    {
+      o.transform(const std::array<T, size> &input, const support::Grid<T>
+    &grid, size_t intervalIndex) const } -> std::same_as<typename std::array<T,
+    size>>;*/
+};
 
 /*!
  * @brief Applies operator to spline.
@@ -60,8 +46,7 @@ inline constexpr bool are_operators_v = is_operator_v<O1> &&is_operator_v<O2>;
  * @returns The spline resulting from the application of this operator to the
  * spline.
  */
-template <typename T, size_t order, typename O,
-          std::enable_if_t<is_operator_v<O>, bool> = true>
+template <typename T, size_t order, Operator O>
 auto transformSpline(const O &op, const Spline<T, order> &spline) {
   constexpr size_t OUTPUT_SIZE = O::outputOrder(order) + 1;
 
@@ -92,7 +77,7 @@ auto transformSpline(const O &op, const Spline<T, order> &spline) {
  *
  * Represents the identity operator.
  */
-class IdentityOperator final : public Operator {
+class IdentityOperator final {
  public:
   /*!
    * @brief Order of the resulting Spline.
@@ -137,8 +122,7 @@ class IdentityOperator final : public Operator {
  * @returns The spline resulting from the application of the operator to the
  * spline.
  */
-template <typename O, typename S,
-          std::enable_if_t<is_operator_v<O> && is_spline_v<S>, bool> = true>
+template <Operator O, typename S, std::enable_if_t<is_spline_v<S>, bool> = true>
 auto operator*(const O &o, const S &s) {
   return transformSpline(o, s);
 }
