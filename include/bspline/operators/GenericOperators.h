@@ -121,7 +121,7 @@ class IdentityOperator final {
  * @returns The spline resulting from the application of the operator to the
  * spline.
  */
-template <Operator O, typename S, std::enable_if_t<is_spline_v<S>, bool> = true>
+template <Operator O, SplineT S>
 auto operator*(const O &o, const S &s) {
   return transformSpline(o, s);
 }

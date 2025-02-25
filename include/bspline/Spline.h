@@ -728,7 +728,7 @@ struct is_spline<Spline<T, order>> : std::true_type {};
  * @tparam S The type to check against the Spline class.
  */
 template <typename S>
-inline constexpr bool is_spline_v = is_spline<S>::value;
+concept SplineT = is_spline<S>::value;
 
 }  // namespace bspline
 #endif  // BSPLINE_SPLINE_H
