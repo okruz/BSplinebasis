@@ -117,12 +117,13 @@ class IdentityOperator final {
  * @param o The operator.
  * @param s The spline.
  * @tparam O The type of the operator.
- * @tparam S The type of the spline.
+ * @tparam T The data type Spline.
+ * @tparam order The order of the Spline.
  * @returns The spline resulting from the application of the operator to the
  * spline.
  */
-template <Operator O, SplineT S>
-auto operator*(const O &o, const S &s) {
+template <Operator O, typename T, size_t order>
+auto operator*(const O &o, const Spline<T, order> &s) {
   return transformSpline(o, s);
 }
 }  // namespace bspline::operators
