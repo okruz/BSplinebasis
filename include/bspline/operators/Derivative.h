@@ -8,6 +8,7 @@
 #ifndef BSPLINE_OPERATORS_DERIVATIVE_H
 #define BSPLINE_OPERATORS_DERIVATIVE_H
 
+#include <bspline/Concepts.h>
 #include <bspline/internal/misc.h>
 #include <bspline/operators/GenericOperators.h>
 
@@ -25,7 +26,7 @@ namespace internal = bspline::internal;
  * @tparam n Order of the derivative.
  */
 template <size_t n>
-class Derivative final : public Operator {
+class Derivative final {
  public:
   /*!
    * @brief Returns the order of the output spline for a given input order.
@@ -52,7 +53,7 @@ class Derivative final : public Operator {
    * @returns The polyomial coefficients arising from the application of this
    * operator to the input coefficients.
    */
-  template <typename T, size_t size>
+  template <Real T, size_t size>
   std::array<T, outputOrder(size - 1) + 1> transform(
       const std::array<T, size> &input,
       [[maybe_unused]] const support::Grid<T> &grid,

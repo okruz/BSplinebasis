@@ -8,6 +8,7 @@
 #ifndef BSPLINE_OPERATORS_COMPOUNDOPERATORS_H
 #define BSPLINE_OPERATORS_COMPOUNDOPERATORS_H
 
+#include <bspline/Concepts.h>
 #include <bspline/operators/GenericOperators.h>
 
 namespace bspline::operators {
@@ -17,9 +18,8 @@ namespace bspline::operators {
  * @tparam O1 The type of the first (left) operator.
  * @tparam O2 The type of the second (right) operator.
  */
-template <typename O1, typename O2,
-          std::enable_if_t<are_operators_v<O1, O2>, bool> = true>
-class OperatorProduct final : public Operator {
+template <Operator O1, Operator O2>
+class OperatorProduct final {
  private:
   /*! The first (left) operator.*/
   O1 _o1;
@@ -60,7 +60,7 @@ class OperatorProduct final : public Operator {
    * @returns The polyomial coefficients arising from the application of this
    * operator to the input coefficients.
    */
-  template <typename T, size_t size>
+  template <Real T, size_t size>
   std::array<T, outputOrder(size - 1) + 1> transform(
       const std::array<T, size> &input, const support::Grid<T> &grid,
       size_t intervalIndex) const {
@@ -79,8 +79,7 @@ class OperatorProduct final : public Operator {
  * @tparam O1 The type of the first (left) operator.
  * @tparam O2 The type of the second (right) operator.
  */
-template <typename O1, typename O2,
-          std::enable_if_t<are_operators_v<O1, O2>, bool> = true>
+template <Operator O1, Operator O2>
 OperatorProduct<O1, O2> operator*(O1 &&o1, O2 &&o2) {
   return OperatorProduct(std::forward<O1>(o1), std::forward<O2>(o2));
 }
@@ -107,10 +106,9 @@ enum class AdditionOperation {
  * @tparam operation The operation type to be checked.
  */
 template <AdditionOperation operation>
-inline constexpr bool is_valid_operation_v = (operation ==
-                                              AdditionOperation::ADDITION) ||
-                                             (operation ==
-                                              AdditionOperation::SUBTRACTION);
+inline constexpr bool is_valid_operation_v =
+    (operation == AdditionOperation::ADDITION) ||
+    (operation == AdditionOperation::SUBTRACTION);
 
 /*!
  * @brief Operator sum.
@@ -121,11 +119,9 @@ inline constexpr bool is_valid_operation_v = (operation ==
  * @tparam operation Indicates whether the operators shall be added or
  * subtracted.
  */
-template <
-    typename O1, typename O2, AdditionOperation operation,
-    std::enable_if_t<are_operators_v<O1, O2> && is_valid_operation_v<operation>,
-                     bool> = true>
-class OperatorSum final : public Operator {
+template <Operator O1, Operator O2, AdditionOperation operation,
+          std::enable_if_t<is_valid_operation_v<operation>, bool> = true>
+class OperatorSum final {
  private:
   /*! The first operator.*/
   O1 _o1;
@@ -145,7 +141,7 @@ class OperatorSum final : public Operator {
    * @tparam sizeb The size of b.
    * @returns The sum of the two input arrays.
    */
-  template <typename T, size_t sizea, size_t sizeb>
+  template <Real T, size_t sizea, size_t sizeb>
   static std::array<T, std::max(sizea, sizeb)> &add(std::array<T, sizea> &a,
                                                     std::array<T, sizeb> &b) {
     if constexpr (sizeb > sizea) {
@@ -192,7 +188,7 @@ class OperatorSum final : public Operator {
    * @returns The polyomial coefficients arising from the application of this
    * operator to the input coefficients.
    */
-  template <typename T, size_t size>
+  template <Real T, size_t size>
   std::array<T, outputOrder(size - 1) + 1> transform(
       const std::array<T, size> &input, const support::Grid<T> &grid,
       size_t intervalIndex) const {
@@ -221,8 +217,7 @@ class OperatorSum final : public Operator {
  * @tparam O2 The type of the second operator.
  * @returns The sum of the two input operators.
  */
-template <typename O1, typename O2,
-          std::enable_if_t<are_operators_v<O1, O2>, bool> = true>
+template <Operator O1, Operator O2>
 auto operator+(O1 &&o1, O2 &&o2) {
   return OperatorSum<O1, O2, AdditionOperation::ADDITION>(std::forward<O1>(o1),
                                                           std::forward<O2>(o2));
@@ -239,8 +234,7 @@ auto operator+(O1 &&o1, O2 &&o2) {
  * @tparam O2 The type of the second operator.
  * @returns the difference of the two input operators.
  */
-template <typename O1, typename O2,
-          std::enable_if_t<are_operators_v<O1, O2>, bool> = true>
+template <Operator O1, Operator O2>
 auto operator-(O1 &&o1, O2 &&o2) {
   return OperatorSum<O1, O2, AdditionOperation::SUBTRACTION>(
       std::forward<O1>(o1), std::forward<O2>(o2));

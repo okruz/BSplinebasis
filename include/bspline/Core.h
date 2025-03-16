@@ -6,6 +6,7 @@
  */
 
 #include <bspline/BSplineGenerator.h>
+#include <bspline/Concepts.h>
 #include <bspline/Spline.h>
 #include <bspline/integration/BilinearForm.h>
 #include <bspline/integration/LinearForm.h>

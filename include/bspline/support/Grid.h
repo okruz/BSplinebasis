@@ -8,6 +8,7 @@
 #ifndef BSPLINE_SUPPORT_GRID_H
 #define BSPLINE_SUPPORT_GRID_H
 
+#include <bspline/Concepts.h>
 #include <bspline/exceptions/BSplineException.h>
 #include <bspline/internal/misc.h>
 #include <bspline/internal/test_checks.h>
@@ -23,7 +24,7 @@ using namespace bspline::exceptions;
  * @brief Represents a global Grid.
  * @tparam T The datatype of the Grid elements.
  */
-template <typename T>
+template <Real T>
 class Grid final {
  private:
   /*! The gridpoints. */

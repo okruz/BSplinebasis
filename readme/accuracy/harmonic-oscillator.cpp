@@ -22,6 +22,9 @@
 #include <iostream>
 #include <limits>
 #include <string>
+using quad = boost::multiprecision::cpp_bin_float_quad;
+
+REGISTER_BSPLINE_REAL(quad);
 
 using namespace bspline;
 
@@ -139,8 +142,6 @@ int main(int argc, char **argv) {
               << argv[0] << " <output-folder>." << std::endl;
     return 1;
   }
-
-  using quad = boost::multiprecision::cpp_bin_float_quad;
 
   std::cout.precision(std::numeric_limits<double>::max_digits10);
   std::cout << "eps(double): " << std::numeric_limits<double>::epsilon()
