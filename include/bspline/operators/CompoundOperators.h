@@ -8,6 +8,7 @@
 #ifndef BSPLINE_OPERATORS_COMPOUNDOPERATORS_H
 #define BSPLINE_OPERATORS_COMPOUNDOPERATORS_H
 
+#include <bspline/Concepts.h>
 #include <bspline/operators/GenericOperators.h>
 
 namespace bspline::operators {
@@ -59,7 +60,7 @@ class OperatorProduct final {
    * @returns The polyomial coefficients arising from the application of this
    * operator to the input coefficients.
    */
-  template <typename T, size_t size>
+  template <Real T, size_t size>
   std::array<T, outputOrder(size - 1) + 1> transform(
       const std::array<T, size> &input, const support::Grid<T> &grid,
       size_t intervalIndex) const {
@@ -140,7 +141,7 @@ class OperatorSum final {
    * @tparam sizeb The size of b.
    * @returns The sum of the two input arrays.
    */
-  template <typename T, size_t sizea, size_t sizeb>
+  template <Real T, size_t sizea, size_t sizeb>
   static std::array<T, std::max(sizea, sizeb)> &add(std::array<T, sizea> &a,
                                                     std::array<T, sizeb> &b) {
     if constexpr (sizeb > sizea) {
@@ -187,7 +188,7 @@ class OperatorSum final {
    * @returns The polyomial coefficients arising from the application of this
    * operator to the input coefficients.
    */
-  template <typename T, size_t size>
+  template <Real T, size_t size>
   std::array<T, outputOrder(size - 1) + 1> transform(
       const std::array<T, size> &input, const support::Grid<T> &grid,
       size_t intervalIndex) const {

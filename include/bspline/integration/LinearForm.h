@@ -8,6 +8,7 @@
 #ifndef BSPLINE_INTEGRATION_LINEARFORM_H
 #define BSPLINE_INTEGRATION_LINEARFORM_H
 
+#include <bspline/Concepts.h>
 #include <bspline/Spline.h>
 #include <bspline/operators/GenericOperators.h>
 
@@ -37,7 +38,7 @@ class LinearForm final {
    * @tparam size The number of coefficients of the polynomial.
    * @returns The value of the linear form on the one interval.
    */
-  template <typename T, size_t size>
+  template <Real T, size_t size>
   static T evaluateInterval(const std::array<T, size> &a, const T &dxhalf) {
     // Use Horner's scheme to evaluate.
     constexpr int endIndex =
@@ -74,7 +75,7 @@ class LinearForm final {
    * @tparam order The order of the spline.
    * @returns The value of the linear form for the given spline.
    */
-  template <typename T, size_t order>
+  template <Real T, size_t order>
   T evaluate(const Spline<T, order> &a) const {
     const size_t nintervals = a.getSupport().numberOfIntervals();
 
@@ -97,7 +98,7 @@ class LinearForm final {
    * <b>Alias for LinearForm::evaluate().</b>
    * @copydoc LinearForm::evaluate()
    */
-  template <typename T, size_t order>
+  template <Real T, size_t order>
   T operator()(const Spline<T, order> &a) const {
     return evaluate(a);
   }

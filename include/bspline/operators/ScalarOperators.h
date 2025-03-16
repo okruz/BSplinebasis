@@ -8,6 +8,7 @@
 #ifndef BSPLINE_OPERATORS_SCALAROPERATORS_H
 #define BSPLINE_OPERATORS_SCALAROPERATORS_H
 
+#include <bspline/Concepts.h>
 #include <bspline/Spline.h>
 #include <bspline/operators/CompoundOperators.h>
 
@@ -17,12 +18,6 @@
  * Operator definitions.
  */
 namespace bspline::operators {
-
-/*!
- * @brief Defines an Scalar suitable for scalar multiplication.
- */
-template <typename S>
-concept Scalar = std::is_floating_point_v<S> || std::is_integral_v<S>;
 
 /*!
  * @brief Multiplication operator for Operator and scalar.
@@ -86,7 +81,7 @@ class ScalarMultiplication final {
    * @returns The polyomial coefficients arising from the application of this
    * operator to the input coefficients.
    */
-  template <typename T, size_t size>
+  template <Real T, size_t size>
   auto transform(const std::array<T, size> &input, const support::Grid<T> &grid,
                  size_t intervalIndex) const {
     auto a = _o.transform(input, grid, intervalIndex);

@@ -8,6 +8,7 @@
 #ifndef BSPLINE_SUPPORT_SUPPORT_H
 #define BSPLINE_SUPPORT_SUPPORT_H
 
+#include <bspline/Concepts.h>
 #include <bspline/exceptions/BSplineException.h>
 #include <bspline/support/Grid.h>
 
@@ -29,7 +30,7 @@ using namespace bspline::exceptions;
  * @brief Represents the Spline's Support.
  * @tparam T Datatype of the Grid and Spline.
  */
-template <typename T>
+template <Real T>
 class Support final {
  public:
   /*!

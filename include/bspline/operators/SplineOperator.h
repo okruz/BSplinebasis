@@ -8,6 +8,7 @@
 #ifndef BSPLINE_OPERATORS_SPLINEOPERATOR_H
 #define BSPLINE_OPERATORS_SPLINEOPERATOR_H
 
+#include <bspline/Concepts.h>
 #include <bspline/Spline.h>
 #include <bspline/exceptions/BSplineException.h>
 #include <bspline/internal/misc.h>
@@ -21,7 +22,7 @@ namespace bspline::operators {
  * @tparam T The data type of the spline.
  * @tparam order The order of the spline.
  */
-template <typename T, size_t order>
+template <Real T, size_t order>
 class SplineOperator final {
  private:
   /*! The spline which this operator represents. */

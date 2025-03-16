@@ -8,6 +8,7 @@
 #ifndef BSPLINE_INTEGRATION_BILINEARFORM_H
 #define BSPLINE_INTEGRATION_BILINEARFORM_H
 
+#include <bspline/Concepts.h>
 #include <bspline/Spline.h>
 #include <bspline/operators/GenericOperators.h>
 
@@ -51,7 +52,7 @@ class BilinearForm final {
    * @tparam sizeb The number of coefficients of the second polynomial.
    * @returns The value of the bilinear form on the one interval.
    */
-  template <typename T, size_t sizea, size_t sizeb>
+  template <Real T, size_t sizea, size_t sizeb>
   static T evaluateInterval(const std::array<T, sizea> &a,
                             const std::array<T, sizeb> &b, const T &dxhalf) {
     std::array<T, (sizea + sizeb) / 2> coefficients;
@@ -114,7 +115,7 @@ class BilinearForm final {
    * @throws BSplineException If the two splines are defined on different grids.
    * @returns The value of the bilinear form for the two splines.
    */
-  template <typename T, size_t ordera, size_t orderb>
+  template <Real T, size_t ordera, size_t orderb>
   T evaluate(const Spline<T, ordera> &a, const Spline<T, orderb> &b) const {
     // Will also check whether the two grids are equivalent.
     const support::Support integrandSupport =
@@ -147,7 +148,7 @@ class BilinearForm final {
    * <b>Alias for BilinearForm::evaluate().</b>
    * @copydoc BilinearForm::evaluate()
    */
-  template <typename T, size_t ordera, size_t orderb>
+  template <Real T, size_t ordera, size_t orderb>
   T operator()(const Spline<T, ordera> &a, const Spline<T, orderb> &b) const {
     return evaluate(a, b);
   }

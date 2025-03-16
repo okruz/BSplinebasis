@@ -8,6 +8,7 @@
 #ifndef BSPLINE_OPERATORS_POSITION_H
 #define BSPLINE_OPERATORS_POSITION_H
 
+#include <bspline/Concepts.h>
 #include <bspline/internal/misc.h>
 #include <bspline/operators/GenericOperators.h>
 
@@ -34,7 +35,7 @@ class Position final {
    * @tparam T The datatype of xm and the returned coefficients.
    * @returns The polynomial coefficients.
    */
-  template <typename T>
+  template <Real T>
   static std::array<T, n + 1> expandPower(const T &xm) {
     std::array<T, n + 1> retVal;
     T power_of_xm = static_cast<T>(1);
@@ -71,7 +72,7 @@ class Position final {
    * @returns The polyomial coefficients arising from the application of this
    * operator to the input coefficients.
    */
-  template <typename T, size_t size>
+  template <Real T, size_t size>
   std::array<T, outputOrder(size - 1) + 1> transform(
       const std::array<T, size> &input, const support::Grid<T> &grid,
       size_t intervalIndex) const {

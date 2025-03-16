@@ -8,6 +8,7 @@
 #ifndef BSPLINE_OPERATORS_DERIVATIVE_H
 #define BSPLINE_OPERATORS_DERIVATIVE_H
 
+#include <bspline/Concepts.h>
 #include <bspline/internal/misc.h>
 #include <bspline/operators/GenericOperators.h>
 
@@ -52,7 +53,7 @@ class Derivative final {
    * @returns The polyomial coefficients arising from the application of this
    * operator to the input coefficients.
    */
-  template <typename T, size_t size>
+  template <Real T, size_t size>
   std::array<T, outputOrder(size - 1) + 1> transform(
       const std::array<T, size> &input,
       [[maybe_unused]] const support::Grid<T> &grid,

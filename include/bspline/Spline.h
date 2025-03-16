@@ -27,6 +27,7 @@
 #ifndef BSPLINE_SPLINE_H
 #define BSPLINE_SPLINE_H
 
+#include <bspline/Concepts.h>
 #include <bspline/exceptions/BSplineException.h>
 #include <bspline/internal/misc.h>
 #include <bspline/support/Support.h>
@@ -55,7 +56,7 @@ using namespace bspline::exceptions;
  * @tparam T Datatype of the spline.
  * @tparam order Order of the spline.
  */
-template <typename T, size_t order>
+template <Real T, size_t order>
 class Spline final {
  private:
   /*! Number of coefficients per interval. */

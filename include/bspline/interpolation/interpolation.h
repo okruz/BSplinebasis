@@ -15,6 +15,7 @@
 #ifndef BSPLINE_INTERPOLATION_INTERPOLATION_H
 #define BSPLINE_INTERPOLATION_INTERPOLATION_H
 
+#include <bspline/Concepts.h>
 #include <bspline/Spline.h>
 #include <bspline/exceptions/BSplineException.h>
 #include <bspline/internal/misc.h>
@@ -48,7 +49,7 @@ enum class Node { FIRST, LAST };
  * Represents a boundary condition, i.e. one fixed derivative on either the
  * first or last node of the interpolation grid.
  */
-template <typename T>
+template <Real T>
 struct Boundary {
   /*! Node to apply the boundary condition to. */
   Node node = Node::FIRST;
@@ -69,7 +70,7 @@ namespace internal {
  *
  * @tparam T Datatype of the linear system of equations to be solved.
  */
-template <typename T>
+template <Real T>
 class ISolver {
  public:
   /*!
@@ -124,7 +125,7 @@ class ISolver {
  * @tparam order Polynomial order of the spline.
  * @returns An array with default order - 1 default boundary conditions.
  */
-template <typename T, size_t order>
+template <Real T, size_t order>
 std::array<Boundary<T>, order - 1> defaultBoundaries() {
   static_assert(order >= 1, "Order may not be zero.");
   std::array<Boundary<T>, order - 1> ret;
@@ -164,7 +165,7 @@ using bspline::support::Support;
  * @throws BSplineException If less than two data points are provided.
  * @returns The spline interpolating the input data.
  */
-template <typename T, size_t order, class Solver>
+template <Real T, size_t order, class Solver>
 bspline::Spline<T, order> interpolate(
     Support<T> x, const std::vector<T> &y,
     const std::array<Boundary<T>, order - 1> &boundaries =
@@ -364,7 +365,7 @@ bspline::Spline<double, order> interpolateUsingArmadillo(
  * @throws BSplineException If less than two data points are provided.
  * @returns The spline interpolating the input data.
  */
-template <typename T, size_t order>
+template <Real T, size_t order>
 bspline::Spline<T, order> interpolateUsingEigen(
     Support<T> x, const std::vector<T> &y,
     const std::array<Boundary<T>, order - 1> &boundaries =

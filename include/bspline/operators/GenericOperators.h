@@ -8,6 +8,7 @@
 #ifndef BSPLINE_OPERATORS_GENERICOPERATORS_H
 #define BSPLINE_OPERATORS_GENERICOPERATORS_H
 
+#include <bspline/Concepts.h>
 #include <bspline/Spline.h>
 
 /*!
@@ -45,7 +46,7 @@ concept Operator =
  * @returns The spline resulting from the application of this operator to the
  * spline.
  */
-template <typename T, size_t order, Operator O>
+template <Real T, size_t order, Operator O>
 auto transformSpline(const O &op, const Spline<T, order> &spline) {
   constexpr size_t OUTPUT_SIZE = O::outputOrder(order) + 1;
 
@@ -103,7 +104,7 @@ class IdentityOperator final {
    * @returns The polyomial coefficients arising from the application of the
    * operator to the input coefficients.
    */
-  template <typename T, size_t size>
+  template <Real T, size_t size>
   std::array<T, size> transform(const std::array<T, size> &input,
                                 [[maybe_unused]] const support::Grid<T> &grid,
                                 [[maybe_unused]] size_t intervalIndex) const {
@@ -122,7 +123,7 @@ class IdentityOperator final {
  * @returns The spline resulting from the application of the operator to the
  * spline.
  */
-template <Operator O, typename T, size_t order>
+template <Operator O, Real T, size_t order>
 auto operator*(const O &o, const Spline<T, order> &s) {
   return transformSpline(o, s);
 }
