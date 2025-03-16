@@ -1,0 +1,17 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="Node000000" href="$classbspline_1_1operators_1_1Operator.html" title="Marker interface for operators." alt="" coords="5,220,144,260"/>
+<area shape="rect" id="Node000001" href="$classbspline_1_1operators_1_1Derivative.html" title="Derivative operator." alt="" coords="212,5,351,45"/>
+<area shape="poly" id="edge1_Node000000_Node000001" title=" " alt="" coords="86,206,126,131,155,90,190,55,210,43,213,47,194,59,159,94,130,134,91,209"/>
+<area shape="rect" id="Node000002" href="$classbspline_1_1operators_1_1IdentityOperator.html" title="Multiplicative identity operator." alt="" coords="212,69,351,109"/>
+<area shape="poly" id="edge2_Node000000_Node000002" title=" " alt="" coords="98,207,138,162,191,119,213,107,216,112,193,124,142,166,102,211"/>
+<area shape="rect" id="Node000003" href="$classbspline_1_1operators_1_1OperatorProduct.html" title="Represents the product of two operators." alt="" coords="195,134,368,189"/>
+<area shape="poly" id="edge3_Node000000_Node000003" title=" " alt="" coords="140,213,208,186,210,191,141,218"/>
+<area shape="rect" id="Node000004" href="$classbspline_1_1operators_1_1OperatorSum.html" title="Operator sum. Represents the sum or difference of two operators." alt="" coords="192,213,371,267"/>
+<area shape="poly" id="edge4_Node000000_Node000004" title=" " alt="" coords="158,237,192,237,192,243,158,243"/>
+<area shape="rect" id="Node000005" href="$classbspline_1_1operators_1_1Position.html" title="Position operator." alt="" coords="212,292,351,332"/>
+<area shape="poly" id="edge5_Node000000_Node000005" title=" " alt="" coords="147,262,224,289,222,294,145,267"/>
+<area shape="rect" id="Node000006" href="$classbspline_1_1operators_1_1ScalarMultiplication.html" title="Multiplication operator for Operator and scalar." alt="" coords="202,357,361,411"/>
+<area shape="poly" id="edge6_Node000000_Node000006" title=" " alt="" coords="106,268,146,305,193,342,215,354,213,359,191,346,142,309,102,272"/>
+<area shape="rect" id="Node000007" href="$classbspline_1_1operators_1_1SplineOperator.html" title="Operator representation of a Spline." alt="" coords="204,435,359,490"/>
+<area shape="poly" id="edge7_Node000000_Node000007" title=" " alt="" coords="92,271,132,345,160,385,194,421,211,433,208,437,190,425,156,389,127,348,87,274"/>
+</map>

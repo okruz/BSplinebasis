@@ -1,0 +1,33 @@
+\_form#0=455x37:\[B_{i,k}(x) = \frac{x - x_i}{x_{i + k -1} - x_i}\ B_{i, k-1}(x)
++ \frac{x_{i+k}-x}{x_{i+k}-x_{i+1}}\,B_{i+1,k-1}(x)\]
+\_form#1=392x60:\[\left\langle a,\, b\right\rangle =
+\left\langle \hat{O}_1\,a\,\middle|\,\hat{O}_2\,b\right\rangle =
+\int\limits_{-\infty}^{\infty} \mathrm{d}x~\left[\hat{O}_1\,a(x)\right]
+\,\,\left[\hat{O}_2\,b(x)\right] \]
+\_form#2=53x21:$\hat{O}_1,\,\hat{O}_2$
+\_form#3=19x21:$\hat{O}_2$
+\_form#4=319x60:\[\left\langle a,\, b\right\rangle  =
+\left\langle a\,\middle|\,\hat{O}_2\,\middle|\,b\right\rangle =
+\int\limits_{-\infty}^{\infty} \mathrm{d}x~a(x) \,\,\hat{O}_2\,\,b(x)\ \]
+\_form#5=249x60:\[\left\langle a,\, b\right\rangle = \left\langle
+a\,\middle|\,b\right\rangle = \int\limits_{-\infty}^{\infty} \mathrm{d}x~a(x)
+\,\,b(x)\ \]
+\_form#6=256x60:\[\left\langle a,\, b\right\rangle =
+\left\langle a\,\middle|\,b\right\rangle =  \int\limits_{-\infty}^{\infty}
+\mathrm{d}x~a(x) \,\,b(x).\ \]
+\_form#7=19x21:$\hat{O}_1$
+\_form#8=168x60:\[\left\langle
+a\right\rangle=\int\limits_{-\infty}^{\infty}\mathrm{d}x~\left[\hat{O}\,\,
+a(x)\right]\]
+\_form#9=14x18:$\hat{O}$
+\_form#10=135x60:\[\left\langle
+a\right\rangle=\int\limits_{-\infty}^{\infty}\mathrm{d}x~a(x).\]
+\_form#11=222x60:\[I=\int\limits_{-\infty}^{\infty} \mathrm{d}x~
+m_1(x)\, f(x)\, m_2(x).\]
+\_form#12=33x19:$f(x)$
+\_form#13=47x19:$m_1(x)$
+\_form#14=47x19:$m_2(x)$
+\_form#15=11x14:$I$
+\_form#16=58x19:$\mathrm{d}^n/\mathrm{d}x^n$
+\_form#17=19x12:$x^n$
+\_form#18=77x19:$(x + x_m)^n$
