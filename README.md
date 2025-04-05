@@ -50,7 +50,7 @@ The three red splines were added. They are, respectively, continuous up to the f
 The library uses concepts to determine the usability of data types for certain template parameters. As of now, the only such concept is `Real` which is used for spline coefficients and parameters. Every data type that fulfills the concept `std::floating_point` automatically fulfills `Real`. Further real data types can be registered with a macro
 ```C++
 REGISTER_BSPLINE_REAL(MyRealDataType);
-``
+```
 
 ### Evaluation of matrix elements
 The library provides a class `bspline::integration::BilinearForm` for the evaluation of many common matrix elements. To evaluate the matrix element of the Hamiltonian of the harmonic oscillator, you can use
