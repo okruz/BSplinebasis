@@ -10,6 +10,7 @@
 #ifndef BSPLINE_BSPLINEGENERATOR_H
 #define BSPLINE_BSPLINEGENERATOR_H
 
+#include <bspline/Concepts.h>
 #include <bspline/Spline.h>
 #include <bspline/exceptions/BSplineException.h>
 #include <bspline/operators/CompoundOperators.h>
@@ -29,7 +30,7 @@ using namespace bspline::exceptions;
  *
  * @tparam T The datatype of the spline and grid.
  */
-template <typename T>
+template <Real T>
 class BSplineGenerator final {
  private:
   /*! The global grid.*/
@@ -207,7 +208,7 @@ class BSplineGenerator final {
  * @throws BSplineException If the knots are not in increasing order.
  * @returns All BSplines of order order defined on the knots vector.
  */
-template <size_t order, typename T>
+template <size_t order, Real T>
 std::vector<Spline<T, order>> generateBSplines(std::vector<T> knots) {
   BSplineGenerator gen(std::move(knots));
   return gen.template generateBSplines<order>();
