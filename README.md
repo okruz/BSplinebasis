@@ -1,6 +1,6 @@
 # BSplinebasis
-This repository contains a small, template-based BSpline library in C++ (>= C++17), geared towards the use as basis functions in analytical problems. The main library can be found in the `include/` directory. To use the library,
-all you have to do is to add this folder to the include path.
+This repository contains a small, template-based BSpline library in C++ (>= C++23), geared towards the use as basis functions in analytical problems. The main library can be found in the `include/` directory. To use the library,
+all you have to do is to add this folder to the include path. If you cannot use C++23, take a look at [Release 0.1.0](releases/tag/RELEASE_0_1_0) which only requires C++17.
 
 ## Why BSplines?
 ### Advantages of using BSplines
@@ -46,6 +46,12 @@ the following BSplines are generated:
 
 The three red splines were added. They are, respectively, continuous up to the first derivative, the zeroth derivative and not continuous at all at `x=0`. This approach can be used to bake boundary conditions into the basis. For additional information, the user is referred to the literature on BSplines, e.g. the [Wikipedia article](https://en.wikipedia.org/wiki/B-spline).
 
+### Definining data types
+The library uses concepts to determine the usability of data types for certain template parameters. As of now, the only such concept is `Real` which is used for spline coefficients and parameters. Every data type that fulfills the concept `std::floating_point` automatically fulfills `Real`. Further real data types can be registered with a macro
+```C++
+REGISTER_BSPLINE_REAL(MyRealDataType);
+```
+
 ### Evaluation of matrix elements
 The library provides a class `bspline::integration::BilinearForm` for the evaluation of many common matrix elements. To evaluate the matrix element of the Hamiltonian of the harmonic oscillator, you can use
 ```C++
@@ -72,7 +78,7 @@ A full implementation of the solution of the harmonic oscillator and the radial 
 **Note:** There is also a `bspline::integration::LinearForm`.
 
 ## Dependencies
-The **core library** does not have any additional dependencies beyond a C++ compiler supporting C++17. Everything that is directly or indirectly included by `include/bspline/Core.h` is considered part of the core library. Parts that are not part of the core library are:
+The **core library** does not have any additional dependencies beyond a C++ compiler supporting C++23. Everything that is directly or indirectly included by `include/bspline/Core.h` is considered part of the core library. Parts that are not part of the core library are:
 
 * The contents of `include/bspline/interpolation/`.
   * The interpolation needs a linear algebra framework to solve the linear equation system arising during the interpolation. You can use your linear algebra framework of choice with relative ease, or use interpolation based on `armadillo` (only double precision) and `Eigen` provided by the library. For details, see the source or [docs](https://okruz.github.io/BSplinebasis/namespacebspline_1_1interpolation.html).
@@ -81,7 +87,7 @@ The **core library** does not have any additional dependencies beyond a C++ comp
 
 Furthermore, the tests and examples require `Eigen` to compile and the tests are based on `Boost::test`.
 
-The tests are currently only run regularly on an x64 linux platform using gcc and clang. The main library should be usable with every standard-conformant C++ compiler supporting C++17. If you are using the library on a different platform, I would be happy to receive your feedback.
+The tests are currently only run regularly on an x64 linux platform using gcc and clang. The main library should be usable with every standard-conformant C++ compiler supporting C++23. If you are using the library on a different platform, I would be happy to receive your feedback.
 
 
 ## Cautions

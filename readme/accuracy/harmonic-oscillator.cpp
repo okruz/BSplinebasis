@@ -22,6 +22,11 @@
 #include <iostream>
 #include <limits>
 #include <string>
+using quad = boost::multiprecision::cpp_bin_float_quad;
+using oct = boost::multiprecision::cpp_bin_float_oct;
+
+REGISTER_BSPLINE_REAL(quad);
+REGISTER_BSPLINE_REAL(oct);
 
 using namespace bspline;
 
@@ -121,10 +126,12 @@ template <typename data_t, size_t order>
 void printDeviations(const std::string &fileName) {
   std::ofstream o(fileName.c_str());
   o.precision(std::numeric_limits<data_t>::max_digits10);
-  const std::vector<int> POINTS{35, 50, 100, 200, 500, 1000, 2000};
+  const std::vector<int> POINTS{5,   10,  20,  45,  70,  95,
+                                120, 170, 300, 400, 1000};
 
   for (int points : POINTS) {
-    const auto results = solveHarmonicOscillator<data_t, order>(points);
+    const auto results = solveHarmonicOscillator<data_t, order>(
+        points + static_cast<int>(order));
     o << results.basisSize;
     for (const auto &a : results.deviations) {
       o << "\t" << a;
@@ -140,8 +147,6 @@ int main(int argc, char **argv) {
     return 1;
   }
 
-  using quad = boost::multiprecision::cpp_bin_float_quad;
-
   std::cout.precision(std::numeric_limits<double>::max_digits10);
   std::cout << "eps(double): " << std::numeric_limits<double>::epsilon()
             << std::endl;
@@ -149,21 +154,21 @@ int main(int argc, char **argv) {
   std::cout << "eps(quad): " << std::numeric_limits<quad>::epsilon()
             << std::endl;
 
+  std::cout.precision(std::numeric_limits<oct>::max_digits10);
+  std::cout << "eps(oct): " << std::numeric_limits<oct>::epsilon() << std::endl;
+
   const std::string folder{argv[1]};
 
   std::vector<std::future<void>> futures;
 
   futures.push_back(std::async(std::launch::async, [folder]() {
-    printDeviations<double, 2>(folder + "/double_2.txt");
     printDeviations<double, 5>(folder + "/double_5.txt");
     printDeviations<double, 10>(folder + "/double_10.txt");
-    printDeviations<double, 15>(folder + "/double_15.txt");
+    printDeviations<double, 20>(folder + "/double_20.txt");
+    printDeviations<double, 30>(folder + "/double_30.txt");
   }));
 
   // Quad
-  futures.push_back(std::async(std::launch::async, [folder]() {
-    printDeviations<quad, 2>(folder + "/quad_2.txt");
-  }));
   futures.push_back(std::async(std::launch::async, [folder]() {
     printDeviations<quad, 5>(folder + "/quad_5.txt");
   }));
@@ -171,7 +176,24 @@ int main(int argc, char **argv) {
     printDeviations<quad, 10>(folder + "/quad_10.txt");
   }));
   futures.push_back(std::async(std::launch::async, [folder]() {
-    printDeviations<quad, 15>(folder + "/quad_15.txt");
+    printDeviations<quad, 20>(folder + "/quad_20.txt");
+  }));
+  futures.push_back(std::async(std::launch::async, [folder]() {
+    printDeviations<quad, 30>(folder + "/quad_30.txt");
+  }));
+
+  // Oct
+  futures.push_back(std::async(std::launch::async, [folder]() {
+    printDeviations<oct, 5>(folder + "/oct_5.txt");
+  }));
+  futures.push_back(std::async(std::launch::async, [folder]() {
+    printDeviations<oct, 10>(folder + "/oct_10.txt");
+  }));
+  futures.push_back(std::async(std::launch::async, [folder]() {
+    printDeviations<oct, 20>(folder + "/oct_20.txt");
+  }));
+  futures.push_back(std::async(std::launch::async, [folder]() {
+    printDeviations<oct, 30>(folder + "/oct_30.txt");
   }));
 
   return 0;

@@ -15,10 +15,6 @@
 using namespace bspline;
 using namespace bspline::operators;
 
-static_assert(std::is_nothrow_move_constructible_v<Operator> &&
-                  std::is_nothrow_move_assignable_v<Operator>,
-              "Operator is not nothrow moveable.");
-
 static_assert(std::is_nothrow_move_constructible_v<IdentityOperator> &&
                   std::is_nothrow_move_assignable_v<IdentityOperator>,
               "IdentityOperator is not nothrow moveable");

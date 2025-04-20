@@ -11,6 +11,7 @@
 #ifndef BSPLINE_INTEGRATION_NUMERICAL_H
 #define BSPLINE_INTEGRATION_NUMERICAL_H
 
+#include <bspline/Concepts.h>
 #include <bspline/Spline.h>
 #include <bspline/exceptions/BSplineException.h>
 #include <bspline/internal/misc.h>
@@ -41,7 +42,7 @@ using namespace bspline::exceptions;
  * @throws BSplineException If the two splines are defined on different grids.
  * @returns The value of the integral \f$I\f$.
  */
-template <size_t ordergl, typename T, typename F, size_t order1, size_t order2>
+template <size_t ordergl, Real T, typename F, size_t order1, size_t order2>
 T integrate(const F &f, const bspline::Spline<T, order1> &m1,
             const bspline::Spline<T, order2> &m2) {
   // Will also check whether the two grids are equivalent.

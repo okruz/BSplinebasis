@@ -27,6 +27,7 @@
 #ifndef BSPLINE_SPLINE_H
 #define BSPLINE_SPLINE_H
 
+#include <bspline/Concepts.h>
 #include <bspline/exceptions/BSplineException.h>
 #include <bspline/internal/misc.h>
 #include <bspline/support/Support.h>
@@ -55,7 +56,7 @@ using namespace bspline::exceptions;
  * @tparam T Datatype of the spline.
  * @tparam order Order of the spline.
  */
-template <typename T, size_t order>
+template <Real T, size_t order>
 class Spline final {
  private:
   /*! Number of coefficients per interval. */
@@ -701,34 +702,5 @@ auto linearCombination(const CoeffCollection &coeffs,
   return linearCombination(coeffs.begin(), coeffs.end(), splines.begin(),
                            splines.end());
 }
-
-#ifndef BSPLINE_DOXYGEN_IGNORE
-/*!
- * Struct to check wether type is a spline. Implementation for all types that
- * are not a Spline.
- *
- * @tparam S Type to check.
- */
-template <typename S>
-struct is_spline : std::false_type {};
-
-/*!
- * Struct to check wether type is a spline. Implementation for all Splines.
- *
- * @tparam T Data type of the spline.
- * @tparam order Order of the spline.
- */
-
-template <typename T, size_t order>
-struct is_spline<Spline<T, order>> : std::true_type {};
-#endif  // BSPLINE_DOXYGEN_IGNORE
-
-/*!
- * Indicates whether the type is a spline.
- * @tparam S The type to check against the Spline class.
- */
-template <typename S>
-inline constexpr bool is_spline_v = is_spline<S>::value;
-
 }  // namespace bspline
 #endif  // BSPLINE_SPLINE_H

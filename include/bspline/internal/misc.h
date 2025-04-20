@@ -8,6 +8,8 @@
 #ifndef BSPLINE_MISC_H
 #define BSPLINE_MISC_H
 
+#include <bspline/Concepts.h>
+
 #include <array>
 
 #ifndef BSPLINE_DOXYGEN_IGNORE
@@ -25,7 +27,7 @@ namespace bspline::internal {
  * @tparam size Size of the array.
  * @returns An array filled with the value val.
  */
-template <typename T, size_t size>
+template <Real T, size_t size>
 std::array<T, size> make_array(T val) {
   std::array<T, size> ret;
   ret.fill(val);
@@ -43,7 +45,7 @@ std::array<T, size> make_array(T val) {
  * @tparam sizeb Size of the second array.
  * @returns An array representing the sum of the two input arrays.
  */
-template <typename T, size_t sizea, size_t sizeb>
+template <Real T, size_t sizea, size_t sizeb>
 std::array<T, std::max(sizea, sizeb)> add(const std::array<T, sizea> &a,
                                           const std::array<T, sizeb> &b) {
   if constexpr (sizeb > sizea) {
@@ -67,7 +69,7 @@ std::array<T, std::max(sizea, sizeb)> add(const std::array<T, sizea> &a,
  * @tparam sizeout Size of the output array. Must fulfil sizeout >= sizein.
  * @returns The array.
  */
-template <typename T, size_t sizein, size_t sizeout>
+template <Real T, size_t sizein, size_t sizeout>
 std::array<T, sizeout> changearraysize(const std::array<T, sizein> &in) {
   static_assert(sizeout >= sizein,
                 "sizeout must be bigger or equal to sizein.");
@@ -95,7 +97,7 @@ std::array<T, sizeout> changearraysize(const std::array<T, sizein> &in) {
  * @tparam size The size of the coefficient array (i.e. the order of the
  * polynomial plus one).
  */
-template <typename T, size_t size>
+template <Real T, size_t size>
 T evaluateInterval(const T &x, const std::array<T, size> &coeffs, const T &xm) {
   // Use Horner's scheme to evaluate.
   const T dx = x - xm;
@@ -113,7 +115,7 @@ T evaluateInterval(const T &x, const std::array<T, size> &coeffs, const T &xm) {
  * @tparam T The datatype of the return type.
  * @returns The faculty \f$n!\f$.
  */
-template <typename T>
+template <Real T>
 T faculty(size_t n) {
   T retVal = static_cast<T>(1);
   for (size_t i = 2; i <= n; i++) {
@@ -130,7 +132,7 @@ T faculty(size_t n) {
  * @tparam T The datatype of the return type.
  * @returns The value of the faculty ratio.
  */
-template <typename T>
+template <Real T>
 T facultyRatio(size_t counter, size_t denominator) {
   if (denominator > counter) {
     return static_cast<T>(1) / facultyRatio<T>(denominator, counter);
@@ -152,7 +154,7 @@ T facultyRatio(size_t counter, size_t denominator) {
  * @tparam T The datatype of the return type.
  * @returns The value of the binomial coefficient
  */
-template <typename T>
+template <Real T>
 T binomialCoefficient(size_t n, size_t k) {
   if (k > n) {
     return static_cast<T>(0);
