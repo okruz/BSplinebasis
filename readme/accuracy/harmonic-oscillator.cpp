@@ -23,8 +23,10 @@
 #include <limits>
 #include <string>
 using quad = boost::multiprecision::cpp_bin_float_quad;
+using oct = boost::multiprecision::cpp_bin_float_oct;
 
 REGISTER_BSPLINE_REAL(quad);
+REGISTER_BSPLINE_REAL(oct);
 
 using namespace bspline;
 
@@ -152,6 +154,9 @@ int main(int argc, char **argv) {
   std::cout << "eps(quad): " << std::numeric_limits<quad>::epsilon()
             << std::endl;
 
+  std::cout.precision(std::numeric_limits<oct>::max_digits10);
+  std::cout << "eps(oct): " << std::numeric_limits<oct>::epsilon() << std::endl;
+
   const std::string folder{argv[1]};
 
   std::vector<std::future<void>> futures;
@@ -175,6 +180,20 @@ int main(int argc, char **argv) {
   }));
   futures.push_back(std::async(std::launch::async, [folder]() {
     printDeviations<quad, 30>(folder + "/quad_30.txt");
+  }));
+
+  // Oct
+  futures.push_back(std::async(std::launch::async, [folder]() {
+    printDeviations<oct, 5>(folder + "/oct_5.txt");
+  }));
+  futures.push_back(std::async(std::launch::async, [folder]() {
+    printDeviations<oct, 10>(folder + "/oct_10.txt");
+  }));
+  futures.push_back(std::async(std::launch::async, [folder]() {
+    printDeviations<oct, 20>(folder + "/oct_20.txt");
+  }));
+  futures.push_back(std::async(std::launch::async, [folder]() {
+    printDeviations<oct, 30>(folder + "/oct_30.txt");
   }));
 
   return 0;
