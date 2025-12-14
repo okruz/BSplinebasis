@@ -28,25 +28,25 @@ static_assert(std::is_same_v<decltype(3.0 * IdentityOperator{}),
                              ScalarMultiplication<double, IdentityOperator>>,
               "Unexpected type.");
 
-template <typename T, size_t order>
-static T diffNorm(const Spline<T, order> &s1, const Spline<T, order> &s2) {
+template <typename T, size_t degree>
+static T diffNorm(const Spline<T, degree> &s1, const Spline<T, degree> &s2) {
   const auto diff = s1 - s2;
   const integration::ScalarProduct sp;
   return std::sqrt(sp.evaluate(diff, diff));
 }
 
-template <typename T, size_t order>
+template <typename T, size_t degree>
 static void testSplineMultiplication(T tol) {
   const T multiplicator = static_cast<T>(313) / 17;
   const auto op1 = multiplicator * IdentityOperator{};
   const auto op2 = multiplicator * Dx<1>{};
   std::vector<T> knots;
-  for (size_t i = 0; i <= order + 4; i++) {
+  for (size_t i = 0; i <= degree + 4; i++) {
     knots.push_back(static_cast<T>(i));
   }
   const BSplineGenerator generator{knots};
 
-  const auto splines = generator.template generateBSplines<order>();
+  const auto splines = generator.template generateBSplines<degree>();
 
   for (const auto &spline : splines) {
     BOOST_CHECK_SMALL(diffNorm(op1 * spline, multiplicator * spline), tol);

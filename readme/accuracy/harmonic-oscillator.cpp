@@ -28,9 +28,9 @@ using namespace bspline;
 template <typename data_t>
 using DeMat = Eigen::Matrix<data_t, Eigen::Dynamic, Eigen::Dynamic>;
 
-template <typename B, typename data_t, size_t order>
+template <typename B, typename data_t, size_t degree>
 DeMat<data_t> setUpSymmetricMatrix(
-    const B &b, const std::vector<Spline<data_t, order>> &basis) {
+    const B &b, const std::vector<Spline<data_t, degree>> &basis) {
   DeMat<data_t> ret = DeMat<data_t>::Zero(basis.size(), basis.size());
   for (size_t i = 0; i < basis.size(); i++) {
     for (size_t j = i; j < basis.size(); j++) {
@@ -69,9 +69,9 @@ static std::vector<data_t> setUpKnotsVector(int points) {
  * @brief setUpBasis Sets up the BSpline basis.
  * @return A vector of BSplines representing the basis.
  */
-template <typename data_t, size_t order>
-static std::vector<bspline::Spline<data_t, order>> setUpBasis(int points) {
-  return generateBSplines<order>(setUpKnotsVector<data_t>(points));
+template <typename data_t, size_t degree>
+static std::vector<bspline::Spline<data_t, degree>> setUpBasis(int points) {
+  return generateBSplines<degree>(setUpKnotsVector<data_t>(points));
 }
 
 template <typename data_t>
@@ -86,15 +86,15 @@ struct RetVal {
   std::vector<data_t> deviations;
 };
 
-template <typename data_t, size_t order>
+template <typename data_t, size_t degree>
 RetVal<data_t> solveHarmonicOscillator(int points) {
   // Hamiltonian operator -1/2 d^2/dx^2 + 1/2 x^2
   static const auto hamiltonOperator =
       (static_cast<data_t>(1) / 2) * (-operators::Dx<2>{} + operators::X<2>{});
 
   // Get the basis.
-  const std::vector<Spline<data_t, order>> basis =
-      setUpBasis<data_t, order>(points);
+  const std::vector<Spline<data_t, degree>> basis =
+      setUpBasis<data_t, degree>(points);
 
   const DeMat<data_t> hamiltonian =
       setUpSymmetricMatrix(integration::BilinearForm{hamiltonOperator}, basis);
@@ -117,14 +117,14 @@ RetVal<data_t> solveHarmonicOscillator(int points) {
   return {basis.size(), std::move(ret)};
 }
 
-template <typename data_t, size_t order>
+template <typename data_t, size_t degree>
 void printDeviations(const std::string &fileName) {
   std::ofstream o(fileName.c_str());
   o.precision(std::numeric_limits<data_t>::max_digits10);
   const std::vector<int> POINTS{35, 50, 100, 200, 500, 1000, 2000};
 
   for (int points : POINTS) {
-    const auto results = solveHarmonicOscillator<data_t, order>(points);
+    const auto results = solveHarmonicOscillator<data_t, degree>(points);
     o << results.basisSize;
     for (const auto &a : results.deviations) {
       o << "\t" << a;

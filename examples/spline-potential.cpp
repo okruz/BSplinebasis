@@ -30,7 +30,7 @@ PSpline interpolateFunction(std::vector<data_t> gridPoints,
   for (const auto x : support) {
     y.push_back(func(x));
   }
-  return interpolation::interpolateUsingEigen<data_t, PSpline::spline_order>(
+  return interpolation::interpolateUsingEigen<data_t, PSpline::spline_degree>(
       std::move(support), y);
 }
 
@@ -41,7 +41,7 @@ PSpline interpolateFunction(std::vector<data_t> gridPoints,
  */
 static std::vector<Spline> setUpBasis(const support::Grid<data_t> &grid) {
   BSplineGenerator gen{std::vector<data_t>{grid.begin(), grid.end()}, grid};
-  return gen.template generateBSplines<SPLINE_ORDER>();
+  return gen.template generateBSplines<SPLINE_DEGREE>();
 }
 
 std::vector<Eigenspace> solveSEWithSplinePotential(PSpline v) {
@@ -55,9 +55,10 @@ std::vector<Eigenspace> solveSEWithSplinePotential(PSpline v) {
       std::is_nothrow_move_constructible_v<decltype(hamiltonOperator)>,
       "Operator is not nothrow movable.");
 
-  static_assert(std::is_nothrow_move_constructible_v<decltype(
-                    integration::BilinearForm{std::move(hamiltonOperator)})>,
-                "BilinearForm is not nothrow movable.");
+  static_assert(
+      std::is_nothrow_move_constructible_v<decltype(integration::BilinearForm{
+          std::move(hamiltonOperator)})>,
+      "BilinearForm is not nothrow movable.");
 
   const DeMat hamiltonian = setUpSymmetricMatrix(
       integration::BilinearForm{std::move(hamiltonOperator)}, basis);

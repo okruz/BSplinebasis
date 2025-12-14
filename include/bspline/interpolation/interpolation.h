@@ -121,14 +121,14 @@ class ISolver {
  * zero as needed, starting from the first derivative.
  *
  * @tparam T Datatype of the spline.
- * @tparam order Polynomial order of the spline.
- * @returns An array with default order - 1 default boundary conditions.
+ * @tparam degree Polynomial degree of the spline.
+ * @returns An array with degree - 1 default boundary conditions.
  */
-template <typename T, size_t order>
-std::array<Boundary<T>, order - 1> defaultBoundaries() {
-  static_assert(order >= 1, "Order may not be zero.");
-  std::array<Boundary<T>, order - 1> ret;
-  for (size_t i = 0; i < order - 1; i++) {
+template <typename T, size_t degree>
+std::array<Boundary<T>, degree - 1> defaultBoundaries() {
+  static_assert(degree >= 1, "Degree may not be zero.");
+  std::array<Boundary<T>, degree - 1> ret;
+  for (size_t i = 0; i < degree - 1; i++) {
     if (i % 2 == 0) {
       ret[i] = Boundary<T>{/*.node = */ Node::FIRST,
                            /*.derivative = */ i / 2 + 1,
@@ -149,27 +149,27 @@ using bspline::support::Support;
 /*!
  * @brief Interpolation using generic Solver.
  *
- * Interpolates the data given by x and y with a spline of order order. order-1
- * additional conditions are needed for a well defined problem. These can be
- * supplied by fixing derivatives on the first and last node.
+ * Interpolates the data given by x and y with a spline of degree degree.
+ * degree-1 additional conditions are needed for a well defined problem. These
+ * can be supplied by fixing derivatives on the first and last node.
  *
  * @param x Data on the abscissa.
  * @param y Data on the ordinate.
  * @param boundaries Boundary conditions.
  * @tparam T Datatype of the spline and data.
- * @tparam order Order of the spline.
+ * @tparam degree Degree of the spline.
  * @tparam Solver Class Wrapping the linear algebra routines.
  * @throws BSplineException If the number of values on the abscissa and ordinate
  * differ.
  * @throws BSplineException If less than two data points are provided.
  * @returns The spline interpolating the input data.
  */
-template <typename T, size_t order, class Solver>
-bspline::Spline<T, order> interpolate(
+template <typename T, size_t degree, class Solver>
+bspline::Spline<T, degree> interpolate(
     Support<T> x, const std::vector<T> &y,
-    const std::array<Boundary<T>, order - 1> &boundaries =
-        internal::defaultBoundaries<T, order>()) {
-  static_assert(order >= 1, "Order may not be zero.");
+    const std::array<Boundary<T>, degree - 1> &boundaries =
+        internal::defaultBoundaries<T, degree>()) {
+  static_assert(degree >= 1, "Degree may not be zero.");
   static_assert(std::is_base_of<internal::ISolver<T>, Solver>::value,
                 "Solver must be a subclass of internal::ISolver<T>.");
 
@@ -183,7 +183,7 @@ bspline::Spline<T, order> interpolate(
         "At least two grid points needed for interpolation.");
   }
 
-  constexpr size_t NUM_COEFFS = order + 1;
+  constexpr size_t NUM_COEFFS = degree + 1;
 
   Solver s(NUM_COEFFS * (x.size() - 1));
 
@@ -192,7 +192,7 @@ bspline::Spline<T, order> interpolate(
     const T dx1 = (x[0] - x[1]) / static_cast<T>(2);
     {
       T power_of_dx1 = static_cast<T>(1);
-      for (size_t i = 0; i <= order; i++) {
+      for (size_t i = 0; i <= degree; i++) {
         s.M(row_counter, i) = power_of_dx1;
         power_of_dx1 *= dx1;
       }
@@ -201,13 +201,13 @@ bspline::Spline<T, order> interpolate(
     }
 
     for (const auto &bo : boundaries) {
-      if (bo.derivative == 0 || bo.derivative > order) {
+      if (bo.derivative == 0 || bo.derivative > degree) {
         throw BSplineException(ErrorCode::UNDETERMINED,
-                               "Unsupported order of the derivative.");
+                               "Unsupported degree of the derivative.");
       }
       if (bo.node == Node::FIRST) {
         T power_of_dx1 = static_cast<T>(1);
-        for (size_t i = bo.derivative; i <= order; i++) {
+        for (size_t i = bo.derivative; i <= degree; i++) {
           s.M(row_counter, i) =
               bspline::internal::facultyRatio<T>(i, i - bo.derivative) *
               power_of_dx1;
@@ -225,7 +225,7 @@ bspline::Spline<T, order> interpolate(
 
     {
       T power_of_dx1 = static_cast<T>(1);
-      for (size_t i = 0; i <= order; i++) {
+      for (size_t i = 0; i <= degree; i++) {
         s.M(row_counter, NUM_COEFFS * (c - 1) + i) = power_of_dx1;
         power_of_dx1 *= dx1;
       }
@@ -235,7 +235,7 @@ bspline::Spline<T, order> interpolate(
 
     {
       T power_of_dx2 = static_cast<T>(1);
-      for (size_t i = 0; i <= order; i++) {
+      for (size_t i = 0; i <= degree; i++) {
         s.M(row_counter, NUM_COEFFS * c + i) = power_of_dx2;
         power_of_dx2 *= dx2;
       }
@@ -243,10 +243,10 @@ bspline::Spline<T, order> interpolate(
       row_counter++;
     }
 
-    for (size_t deriv = 1; deriv < order; deriv++) {
+    for (size_t deriv = 1; deriv < degree; deriv++) {
       T power_of_dx1 = static_cast<T>(1);
       T power_of_dx2 = static_cast<T>(1);
-      for (size_t i = deriv; i <= order; i++) {
+      for (size_t i = deriv; i <= degree; i++) {
         s.M(row_counter, NUM_COEFFS * (c - 1) + i) =
             bspline::internal::facultyRatio<T>(i, i - deriv) * power_of_dx1;
         s.M(row_counter, NUM_COEFFS * c + i) =
@@ -262,7 +262,7 @@ bspline::Spline<T, order> interpolate(
     const T dx2 = (x.back() - x[x.size() - 2]) / static_cast<T>(2);
     {
       T power_of_dx2 = static_cast<T>(1);
-      for (size_t i = 0; i <= order; i++) {
+      for (size_t i = 0; i <= degree; i++) {
         s.M(row_counter, NUM_COEFFS * (x.size() - 2) + i) = power_of_dx2;
         power_of_dx2 *= dx2;
       }
@@ -273,7 +273,7 @@ bspline::Spline<T, order> interpolate(
     for (const auto &bo : boundaries) {
       if (bo.node == Node::LAST) {
         T power_of_dx2 = static_cast<T>(1);
-        for (size_t i = bo.derivative; i <= order; i++) {
+        for (size_t i = bo.derivative; i <= degree; i++) {
           s.M(row_counter, NUM_COEFFS * (x.size() - 2) + i) =
               bspline::internal::facultyRatio<T>(i, i - bo.derivative) *
               power_of_dx2;
@@ -297,7 +297,7 @@ bspline::Spline<T, order> interpolate(
     for (size_t j = 0; j < NUM_COEFFS; j++)
       coeffsi[j] = s.x(NUM_COEFFS * i + j);
   }
-  return bspline::Spline<T, order>(std::move(x), std::move(coeffs));
+  return bspline::Spline<T, degree>(std::move(x), std::move(coeffs));
 }
 
 #ifdef BSPLINE_INTERPOLATION_USE_ARMADILLO
@@ -310,20 +310,20 @@ bspline::Spline<T, order> interpolate(
  * if the macro BSPLINE_INTERPOLATION_USE_ARMADILLO is defined.
  *
  * @param x Data on the abscissa. The grid points must be in (steadily)
- * increasing order.
+ * increasing degree.
  * @param y Data on the ordinate.
  * @param boundaries Boundary conditions.
- * @tparam order Order of the spline.
+ * @tparam degree Degree of the spline.
  * @throws BSplineException If the number of values on the abscissa and ordinate
  * differ.
  * @throws BSplineException If less than two data points are provided.
  * @returns The spline interpolating the input data.
  */
-template <size_t order>
-bspline::Spline<double, order> interpolateUsingArmadillo(
+template <size_t degree>
+bspline::Spline<double, degree> interpolateUsingArmadillo(
     Support<double> x, const std::vector<double> &y,
-    const std::array<Boundary<double>, order - 1> &boundaries =
-        internal::defaultBoundaries<double, order>()) {
+    const std::array<Boundary<double>, degree - 1> &boundaries =
+        internal::defaultBoundaries<double, degree>()) {
   class ArmadilloSolver final : public internal::ISolver<double> {
    private:
     arma::mat _M;
@@ -340,8 +340,8 @@ bspline::Spline<double, order> interpolateUsingArmadillo(
     double &x(size_t i) override { return _x(i); };
   };
 
-  return interpolate<double, order, ArmadilloSolver>(std::move(x), y,
-                                                     boundaries);
+  return interpolate<double, degree, ArmadilloSolver>(std::move(x), y,
+                                                      boundaries);
 }
 #endif
 
@@ -354,21 +354,21 @@ bspline::Spline<double, order> interpolateUsingArmadillo(
  * BSPLINE_INTERPOLATION_USE_EIGEN is defined.
  *
  * @param x Data on the abscissa. The grid points must be in (steadily)
- * increasing order.
+ * increasing degree.
  * @param y Data on the ordinate.
  * @param boundaries Boundary conditions.
  * @tparam T Datatype of the spline and data.
- * @tparam order Order of the spline.
+ * @tparam degree Degree of the spline.
  * @throws BSplineException If the number of values on the abscissa and ordinate
  * differ.
  * @throws BSplineException If less than two data points are provided.
  * @returns The spline interpolating the input data.
  */
-template <typename T, size_t order>
-bspline::Spline<T, order> interpolateUsingEigen(
+template <typename T, size_t degree>
+bspline::Spline<T, degree> interpolateUsingEigen(
     Support<T> x, const std::vector<T> &y,
-    const std::array<Boundary<T>, order - 1> &boundaries =
-        internal::defaultBoundaries<T, order>()) {
+    const std::array<Boundary<T>, degree - 1> &boundaries =
+        internal::defaultBoundaries<T, degree>()) {
   using DeMat = Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic>;
   using DeVec = Eigen::Matrix<T, Eigen::Dynamic, 1>;
 
@@ -388,7 +388,7 @@ bspline::Spline<T, order> interpolateUsingEigen(
     T &x(size_t i) override { return _x(i); };
   };
 
-  return interpolate<T, order, EigenSolver>(std::move(x), y, boundaries);
+  return interpolate<T, degree, EigenSolver>(std::move(x), y, boundaries);
 }
 
 #endif

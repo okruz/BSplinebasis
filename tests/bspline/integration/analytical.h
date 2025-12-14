@@ -92,14 +92,14 @@ template <typename T, typename F, size_t sizea, size_t sizeb>
  * @param m1 First spline.
  * @param m2 Second spline.
  * @tparam T Datatype of both splines.
- * @tparam order1 Order of the first spline.
- * @tparam order2 Order of the second spline.
+ * @tparam degree1 Degree of the first spline.
+ * @tparam degree2 Degree of the second spline.
  * @deprecated Obsolete.
  */
-template <typename T, typename F, size_t order1, size_t order2>
+template <typename T, typename F, size_t degree1, size_t degree2>
 [[deprecated]] T helperAnalyticIntegration(
-    F f, const bspline::Spline<T, order1> &m1,
-    const bspline::Spline<T, order2> &m2) {
+    F f, const bspline::Spline<T, degree1> &m1,
+    const bspline::Spline<T, degree2> &m2) {
   if (!m1.getSupport().hasSameGrid(m2.getSupport())) {
     throw BSplineException(ErrorCode::DIFFERING_GRIDS);
   }
@@ -117,7 +117,7 @@ template <typename T, typename F, size_t order1, size_t order2>
     const auto m1Index = m1.getSupport().relativeFromAbsolute(absIndex).value();
     const auto m2Index = m2.getSupport().relativeFromAbsolute(absIndex).value();
 
-    result += integrateIntervalAnalytically<T, F, order1 + 1, order2 + 1>(
+    result += integrateIntervalAnalytically<T, F, degree1 + 1, degree2 + 1>(
         f, m1.getCoefficients()[m1Index], m2.getCoefficients()[m2Index],
         m1.getSupport()[m1Index], m1.getSupport()[m1Index + 1]);
   }
@@ -132,11 +132,11 @@ template <typename T, typename F, size_t order1, size_t order2>
  *
  * @param m Spline m(x) to be integrated.
  * @tparam T Datatype of the spline m.
- * @tparam order Order of the spline m.
+ * @tparam degree Degree of the spline m.
  * @deprecated Use bspline::integration::LinearForm instead.
  */
-template <typename T, size_t order>
-[[deprecated]] T integrate(const Spline<T, order> &m) {
+template <typename T, size_t degree>
+[[deprecated]] T integrate(const Spline<T, degree> &m) {
   T retval = static_cast<T>(0);
   const auto &ints = m.getSupport();
   for (size_t i = 0; i + 1 < ints.size(); i++) {
@@ -146,7 +146,7 @@ template <typename T, size_t order>
             static_cast<T>(2);  // power of dxhalf, initialised to dxhalf^1
     const T dxhalf_squared = pot * pot;
     const auto &coeffs = m.getCoefficients()[i];
-    for (size_t index = 0; index < order + 1; index += 2) {
+    for (size_t index = 0; index < degree + 1; index += 2) {
       retval +=
           static_cast<T>(2) * coeffs[index] * pot / static_cast<T>(index + 1);
       pot *= dxhalf_squared;
@@ -162,13 +162,13 @@ template <typename T, size_t order>
  * @param m1 First spline.
  * @param m2 Second spline.
  * @tparam T Datatype of both splines.
- * @tparam order1 Order of the first spline m1.
- * @tparam order2 Order of the second spline m2.
+ * @tparam degree1 Degree of the first spline m1.
+ * @tparam degree2 Degree of the second spline m2.
  * @deprecated Use bspline::integration::ScalarProduct instead.
  */
-template <typename T, size_t order1, size_t order2>
-[[deprecated]] T overlap(const Spline<T, order1> &m1,
-                         const Spline<T, order2> &m2) {
+template <typename T, size_t degree1, size_t degree2>
+[[deprecated]] T overlap(const Spline<T, degree1> &m1,
+                         const Spline<T, degree2> &m2) {
   static constexpr auto f = [](size_t i, size_t j, const T &coeffa,
                                const T &coeffb, const T &dxhalf,
                                [[maybe_unused]] const T &xm) {
@@ -186,13 +186,13 @@ template <typename T, size_t order1, size_t order2>
  * @param m1 First spline.
  * @param m2 Second spline.
  * @tparam T Datatype of both splines.
- * @tparam order1 Order of the first spline m1.
- * @tparam order2 Order of the second spline m2.
+ * @tparam degree1 Degree of the first spline m1.
+ * @tparam degree2 Degree of the second spline m2.
  * @deprecated Use bspline::integration::BilinearForm instead.
  */
-template <typename T, size_t order1, size_t order2>
-[[deprecated]] T integrate_x(const Spline<T, order1> &m1,
-                             const Spline<T, order2> &m2) {
+template <typename T, size_t degree1, size_t degree2>
+[[deprecated]] T integrate_x(const Spline<T, degree1> &m1,
+                             const Spline<T, degree2> &m2) {
   static constexpr auto f = [](size_t i, size_t j, const T &coeffa,
                                const T &coeffb, const T &dxhalf, const T &xm) {
     if ((i + j + 1) % 2 == 1)
@@ -212,13 +212,13 @@ template <typename T, size_t order1, size_t order2>
  * @param m1 First spline.
  * @param m2 Second spline.
  * @tparam T Datatype of both splines.
- * @tparam order1 Order of the first spline m1.
- * @tparam order2 Order of the second spline m2.
+ * @tparam degree1 Degree of the first spline m1.
+ * @tparam degree2 Degree of the second spline m2.
  * @deprecated Use bspline::integration::BilinearForm instead.
  */
-template <typename T, size_t order1, size_t order2>
-[[deprecated]] T integrate_x2(const Spline<T, order1> &m1,
-                              const Spline<T, order2> &m2) {
+template <typename T, size_t degree1, size_t degree2>
+[[deprecated]] T integrate_x2(const Spline<T, degree1> &m1,
+                              const Spline<T, degree2> &m2) {
   static constexpr auto f = [](size_t i, size_t j, const T &coeffa,
                                const T &coeffb, const T &dxhalf, const T &xm) {
     if ((i + j + 2) % 2 == 1)
@@ -241,13 +241,13 @@ template <typename T, size_t order1, size_t order2>
  * @param m1 First spline.
  * @param m2 Second spline.
  * @tparam T Datatype of both splines.
- * @tparam order1 Order of the first spline m1.
- * @tparam order2 Order of the second spline m2.
+ * @tparam degree1 Degree of the first spline m1.
+ * @tparam degree2 Degree of the second spline m2.
  * @deprecated Use bspline::integration::BilinearForm instead.
  */
-template <typename T, size_t order1, size_t order2>
-[[deprecated]] T integrate_dx(const Spline<T, order1> &m1,
-                              const Spline<T, order2> &m2) {
+template <typename T, size_t degree1, size_t degree2>
+[[deprecated]] T integrate_dx(const Spline<T, degree1> &m1,
+                              const Spline<T, degree2> &m2) {
   static constexpr auto f = [](size_t i, size_t j, const T &coeffa,
                                const T &coeffb, const T &dxhalf,
                                [[maybe_unused]] const T &xm) {
@@ -268,13 +268,13 @@ template <typename T, size_t order1, size_t order2>
  * @param m1 First spline.
  * @param m2 Second spline.
  * @tparam T Datatype of both splines.
- * @tparam order1 Order of the first spline m1.
- * @tparam order2 Order of the second spline m2.
+ * @tparam degree1 Degree of the first spline m1.
+ * @tparam degree2 Degree of the second spline m2.
  * @deprecated Use bspline::integration::BilinearForm instead.
  */
-template <typename T, size_t order1, size_t order2>
-[[deprecated]] T integrate_x_dx(const Spline<T, order1> &m1,
-                                const Spline<T, order2> &m2) {
+template <typename T, size_t degree1, size_t degree2>
+[[deprecated]] T integrate_x_dx(const Spline<T, degree1> &m1,
+                                const Spline<T, degree2> &m2) {
   static constexpr auto f = [](size_t i, size_t j, const T &coeffa,
                                const T &coeffb, const T &dxhalf, const T &xm) {
     if (j == 0)
@@ -297,13 +297,13 @@ template <typename T, size_t order1, size_t order2>
  * @param m1 First spline.
  * @param m2 Second spline.
  * @tparam T Datatype of both splines.
- * @tparam order1 Order of the first spline m1.
- * @tparam order2 Order of the second spline m2.
+ * @tparam degree1 Degree of the first spline m1.
+ * @tparam degree2 Degree of the second spline m2.
  * @deprecated Use bspline::integration::BilinearForm instead.
  */
-template <typename T, size_t order1, size_t order2>
-[[deprecated]] T integrate_dx2(const Spline<T, order1> &m1,
-                               const Spline<T, order2> &m2) {
+template <typename T, size_t degree1, size_t degree2>
+[[deprecated]] T integrate_dx2(const Spline<T, degree1> &m1,
+                               const Spline<T, degree2> &m2) {
   static constexpr auto f = [](size_t i, size_t j, const T &coeffa,
                                const T &coeffb, const T &dxhalf,
                                [[maybe_unused]] const T &xm) {
@@ -322,13 +322,13 @@ template <typename T, size_t order1, size_t order2>
  * @param m1 First spline.
  * @param m2 Second spline.
  * @tparam T Datatype of both splines.
- * @tparam order1 Order of the first spline m1.
- * @tparam order2 Order of the second spline m2.
+ * @tparam degree1 Degree of the first spline m1.
+ * @tparam degree2 Degree of the second spline m2.
  * @deprecated Use bspline::integration::BilinearForm instead.
  */
-template <typename T, size_t order1, size_t order2>
-[[deprecated]] T integrate_x_dx2(const Spline<T, order1> &m1,
-                                 const Spline<T, order2> &m2) {
+template <typename T, size_t degree1, size_t degree2>
+[[deprecated]] T integrate_x_dx2(const Spline<T, degree1> &m1,
+                                 const Spline<T, degree2> &m2) {
   static constexpr auto f = [](size_t i, size_t j, const T &coeffa,
                                const T &coeffb, const T &dxhalf, const T &xm) {
     if (j < 2)
@@ -351,13 +351,13 @@ template <typename T, size_t order1, size_t order2>
  * @param m1 First spline.
  * @param m2 Second spline.
  * @tparam T Datatype of both splines.
- * @tparam order1 Order of the first spline m1.
- * @tparam order2 Order of the second spline m2.
+ * @tparam degree1 Degree of the first spline m1.
+ * @tparam degree2 Degree of the second spline m2.
  * @deprecated Use bspline::integration::BilinearForm instead.
  */
-template <typename T, size_t order1, size_t order2>
-[[deprecated]] T integrate_x2_dx2(const Spline<T, order1> &m1,
-                                  const Spline<T, order2> &m2) {
+template <typename T, size_t degree1, size_t degree2>
+[[deprecated]] T integrate_x2_dx2(const Spline<T, degree1> &m1,
+                                  const Spline<T, degree2> &m2) {
   static constexpr auto f = [](size_t i, size_t j, const T &coeffa,
                                const T &coeffb, const T &dxhalf, const T &xm) {
     if (j < 2)

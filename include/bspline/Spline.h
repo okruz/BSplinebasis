@@ -1,8 +1,8 @@
 /*
- * template<typename T, size_t order>
+ * template<typename T, size_t degree>
  * class Spline
  *
- * Represents a spline of dataytype T and order order. The datatype has to
+ * Represents a spline of dataytype T and degree degree. The datatype has to
  * fulfill the following requirements:
  *   - comparisons <, <=, >, >=, == and != have to be implemented.
  *   - arithmetic operators + - * /  += -= *= /= have to be implemented
@@ -47,19 +47,19 @@ using namespace bspline::exceptions;
 
 /*!
  *
- * Spline class representing spline of datatype T and order order.
+ * Spline class representing spline of datatype T and degree degree.
  * The coefficients of the spline are defined with respect to the center point
  * xm of each interval.
  *
  * @brief The central Spline class of the library.
  * @tparam T Datatype of the spline.
- * @tparam order Order of the spline.
+ * @tparam degree Degree of the spline.
  */
-template <typename T, size_t order>
+template <typename T, size_t degree>
 class Spline final {
  private:
   /*! Number of coefficients per interval. */
-  static constexpr size_t ARRAY_SIZE = order + 1;
+  static constexpr size_t ARRAY_SIZE = degree + 1;
   /*! The support of this spline. */
   Support<T> _support;
   /*! Coefficients of the polynomials on each interval. */
@@ -132,9 +132,9 @@ class Spline final {
   using data_type = T;
 
   /*!
-   * @brief The order of the spline.
+   * @brief The degree of the spline.
    */
-  static constexpr size_t spline_order = order;
+  static constexpr size_t spline_degree = degree;
 
   /*!
    * @brief Constructor setting the data. Performs sanity checks.
@@ -228,12 +228,12 @@ class Spline final {
    * @brief Checks whether the supports of the two splines overlap.
    *
    * @param m2 Other spline against which to check.
-   * @tparam order2 Order of spline m2.
+   * @tparam degree2 Degree of spline m2.
    * @returns True if the intersection of the supports of the two splines is not
    * empty or point-like.
    */
-  template <size_t order2>
-  bool checkOverlap(const Spline<T, order2> &m2) const {
+  template <size_t degree2>
+  bool checkOverlap(const Spline<T, degree2> &m2) const {
     DURING_TEST_CHECK_VALIDITY();
     if (!_support.containsIntervals() || !m2.getSupport().containsIntervals())
       return false;
@@ -273,7 +273,7 @@ class Spline final {
    * @param d Scalar by which to divide this spline.
    * @returns A new, scaled spline.
    */
-  Spline<T, order> operator/(const T &d) const {
+  Spline<T, degree> operator/(const T &d) const {
     DURING_TEST_CHECK_VALIDITY();
     return (*this) * (static_cast<T>(1) / d);
   };
@@ -285,9 +285,9 @@ class Spline final {
    * @param d Scalar by which to multiply this spline.
    * @returns A new, scaled spline.
    */
-  Spline<T, order> operator*(const T &d) const {
+  Spline<T, degree> operator*(const T &d) const {
     DURING_TEST_CHECK_VALIDITY();
-    Spline<T, order> ret(*this);
+    Spline<T, degree> ret(*this);
     for (auto &cs : ret._coefficients) {
       for (auto &c : cs) {
         c *= d;
@@ -304,7 +304,7 @@ class Spline final {
    * @param d Scalar by which to multiply this spline.
    * @returns A reference to this spline.
    */
-  Spline<T, order> &operator*=(const T &d) {
+  Spline<T, degree> &operator*=(const T &d) {
     DURING_TEST_CHECK_VALIDITY();
     for (auto &cs : _coefficients) {
       for (auto &c : cs) {
@@ -322,7 +322,7 @@ class Spline final {
    * @param d Scalar by which to divide this spline.
    * @returns A reference to this spline.
    */
-  Spline<T, order> &operator/=(const T &d) {
+  Spline<T, degree> &operator/=(const T &d) {
     DURING_TEST_CHECK_VALIDITY();
     (*this) *= (static_cast<T>(1) / d);
     return *this;
@@ -332,29 +332,29 @@ class Spline final {
    * @brief Unary minus operator.
    * @returns A new, scaled spline.
    */
-  Spline<T, order> operator-() const {
+  Spline<T, degree> operator-() const {
     DURING_TEST_CHECK_VALIDITY();
     return (*this) * static_cast<T>(-1);
   };
 
   /*!
    * Copy assign of spline to this spline object. The operation is only well
-   * defined if the order of the spline to be assigned is lower than or equal to
-   * the order of this spline object.
+   * defined if the degree of the spline to be assigned is lower than or equal
+   * to the degree of this spline object.
    *
    * @brief Copy assign operator.
    * @param a Spline to be assigned.
-   * @tparam ordera Order of spline a.
+   * @tparam degreea Degree of spline a.
    * @returns A reference to this spline.
    */
-  template <size_t ordera>
-  Spline<T, order> &operator=(const Spline<T, ordera> &a) {
+  template <size_t degreea>
+  Spline<T, degree> &operator=(const Spline<T, degreea> &a) {
     DURING_TEST_CHECK_VALIDITY();
-    // The case ordera == order should be handled by the default assignment
+    // The case degreea == degree should be handled by the default assignment
     // operator which is automatically generated.
     static_assert(
-        ordera < order,
-        "The assignment operator is only defined if the order of the rhs "
+        degreea < degree,
+        "The assignment operator is only defined if the degree of the rhs "
         "spline is lower than or equal to that of the lhs spline.");
 
     std::vector<std::array<T, ARRAY_SIZE>> ncoefficients(
@@ -370,27 +370,27 @@ class Spline final {
   }
 
   /*!
-   * Spline-spline multiplication operator. Returns a spline of order order +
-   * ordera.
+   * Spline-spline multiplication operator. Returns a spline of degree degree +
+   * degreea.
    *
    * @brief Spline-spline multiplication operator.
    * @param a Spline to be multiplied with this spline.
-   * @tparam ordera Order of spline a.
+   * @tparam degreea Degree of spline a.
    * @throws BSplineException If the two splines are defined on different grids.
    * @returns A new spline representing the product of this spline and spline a.
    */
-  template <size_t ordera>
-  Spline<T, order + ordera> operator*(const Spline<T, ordera> &a) const {
+  template <size_t degreea>
+  Spline<T, degree + degreea> operator*(const Spline<T, degreea> &a) const {
     DURING_TEST_CHECK_VALIDITY();
-    static constexpr size_t NEW_ORDER = order + ordera;
-    static constexpr size_t NEW_ARRAY_SIZE = NEW_ORDER + 1;
+    static constexpr size_t NEW_DEGREE = degree + degreea;
+    static constexpr size_t NEW_ARRAY_SIZE = NEW_DEGREE + 1;
 
     // Will also check whether the two grids are equivalent.
     Support newSupport = _support.calcIntersection(a.getSupport());
     const size_t nintervals = newSupport.numberOfIntervals();
 
     if (nintervals == 0)
-      return Spline<T, NEW_ORDER>(std::move(newSupport), {});  // No overlap
+      return Spline<T, NEW_DEGREE>(std::move(newSupport), {});  // No overlap
 
     std::vector<std::array<T, NEW_ARRAY_SIZE>> newCoefficients(
         nintervals, internal::make_array<T, NEW_ARRAY_SIZE>(static_cast<T>(0)));
@@ -405,14 +405,14 @@ class Spline final {
       const auto &acoeffs = a.getCoefficients()[aRelIndex];
       auto &coeffsi = newCoefficients[i];
 
-      for (size_t j = 0; j < order + 1; j++) {
-        for (size_t k = 0; k < ordera + 1; k++) {
+      for (size_t j = 0; j < degree + 1; j++) {
+        for (size_t k = 0; k < degreea + 1; k++) {
           coeffsi[j + k] += thiscoeffs[j] * acoeffs[k];
         }
       }
     }
-    return Spline<T, NEW_ORDER>(std::move(newSupport),
-                                std::move(newCoefficients));
+    return Spline<T, NEW_DEGREE>(std::move(newSupport),
+                                 std::move(newCoefficients));
   }
 
   /*!
@@ -420,16 +420,16 @@ class Spline final {
    *
    * @brief Spline addition operator.
    * @param a Spline to be added.
-   * @tparam ordera Order of spline a.
+   * @tparam degreea Degree of spline a.
    * @throws BSplineException If the two splines are defined on different grids.
    * @returns A new spline representing the sum of this spline and spline a.
    */
-  template <size_t ordera>
-  Spline<T, std::max(order, ordera)> operator+(
-      const Spline<T, ordera> &a) const {
+  template <size_t degreea>
+  Spline<T, std::max(degree, degreea)> operator+(
+      const Spline<T, degreea> &a) const {
     DURING_TEST_CHECK_VALIDITY();
-    static constexpr size_t NEW_ORDER = std::max(order, ordera);
-    static constexpr size_t NEW_ARRAY_SIZE = NEW_ORDER + 1;
+    static constexpr size_t NEW_DEGREE = std::max(degree, degreea);
+    static constexpr size_t NEW_ARRAY_SIZE = NEW_DEGREE + 1;
 
     // Will also check whether the two grids are equivalent.
     Support newSupport = _support.calcUnion(a.getSupport());
@@ -444,41 +444,41 @@ class Spline final {
 
       if (thisRelIndex && !aRelIndex) {
         ncoefficients[i] =
-            internal::changearraysize<T, order + 1, NEW_ARRAY_SIZE>(
+            internal::changearraysize<T, degree + 1, NEW_ARRAY_SIZE>(
                 _coefficients[*thisRelIndex]);
       } else if (aRelIndex && !thisRelIndex) {
         ncoefficients[i] =
-            internal::changearraysize<T, ordera + 1, NEW_ARRAY_SIZE>(
+            internal::changearraysize<T, degreea + 1, NEW_ARRAY_SIZE>(
                 a.getCoefficients()[*aRelIndex]);
       } else if (thisRelIndex && aRelIndex) {
-        ncoefficients[i] = internal::add<T, ordera + 1, order + 1>(
+        ncoefficients[i] = internal::add<T, degreea + 1, degree + 1>(
             a.getCoefficients()[*aRelIndex], _coefficients[*thisRelIndex]);
       } else {
         ncoefficients[i] =
             internal::make_array<T, NEW_ARRAY_SIZE>(static_cast<T>(0));
       }
     }
-    return Spline<T, NEW_ORDER>(std::move(newSupport),
-                                std::move(ncoefficients));
+    return Spline<T, NEW_DEGREE>(std::move(newSupport),
+                                 std::move(ncoefficients));
   }
 
   /*!
    * In-place addition operator. Adds spline a to this spline. The operation is
-   * only well defined if the order of spline a is lower than or equal to the
-   * order of this spline object.
+   * only well defined if the degree of spline a is lower than or equal to the
+   * degree of this spline object.
    *
    * @brief In-place addition operator.
    * @param a Spline to be added.
-   * @tparam ordera Order of spline a.
+   * @tparam degreea Degree of spline a.
    * @throws BSplineException If the two splines are defined on different grids.
    * @returns A reference to this spline.
    */
-  template <size_t ordera>
-  Spline<T, order> &operator+=(const Spline<T, ordera> &a) {
+  template <size_t degreea>
+  Spline<T, degree> &operator+=(const Spline<T, degreea> &a) {
     DURING_TEST_CHECK_VALIDITY();
     static_assert(
-        ordera <= order,
-        "The operators += and -= are only defined if the order of the rhs "
+        degreea <= degree,
+        "The operators += and -= are only defined if the degree of the rhs "
         "spline is lower than or equal to that of the lhs spline.");
     (*this) = (*this) + a;
     return *this;
@@ -486,17 +486,17 @@ class Spline final {
 
   /*!
    * Binary in-place subtraction operator. Subtracts spline a from this spline.
-   * The operation is only well defined if the order of the spline to be
-   * subtracted is lower than or equal to the order of this spline object.
+   * The operation is only well defined if the degree of the spline to be
+   * subtracted is lower than or equal to the degree of this spline object.
    *
    * @brief Binary in-place subtraction operator.
    * @param a Spline to be subtracted.
-   * @tparam ordera Order of spline a.
+   * @tparam degreea Degree of spline a.
    * @throws BSplineException If the two splines are defined on different grids.
    * @returns A reference to this spline.
    */
-  template <size_t ordera>
-  Spline<T, order> &operator-=(const Spline<T, ordera> &a) {
+  template <size_t degreea>
+  Spline<T, degree> &operator-=(const Spline<T, degreea> &a) {
     (*this) += (static_cast<T>(-1) * a);
     return *this;
   }
@@ -506,14 +506,14 @@ class Spline final {
    *
    * @brief Binary subtraction operator.
    * @param a Spline to be subtracted.
-   * @tparam ordera Order of spline a.
+   * @tparam degreea Degree of spline a.
    * @throws BSplineException If the two splines are defined on different grids.
    * @returns A new spline representing the difference of this spline and spline
    * a.
    */
-  template <size_t ordera>
-  Spline<T, std::max(order, ordera)> operator-(
-      const Spline<T, ordera> &a) const {
+  template <size_t degreea>
+  Spline<T, std::max(degree, degreea)> operator-(
+      const Spline<T, degreea> &a) const {
     return (*this) + (static_cast<T>(-1) * a);
   }
 
@@ -552,11 +552,11 @@ Spline(Support<T> support, std::vector<std::array<T, ARRAY_SIZE>> coefficients)
  * @param d Scalar to be multiplied.
  * @param b Spline to be multiplied.
  * @tparam T Datatype of spline and scalar.
- * @tparam order Order of the spline.
+ * @tparam degree Degree of the spline.
  * @returns A new, scaled spline.
  */
-template <typename T, size_t order>
-inline Spline<T, order> operator*(const T &d, const Spline<T, order> &b) {
+template <typename T, size_t degree>
+inline Spline<T, degree> operator*(const T &d, const Spline<T, degree> &b) {
   return b * d;
 }
 
@@ -573,8 +573,9 @@ inline Spline<T, order> operator*(const T &d, const Spline<T, order> &b) {
  * collection.
  * @param splinesEnd The iterator referencing the end of the spline collection.
  * @tparam CoeffIter An iterator referencing a coefficient of type T.
- * @tparam SplineIter An iterator referenchig a spline of type Spline<T, order>.
- * @returns The linear combination as a spline of type Spline<T, order>.
+ * @tparam SplineIter An iterator referenchig a spline of type Spline<T,
+ * degree>.
+ * @returns The linear combination as a spline of type Spline<T, degree>.
  * @throws BSplineException If the number of coefficients differs from the
  * number of splines, if the number of coefficients and splines are zero or the
  * grids of all splines are not logically equivalent.
@@ -590,8 +591,8 @@ auto linearCombination(CoeffIter coeffsBegin, CoeffIter coeffsEnd,
   using T = typename std::remove_cv_t<
       typename std::iterator_traits<CoeffIter>::value_type>;
 
-  // The order of the spline.
-  constexpr size_t order = Spline::spline_order;
+  // The degree of the spline.
+  constexpr size_t degree = Spline::spline_degree;
 
   // Check, the data type of the spline and the coefficients are consistent.
   static_assert(
@@ -644,9 +645,9 @@ auto linearCombination(CoeffIter coeffsBegin, CoeffIter coeffsEnd,
   // Set up support and coefficients vector for the returned spline.
   Support newSupport(support0.getGrid(), startIndex.value_or(0),
                      endIndex.value_or(0));
-  std::vector<std::array<T, order + 1>> newCoefficients(
+  std::vector<std::array<T, degree + 1>> newCoefficients(
       newSupport.numberOfIntervals(),
-      internal::make_array<T, order + 1>(static_cast<T>(0)));
+      internal::make_array<T, degree + 1>(static_cast<T>(0)));
 
   auto coeffIt = coeffsBegin;
   auto splineIt = splinesBegin;
@@ -663,11 +664,12 @@ auto linearCombination(CoeffIter coeffsBegin, CoeffIter coeffsEnd,
       const size_t newSupportIndex =
           newSupport.intervalIndexFromAbsolute(absoluteIndex).value();
 
-      const std::array<T, order + 1> &splineCoeffs =
+      const std::array<T, degree + 1> &splineCoeffs =
           spline.getCoefficients().at(j);
-      std::array<T, order + 1> &newCoeffs = newCoefficients.at(newSupportIndex);
+      std::array<T, degree + 1> &newCoeffs =
+          newCoefficients.at(newSupportIndex);
 
-      for (size_t k = 0; k < order + 1; k++) {
+      for (size_t k = 0; k < degree + 1; k++) {
         newCoeffs[k] += coeff * splineCoeffs[k];
       }
     }
@@ -688,9 +690,9 @@ auto linearCombination(CoeffIter coeffsBegin, CoeffIter coeffsEnd,
  * @param splines The spline collection.
  * @tparam CoeffCollection A collection of coefficients of type T. Must provide
  * begin() and end() iterators.
- * @tparam SplineCollection A collection of splines of type Spline<T, order>.
+ * @tparam SplineCollection A collection of splines of type Spline<T, degree>.
  * Must provide begin() and end() iterators.
- * @returns The linear combination as a spline of type Spline<T, order>.
+ * @returns The linear combination as a spline of type Spline<T, degree>.
  * @throws BSplineException If the number of coefficients differs from the
  * number of splines, if the number of coefficients and splines are zero or the
  * grids of all splines are not logically equivalent.
@@ -716,11 +718,11 @@ struct is_spline : std::false_type {};
  * Struct to check wether type is a spline. Implementation for all Splines.
  *
  * @tparam T Data type of the spline.
- * @tparam order Order of the spline.
+ * @tparam degree Degree of the spline.
  */
 
-template <typename T, size_t order>
-struct is_spline<Spline<T, order>> : std::true_type {};
+template <typename T, size_t degree>
+struct is_spline<Spline<T, degree>> : std::true_type {};
 #endif  // BSPLINE_DOXYGEN_IGNORE
 
 /*!

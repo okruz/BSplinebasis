@@ -72,11 +72,11 @@ class LinearForm final {
    *
    * @param a The  spline.
    * @tparam T The datatype of the splines.
-   * @tparam order The order of the spline.
+   * @tparam degree The degree of the spline.
    * @returns The value of the linear form for the given spline.
    */
-  template <typename T, size_t order>
-  T evaluate(const Spline<T, order> &a) const {
+  template <typename T, size_t degree>
+  T evaluate(const Spline<T, degree> &a) const {
     const size_t nintervals = a.getSupport().numberOfIntervals();
 
     T result = static_cast<T>(0);
@@ -98,8 +98,8 @@ class LinearForm final {
    * <b>Alias for LinearForm::evaluate().</b>
    * @copydoc LinearForm::evaluate()
    */
-  template <typename T, size_t order>
-  T operator()(const Spline<T, order> &a) const {
+  template <typename T, size_t degree>
+  T operator()(const Spline<T, degree> &a) const {
     return evaluate(a);
   }
 };
@@ -111,7 +111,7 @@ class LinearForm final {
  * spline \f[\left\langle
  * a\right\rangle=\int\limits_{-\infty}^{\infty}\mathrm{d}x~a(x).\f]
  */
-LinearForm()->LinearForm<operators::IdentityOperator>;
+LinearForm() -> LinearForm<operators::IdentityOperator>;
 
 }  // namespace bspline::integration
 #endif  // BSPLINE_INTEGRATION_LINEARFORM_H

@@ -19,13 +19,13 @@ namespace bspline::operators {
  * @brief Operator representation of a Spline.
  *
  * @tparam T The data type of the spline.
- * @tparam order The order of the spline.
+ * @tparam degree The degree of the spline.
  */
-template <typename T, size_t order>
+template <typename T, size_t degree>
 class SplineOperator final : public Operator {
  private:
   /*! The spline which this operator represents. */
-  Spline<T, order> _s;
+  Spline<T, degree> _s;
 
  public:
   /*!
@@ -33,16 +33,16 @@ class SplineOperator final : public Operator {
    *
    * @param s The spline.
    */
-  SplineOperator(Spline<T, order> s) : _s(std::move(s)){};
+  SplineOperator(Spline<T, degree> s) : _s(std::move(s)){};
 
   /*!
-   * @brief Returns the order of the output spline for a given input order.
+   * @brief Returns the degree of the output spline for a given input degree.
    *
-   * @param inputOrder the order of the input spline.
-   * @returns The output spline-order for a given input input order.
+   * @param inputDegree the degree of the input spline.
+   * @returns The output spline-degree for a given input input degree.
    */
-  static constexpr size_t outputOrder(size_t inputOrder) {
-    return inputOrder + order;
+  static constexpr size_t outputDegree(size_t inputDegree) {
+    return inputDegree + degree;
   }
 
   /*!
@@ -66,7 +66,7 @@ class SplineOperator final : public Operator {
   auto transform(const std::array<T, size> &input, const support::Grid<T> &grid,
                  size_t intervalIndex) const {
     static_assert(size >= 1);
-    constexpr size_t OUTPUT_SIZE = outputOrder(size - 1) + 1;
+    constexpr size_t OUTPUT_SIZE = outputDegree(size - 1) + 1;
 
     if (_s.getSupport().getGrid() != grid) {
       throw exceptions::BSplineException(ErrorCode::DIFFERING_GRIDS);

@@ -23,16 +23,16 @@ static_assert(std::is_nothrow_move_constructible_v<IdentityOperator> &&
                   std::is_nothrow_move_assignable_v<IdentityOperator>,
               "IdentityOperator is not nothrow moveable");
 
-template <typename T, size_t order>
+template <typename T, size_t degree>
 static void testSplineMultiplication() {
   const IdentityOperator op;
   std::vector<T> knots;
-  for (size_t i = 0; i <= order + 4; i++) {
+  for (size_t i = 0; i <= degree + 4; i++) {
     knots.push_back(static_cast<T>(i));
   }
   const BSplineGenerator generator{knots};
 
-  const auto splines = generator.template generateBSplines<order>();
+  const auto splines = generator.template generateBSplines<degree>();
 
   for (const auto &spline : splines) {
     const auto transformedSpline = op * spline;

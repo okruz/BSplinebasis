@@ -22,19 +22,19 @@ namespace internal = bspline::internal;
  *
  * Represents the derivative operator \f$\mathrm{d}^n/\mathrm{d}x^n\f$.
  *
- * @tparam n Order of the derivative.
+ * @tparam n Degree of the derivative.
  */
 template <size_t n>
 class Derivative final : public Operator {
  public:
   /*!
-   * @brief Returns the order of the output spline for a given input order.
+   * @brief Returns the degree of the output spline for a given input degree.
    *
-   * @param inputOrder the order of the input spline.
-   * @returns The output spline-order for a given input input order.
+   * @param inputDegree the degree of the input spline.
+   * @returns The output spline-degree for a given input input degree.
    */
-  static constexpr size_t outputOrder(size_t inputOrder) {
-    return std::max(n, inputOrder) - n;
+  static constexpr size_t outputDegree(size_t inputDegree) {
+    return std::max(n, inputDegree) - n;
   }
 
   /*!
@@ -53,17 +53,17 @@ class Derivative final : public Operator {
    * operator to the input coefficients.
    */
   template <typename T, size_t size>
-  std::array<T, outputOrder(size - 1) + 1> transform(
+  std::array<T, outputDegree(size - 1) + 1> transform(
       const std::array<T, size> &input,
       [[maybe_unused]] const support::Grid<T> &grid,
       [[maybe_unused]] size_t intervalIndex) const {
     static_assert(size >= 1, "Arrays of size zero not supported.");
-    // The order of the input spline.
-    constexpr size_t SPLINE_ORDER = size - 1;
+    // The degree of the input spline.
+    constexpr size_t SPLINE_DEGREE = size - 1;
     // The size of the output array.
-    constexpr size_t OUTPUT_SIZE = outputOrder(SPLINE_ORDER) + 1;
+    constexpr size_t OUTPUT_SIZE = outputDegree(SPLINE_DEGREE) + 1;
 
-    if constexpr (n > SPLINE_ORDER) {
+    if constexpr (n > SPLINE_DEGREE) {
       return {static_cast<T>(0)};
     } else {
       std::array<T, OUTPUT_SIZE> retVal;
@@ -80,7 +80,7 @@ class Derivative final : public Operator {
  *
  * Alias for the derivative operator \f$\mathrm{d}^n/\mathrm{d}x^n\f$.
  *
- * @tparam n Order of the derivative.
+ * @tparam n Degree of the derivative.
  */
 template <size_t n>
 using Dx = Derivative<n>;

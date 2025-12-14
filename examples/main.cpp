@@ -27,9 +27,8 @@ static void harmonicOscillator() {
   const std::vector<Eigenspace> harmonicOscillator = solveHarmonicOscillator();
 
   std::cout << "Harmonic Oscillator eigenvalues:\n\n";
-  std::cout << std::setw(2) << "n"
-            << "\t" << std::setw(20) << "energy"
-            << "\t" << std::setw(20) << "relative deviation" << '\n';
+  std::cout << std::setw(2) << "n" << "\t" << std::setw(20) << "energy" << "\t"
+            << std::setw(20) << "relative deviation" << '\n';
   for (size_t i = 0; i < harmonicOscillator.size(); i++) {
     const data_t expected = static_cast<data_t>(2 * i + 1) / 2;
     const data_t relativeDev =
@@ -69,8 +68,7 @@ static void splinePotential() {
   const std::vector<Eigenspace> eigenSpaces = solveSEWithSplinePotential(v);
 
   std::cout << "Spline potential eigenvalues:\n\n";
-  std::cout << std::setw(2) << "n"
-            << "\t" << std::setw(20) << "energy" << '\n';
+  std::cout << std::setw(2) << "n" << "\t" << std::setw(20) << "energy" << '\n';
   for (size_t i = 0; i < eigenSpaces.size(); i++) {
     std::cout << std::setw(2) << i << "\t" << std::setw(20)
               << eigenSpaces[i].energy << '\n';
@@ -97,9 +95,8 @@ static void radialHydrogen() {
   const std::vector<Eigenspace> hydrogen = solveRadialHydrogen();
 
   std::cout << "Hydrogen (L=" << L << ") eigenvalues:\n\n";
-  std::cout << std::setw(2) << "n"
-            << "\t" << std::setw(25) << "energy"
-            << "\t" << std::setw(25) << "relative deviation" << '\n';
+  std::cout << std::setw(2) << "n" << "\t" << std::setw(25) << "energy" << "\t"
+            << std::setw(25) << "relative deviation" << '\n';
   for (size_t i = 0; i < hydrogen.size(); i++) {
     const data_t expected =
         static_cast<data_t>(-1) / pow(static_cast<data_t>(L + i + 1), 2);
@@ -129,7 +126,7 @@ static void radialHydrogen() {
 static void diffusionEquation() {
   std::cout.precision(std::numeric_limits<data_t>::max_digits10);
   std::vector<data_t> gridPoints;
-  std::vector<std::array<data_t, DSpline::spline_order + 1>> diffCoeffVals;
+  std::vector<std::array<data_t, DSpline::spline_degree + 1>> diffCoeffVals;
   for (int i = -100; i <= 100; i++) {
     gridPoints.push_back(static_cast<data_t>(i) / 10);
     if (i == -100) {

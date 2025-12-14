@@ -33,8 +33,8 @@ static std::vector<data_t> setUpKnotsVector() {
 
   size_t numberOfZeros = 1;
 
-  if (SPLINE_ORDER + 1 > L) {
-    numberOfZeros = SPLINE_ORDER + 1 - L;
+  if (SPLINE_DEGREE + 1 > L) {
+    numberOfZeros = SPLINE_DEGREE + 1 - L;
   }
 
   // Adding a knot multiple times alters the continuity properties of the
@@ -68,7 +68,7 @@ static std::vector<data_t> setUpKnotsVector() {
  * @return A vector of BSplines representing the basis.
  */
 static std::vector<Spline> setUpBasis() {
-  return generateBSplines<SPLINE_ORDER>(setUpKnotsVector());
+  return generateBSplines<SPLINE_DEGREE>(setUpKnotsVector());
 }
 
 std::vector<Eigenspace> solveRadialHydrogen() {
@@ -81,9 +81,10 @@ std::vector<Eigenspace> solveRadialHydrogen() {
       std::is_nothrow_move_constructible_v<decltype(hamiltonOperator)>,
       "Operator is not nothrow movable.");
 
-  static_assert(std::is_nothrow_move_constructible_v<decltype(
-                    integration::BilinearForm{std::move(hamiltonOperator)})>,
-                "BilinearForm is not nothrow movable.");
+  static_assert(
+      std::is_nothrow_move_constructible_v<decltype(integration::BilinearForm{
+          std::move(hamiltonOperator)})>,
+      "BilinearForm is not nothrow movable.");
 
   const DeMat hamiltonian =
       setUpSymmetricMatrix(integration::BilinearForm{hamiltonOperator}, basis);

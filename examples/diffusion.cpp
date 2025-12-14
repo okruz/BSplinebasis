@@ -26,11 +26,11 @@ static std::vector<data_t> setUpKnotsVector(
   // Adding a knot multiple times alters the continuity properties of the
   // generated splines at the corresponding grid point (see literature on
   // BSplines).
-  for (size_t i = 0; i < SPLINE_ORDER; i++) ret.push_back(support.front());
+  for (size_t i = 0; i < SPLINE_DEGREE; i++) ret.push_back(support.front());
 
   for (const auto &val : support) ret.push_back(val);
 
-  for (size_t i = 0; i < SPLINE_ORDER; i++) ret.push_back(support.back());
+  for (size_t i = 0; i < SPLINE_DEGREE; i++) ret.push_back(support.back());
 
   return ret;
 }
@@ -42,7 +42,7 @@ static std::vector<data_t> setUpKnotsVector(
 static std::vector<Spline> setUpBasis(const support::Support<data_t> &support) {
   const BSplineGenerator generator(setUpKnotsVector(support),
                                    support.getGrid());
-  return generator.template generateBSplines<SPLINE_ORDER>();
+  return generator.template generateBSplines<SPLINE_DEGREE>();
 }
 
 Spline solveDiffusionSteadyState(DSpline diffusionCoeff, data_t startValue,

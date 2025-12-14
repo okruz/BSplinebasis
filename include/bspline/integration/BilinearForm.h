@@ -110,13 +110,13 @@ class BilinearForm final {
    * @param a The first (left) spline.
    * @param b The second (right) spline.
    * @tparam T The datatype of the splines.
-   * @tparam ordera The order of the first (left) spline.
-   * @tparam orderb The order of the second (right) spline.
+   * @tparam degreea The degree of the first (left) spline.
+   * @tparam degreeb The degree of the second (right) spline.
    * @throws BSplineException If the two splines are defined on different grids.
    * @returns The value of the bilinear form for the two splines.
    */
-  template <typename T, size_t ordera, size_t orderb>
-  T evaluate(const Spline<T, ordera> &a, const Spline<T, orderb> &b) const {
+  template <typename T, size_t degreea, size_t degreeb>
+  T evaluate(const Spline<T, degreea> &a, const Spline<T, degreeb> &b) const {
     // Will also check whether the two grids are equivalent.
     const support::Support integrandSupport =
         a.getSupport().calcIntersection(b.getSupport());
@@ -148,8 +148,8 @@ class BilinearForm final {
    * <b>Alias for BilinearForm::evaluate().</b>
    * @copydoc BilinearForm::evaluate()
    */
-  template <typename T, size_t ordera, size_t orderb>
-  T operator()(const Spline<T, ordera> &a, const Spline<T, orderb> &b) const {
+  template <typename T, size_t degreea, size_t degreeb>
+  T operator()(const Spline<T, degreea> &a, const Spline<T, degreeb> &b) const {
     return evaluate(a, b);
   }
 };
@@ -176,7 +176,7 @@ BilinearForm(O2 o2) -> BilinearForm<operators::IdentityOperator, O2>;
  * \,\,b(x)\ \f]
  */
 BilinearForm()
-    ->BilinearForm<operators::IdentityOperator, operators::IdentityOperator>;
+    -> BilinearForm<operators::IdentityOperator, operators::IdentityOperator>;
 
 /*!
  * Short hand for a scalar product \f[\left\langle a,\, b\right\rangle =
