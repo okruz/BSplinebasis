@@ -22,7 +22,7 @@ namespace internal = bspline::internal;
  *
  * Represents a power of the position operator \f$x^n\f$.
  *
- * @tparam n Order of the power.
+ * @tparam n Degree of the power.
  */
 template <size_t n>
 class Position final : public Operator {
@@ -47,13 +47,13 @@ class Position final : public Operator {
 
  public:
   /*!
-   * @brief Returns the order of the output spline for a given input order.
+   * @brief Returns the degree of the output spline for a given input degree.
    *
-   * @param inputOrder the order of the input spline.
-   * @returns The output spline-order for a given input input order.
+   * @param inputDegree the degree of the input spline.
+   * @returns The output spline-degree for a given input input degree.
    */
-  static constexpr size_t outputOrder(size_t inputOrder) {
-    return inputOrder + n;
+  static constexpr size_t outputDegree(size_t inputDegree) {
+    return inputDegree + n;
   }
 
   /*!
@@ -72,7 +72,7 @@ class Position final : public Operator {
    * operator to the input coefficients.
    */
   template <typename T, size_t size>
-  std::array<T, outputOrder(size - 1) + 1> transform(
+  std::array<T, outputDegree(size - 1) + 1> transform(
       const std::array<T, size> &input, const support::Grid<T> &grid,
       size_t intervalIndex) const {
     constexpr size_t OUTPUT_SIZE = size + n;
@@ -99,7 +99,7 @@ class Position final : public Operator {
  *
  * Alias for the power \f$x^n\f$ of the position operator.
  *
- * @tparam n Order of the power of the position operator.
+ * @tparam n Degree of the power of the position operator.
  */
 template <size_t n>
 using X = Position<n>;

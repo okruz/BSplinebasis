@@ -13,9 +13,9 @@
 
 BOOST_AUTO_TEST_SUITE(SplineInterpolationTestSuite)
 #ifdef BSPLINE_INTERPOLATION_USE_EIGEN
-template <typename T, size_t order>
+template <typename T, size_t degree>
 void testInterpolationEigen(T tol) {
-  using Spline = bspline::Spline<T, order>;
+  using Spline = bspline::Spline<T, degree>;
   using Support = bspline::support::Support<T>;
   using Grid = bspline::support::Grid<T>;
 
@@ -24,7 +24,7 @@ void testInterpolationEigen(T tol) {
   const auto x = Support::createWholeGrid(grid);
   const std::vector<T> y{-3.0l, -2.5l, -1.5l, -1.0l, 0.0l, -0.5l,
                          -1.5l, -2.5l, -3.5l, -4.0l, 3.0l};
-  Spline s = bspline::interpolation::interpolateUsingEigen<T, order>(x, y);
+  Spline s = bspline::interpolation::interpolateUsingEigen<T, degree>(x, y);
   for (size_t i = 0; i < x.size(); i++) {
     BOOST_CHECK_SMALL(s(x[i]) - y[i], tol);
   }
@@ -46,9 +46,9 @@ BOOST_AUTO_TEST_CASE(TestInterpolationEigen) {
 #endif
 
 #ifdef BSPLINE_INTERPOLATION_USE_ARMADILLO
-template <size_t order>
+template <size_t degree>
 void testInterpolationArmadillo(double tol) {
-  using Spline = bspline::Spline<double, order>;
+  using Spline = bspline::Spline<double, degree>;
   using Support = bspline::support::Support<double>;
   using Grid = bspline::support::Grid<double>;
 
@@ -57,7 +57,7 @@ void testInterpolationArmadillo(double tol) {
   const auto x = Support::createWholeGrid(grid);
   const std::vector<double> y{-3.0l, -2.5l, -1.5l, -1.0l, 0.0l, -0.5l,
                               -1.5l, -2.5l, -3.5l, -4.0l, 3.0l};
-  Spline s = bspline::interpolation::interpolateUsingArmadillo<order>(x, y);
+  Spline s = bspline::interpolation::interpolateUsingArmadillo<degree>(x, y);
   for (size_t i = 0; i < x.size(); i++) {
     BOOST_CHECK_SMALL(s(x[i]) - y[i], tol);
   }

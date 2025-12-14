@@ -34,9 +34,9 @@ using data_t = double;
 using DeMat = Eigen::Matrix<data_t, Eigen::Dynamic, Eigen::Dynamic>;
 using DeVec = Eigen::Matrix<data_t, Eigen::Dynamic, 1>;
 
-constexpr size_t SPLINE_ORDER = 10;
+constexpr size_t SPLINE_DEGREE = 10;
 
-using Spline = bspline::Spline<data_t, SPLINE_ORDER>;
+using Spline = bspline::Spline<data_t, SPLINE_DEGREE>;
 
 /**
  * The (cubic) potential spline.

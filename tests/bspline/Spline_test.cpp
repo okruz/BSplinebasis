@@ -32,12 +32,12 @@ Spline<T, 0> getOne(const Grid<T> &grid) {
   return Spline<T, 0>(std::move(support), std::move(coeffs));
 }
 
-template <typename T, size_t order>
+template <typename T, size_t degree>
 void testIntegration(T tol) {
   using namespace bspline::integration;
   using namespace bspline::operators;
 
-  using Spline = bspline::Spline<T, order>;
+  using Spline = bspline::Spline<T, degree>;
   using Spline0 = bspline::Spline<T, 0>;
   const BSplineGenerator generator(std::vector<T>{
       -7.0l,  -6.85l, -6.55l, -6.3l, -6.0l, -5.75l, -5.53l, -5.2l,
@@ -46,7 +46,7 @@ void testIntegration(T tol) {
       5.7l,   6.1l,   6.35l,  6.5l,  6.85l, 7.0l});
 
   const std::vector<Spline> splines =
-      generator.template generateBSplines<order>();
+      generator.template generateBSplines<degree>();
   const Spline0 one = getOne(generator.getGrid());
 
   const auto f1 = [](const T & /*x*/) { return static_cast<T>(1); };
@@ -77,10 +77,11 @@ void testIntegration(T tol) {
                         static_cast<T>(25) * tol);
       BOOST_CHECK_SMALL(bfx2_dx2.evaluate(s1, s2) - integrate_x2_dx2<T>(s1, s2),
                         static_cast<T>(150) * tol);
-      BOOST_CHECK_SMALL(sp.evaluate(s1, s2) - integrate<2 * order>(f1, s1, s2),
+      BOOST_CHECK_SMALL(sp.evaluate(s1, s2) - integrate<2 * degree>(f1, s1, s2),
                         static_cast<T>(10) * tol);
-      BOOST_CHECK_SMALL(bfx.evaluate(s1, s2) - integrate<2 * order>(fx, s1, s2),
-                        static_cast<T>(10) * tol);
+      BOOST_CHECK_SMALL(
+          bfx.evaluate(s1, s2) - integrate<2 * degree>(fx, s1, s2),
+          static_cast<T>(10) * tol);
     }
     BOOST_CHECK_SMALL(lf.evaluate(s1) - integrate<T>(s1), tol);
     BOOST_CHECK_SMALL(lf.evaluate(s1 * s1) - sp.evaluate(s1, s1), tol);
@@ -89,9 +90,9 @@ void testIntegration(T tol) {
   }
 }
 
-template <typename T, size_t order>
+template <typename T, size_t degree>
 T lc(T x, const std::vector<T> &coeffs,
-     const std::vector<bspline::Spline<T, order>> &splines) {
+     const std::vector<bspline::Spline<T, degree>> &splines) {
   T ret = static_cast<T>(0);
   for (size_t i = 0; i < coeffs.size(); i++) {
     ret += coeffs.at(i) * splines.at(i)(x);
@@ -99,11 +100,11 @@ T lc(T x, const std::vector<T> &coeffs,
   return ret;
 }
 
-template <typename T, size_t order>
+template <typename T, size_t degree>
 void testArithmetic(T tol) {
-  static_assert(order >= 2, "For this test, order must be at least 2");
-  using Spline = bspline::Spline<T, order>;
-  using Spline6 = bspline::Spline<T, 2 * order>;
+  static_assert(degree >= 2, "For this test, degree must be at least 2");
+  using Spline = bspline::Spline<T, degree>;
+  using Spline6 = bspline::Spline<T, 2 * degree>;
   using Spline0 = bspline::Spline<T, 0>;
 
   BSplineGenerator<T> generator(std::vector<T>{
@@ -113,7 +114,7 @@ void testArithmetic(T tol) {
       5.7l,   6.1l,   6.35l,  6.5l,  6.85l, 7.0l});
 
   const std::vector<Spline> splines =
-      generator.template generateBSplines<order>();
+      generator.template generateBSplines<degree>();
   const Spline0 one = getOne(generator.getGrid());
 
   const std::vector<T> lcCoeffs{1, 2, 3, 4, 3};

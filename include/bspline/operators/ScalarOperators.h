@@ -69,13 +69,13 @@ class ScalarMultiplication final : public Operator {
   ScalarMultiplication(S s) : _s(s), _o(O{}){};
 
   /*!
-   * @brief Returns the order of the output spline for a given input order.
+   * @brief Returns the degree of the output spline for a given input degree.
    *
-   * @param inputOrder the order of the input spline.
-   * @returns The output spline-order for a given input input order.
+   * @param inputDegree the degree of the input spline.
+   * @returns The output spline-degree for a given input input degree.
    */
-  static constexpr size_t outputOrder(size_t inputOrder) {
-    return O::outputOrder(inputOrder);
+  static constexpr size_t outputDegree(size_t inputDegree) {
+    return O::outputDegree(inputDegree);
   }
 
   /*!

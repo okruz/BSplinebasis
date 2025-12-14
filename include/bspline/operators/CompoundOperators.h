@@ -36,13 +36,13 @@ class OperatorProduct final : public Operator {
   OperatorProduct(O1 o1, O2 o2) : _o1(std::move(o1)), _o2(std::move(o2)){};
 
   /*!
-   * @brief Returns the order of the output spline for a given input order.
+   * @brief Returns the degree of the output spline for a given input degree.
    *
-   * @param inputOrder the order of the input spline.
-   * @returns The output spline-order for a given input input order.
+   * @param inputDegree the degree of the input spline.
+   * @returns The output spline-degree for a given input input dgree.
    */
-  static constexpr size_t outputOrder(size_t inputOrder) {
-    return O1::outputOrder(O2::outputOrder(inputOrder));
+  static constexpr size_t outputDegree(size_t inputDegree) {
+    return O1::outputDegree(O2::outputDegree(inputDegree));
   }
 
   /*!
@@ -61,7 +61,7 @@ class OperatorProduct final : public Operator {
    * operator to the input coefficients.
    */
   template <typename T, size_t size>
-  std::array<T, outputOrder(size - 1) + 1> transform(
+  std::array<T, outputDegree(size - 1) + 1> transform(
       const std::array<T, size> &input, const support::Grid<T> &grid,
       size_t intervalIndex) const {
     return _o1.transform(_o2.transform(input, grid, intervalIndex), grid,
@@ -107,10 +107,9 @@ enum class AdditionOperation {
  * @tparam operation The operation type to be checked.
  */
 template <AdditionOperation operation>
-inline constexpr bool is_valid_operation_v = (operation ==
-                                              AdditionOperation::ADDITION) ||
-                                             (operation ==
-                                              AdditionOperation::SUBTRACTION);
+inline constexpr bool is_valid_operation_v =
+    (operation == AdditionOperation::ADDITION) ||
+    (operation == AdditionOperation::SUBTRACTION);
 
 /*!
  * @brief Operator sum.
@@ -168,13 +167,14 @@ class OperatorSum final : public Operator {
   OperatorSum(O1 o1, O2 o2) : _o1(std::move(o1)), _o2(std::move(o2)){};
 
   /*!
-   * @brief Returns the order of the output spline for a given input order.
+   * @brief Returns the degree of the output spline for a given input degree.
    *
-   * @param inputOrder the order of the input spline.
-   * @returns The output spline-order for a given input input order.
+   * @param inputDegree the degree of the input spline.
+   * @returns The output spline-degree for a given input input degree.
    */
-  static constexpr size_t outputOrder(size_t inputOrder) {
-    return std::max(O1::outputOrder(inputOrder), O2::outputOrder(inputOrder));
+  static constexpr size_t outputDegree(size_t inputDegree) {
+    return std::max(O1::outputDegree(inputDegree),
+                    O2::outputDegree(inputDegree));
   }
 
   /*!
@@ -193,7 +193,7 @@ class OperatorSum final : public Operator {
    * operator to the input coefficients.
    */
   template <typename T, size_t size>
-  std::array<T, outputOrder(size - 1) + 1> transform(
+  std::array<T, outputDegree(size - 1) + 1> transform(
       const std::array<T, size> &input, const support::Grid<T> &grid,
       size_t intervalIndex) const {
     auto a = _o1.transform(input, grid, intervalIndex);

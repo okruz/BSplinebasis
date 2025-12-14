@@ -44,7 +44,7 @@ inline constexpr bool is_operator_v =
  * @tparam O2 Second template parameter.
  */
 template <typename O1, typename O2>
-inline constexpr bool are_operators_v = is_operator_v<O1> &&is_operator_v<O2>;
+inline constexpr bool are_operators_v = is_operator_v<O1> && is_operator_v<O2>;
 
 /*!
  * @brief Applies operator to spline.
@@ -55,15 +55,15 @@ inline constexpr bool are_operators_v = is_operator_v<O1> &&is_operator_v<O2>;
  * @param op The operator to apply to the spline.
  * @param spline The spline to apply the operator to.
  * @tparam T The datatype of the input and output splines.
- * @tparam order The order of the input spline.
+ * @tparam degree The degree of the input spline.
  * @tparam O The type of the operator.
  * @returns The spline resulting from the application of this operator to the
  * spline.
  */
-template <typename T, size_t order, typename O,
+template <typename T, size_t degree, typename O,
           std::enable_if_t<is_operator_v<O>, bool> = true>
-auto transformSpline(const O &op, const Spline<T, order> &spline) {
-  constexpr size_t OUTPUT_SIZE = O::outputOrder(order) + 1;
+auto transformSpline(const O &op, const Spline<T, degree> &spline) {
+  constexpr size_t OUTPUT_SIZE = O::outputDegree(degree) + 1;
 
   const auto &oldCoefficients = spline.getCoefficients();
 
@@ -95,14 +95,16 @@ auto transformSpline(const O &op, const Spline<T, order> &spline) {
 class IdentityOperator final : public Operator {
  public:
   /*!
-   * @brief Order of the resulting Spline.
+   * @brief Degree of the resulting Spline.
    *
-   * Returns the order of the output Spline for a given input order.
+   * Returns the degree of the output Spline for a given input degree.
    *
-   * @param inputOrder the order of the input Spline.
-   * @returns The output Spline-order for a given input input order.
+   * @param inputDegree the degree of the input Spline.
+   * @returns The output Spline-degree for a given input input degree.
    */
-  static constexpr size_t outputOrder(size_t inputOrder) { return inputOrder; }
+  static constexpr size_t outputDegree(size_t inputDegree) {
+    return inputDegree;
+  }
 
   /*!
    * @brief Applies operator on one interval.

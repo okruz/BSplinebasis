@@ -43,10 +43,10 @@ axs[1,0].set_xscale('log')
 axs[1,0].set_xlabel(r'$n$', fontsize=25)
 axs[1,1].set_xlabel(r'$n$', fontsize=25)
 
-axs[0,0].set_title('Spline Order: 2', fontsize=25)
-axs[0,1].set_title('Spline Order: 5', fontsize=25)
-axs[1,0].set_title('Spline Order: 10', fontsize=25)
-axs[1,1].set_title('Spline Order: 15', fontsize=25)
+axs[0,0].set_title('Spline Degree: 2', fontsize=25)
+axs[0,1].set_title('Spline Degree: 5', fontsize=25)
+axs[1,0].set_title('Spline Degree: 10', fontsize=25)
+axs[1,1].set_title('Spline Degree: 15', fontsize=25)
 
 for i, ax in enumerate(fig.axes):
     ax.grid(True)

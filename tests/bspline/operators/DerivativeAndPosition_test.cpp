@@ -27,8 +27,8 @@ static_assert(std::is_nothrow_move_constructible_v<Position<2>> &&
                   std::is_nothrow_move_assignable_v<Position<2>>,
               "Position is not nothrow moveable.");
 
-template <typename T, size_t order>
-static T diffNorm(const Spline<T, order> &s1, const Spline<T, order> &s2) {
+template <typename T, size_t degree>
+static T diffNorm(const Spline<T, degree> &s1, const Spline<T, degree> &s2) {
   const auto diff = s1 - s2;
   const integration::ScalarProduct sp;
   return std::sqrt(sp.evaluate(diff, diff));

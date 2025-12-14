@@ -92,7 +92,7 @@ std::array<T, sizeout> changearraysize(const std::array<T, sizein> &in) {
  * @param xm The middlepoint of the interval with respect to which the
  * polynomial coefficients are defined.
  * @tparam T The datatype of the polynomial.
- * @tparam size The size of the coefficient array (i.e. the order of the
+ * @tparam size The size of the coefficient array (i.e. the degree of the
  * polynomial plus one).
  */
 template <typename T, size_t size>
